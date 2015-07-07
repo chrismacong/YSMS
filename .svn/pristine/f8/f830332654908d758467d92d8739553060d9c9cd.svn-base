@@ -1,0 +1,215 @@
+*{margin:0;padding:0;}
+	ul{ list-style: none}
+		body {
+		background:#4e7bb7;
+		color:#fff;
+		font-family: 'Î¢ÈíÑÅºÚ','ºÚÌå';
+		font-size: 1rem;
+		}
+		.container{
+			/*max-width: 640px;*/
+			padding:0;
+			margin:0 auto;
+		}
+		.bg{
+			position:fixed;
+			height:100%;
+			width:100%;
+			top:0;
+			left:0;
+			z-index:-1;
+		}
+		.bg img{
+			height:100%;
+			width:100%;
+		}
+		.bifen{
+			width: 90%;
+			height: 5em;
+			margin: 0 auto;
+			margin-top: 4em;
+		}
+		.bifen > div{
+			float:left; 
+			text-align: center;
+			font-family: 'Î¢ÈíÑÅºÚ','ºÚÌå';
+			font-weight: bold;
+		}
+		.logo{
+			height:3.5em;
+			width:3.5em;
+			margin:0 auto;
+			border-radius:2em solid #fff;
+			overflow: hidden; 
+			background: url(../images/logo.png);
+			background-size:100% 100%;
+		}
+		.logo_wk{
+			height:4em;
+			width:30%;
+		}
+		.logo_wk p{
+			text-shadow: 2px 2px 5px #000;
+			font-size: 0.7em;
+		}
+		.logo img{
+			height:100%;
+			width:auto;
+		}
+		.num{
+			font-size: 1.8em;
+			line-height: 80px;
+			width:10%;
+		}
+		.name{
+			width:100%;
+			height: 8em;
+			margin:0 auto;
+			background: url(../images/name.png);
+			background-size: 100% 100%;
+			position: relative;
+		}
+		.name > div{
+			position: absolute;
+			width: 100%;
+			text-align: center;
+		}
+		.vs{width:20%;}
+		.vs img{
+			margin-top:0.7em;
+			
+		}
+		.matchlevel{
+			height:30px;
+			text-shadow:2px 2px 2px #333;
+			font-size: 1em;
+			top:15px;
+			text-align: center;
+		}
+		.matchtime{
+			  height: 26px;
+			  text-shadow: 2px 2px 2px #333;
+			  font-size:0.9em;
+			  bottom: 15px;	  
+		}
+		.leaguename{
+			font-size: 2.0em;
+			top: 50%;
+			margin-top: -0.8em;
+			font-weight: bold;
+			letter-spacing:0.8px;
+		}
+		
+		.wk_xijie{
+			width:90%;
+			min-height:200px;
+			margin:0px auto 20px auto;
+
+			background: url(../images/bg_op43.png);
+			border-radius: 8px 8px 0 0;
+			overflow: hidden;
+		}
+		.title{
+			height:40px;
+			color:#fff;	
+		}
+		.title_color1{
+			background:#a09900;
+		}
+		.title_color2{
+			background:#148182;
+		}
+		.title span{
+		    float:left;
+		    height: 24px;
+		    width:24px;
+		    margin:8px 20px 0 20px;
+			background: #148182;
+			text-align: center;
+			border-radius: 12px
+		}
+		.title p{
+			font-size:1.2em;
+			line-height:40px;
+			
+		}
+		.jilu{
+			width:90%;
+			margin:10px auto;
+			color:#000;
+		}
+		.title_2{
+			border:5px;
+			background: #160b2d;
+			color:#fff;
+			padding:5px;
+			width:100px;
+			text-align: center;
+			border-radius: 5px;
+			font-size:1.1em;
+		}
+		.jilu li{
+			height:40px;
+			line-height: 40px;
+			margin:10px 5%;
+		}
+		.score span{
+			display:block;
+			float:left;
+			height:30px;
+			width:30px;
+			background: url(../images/qiu.png);
+			background-size: 100% 100%;
+			margin-right:7%;
+		}
+		.foul span{
+			display:block;
+			float:left;
+			height:30px;
+			width:30px;
+			background: url(../images/pai.png);
+			background-size: 100% 100%;
+			margin-right:7%;
+		}
+		.foul i{
+			height:16px;
+			width:19px;
+			display: inline-block;
+		} 
+		.red_pai{
+			background:url(../images/red_pai.png) no-repeat;
+		}
+		.yellow_pai{
+			background:url(../images/yellow_pai.png) no-repeat;
+		}
+		.double_yellow_pai{
+			background:url(../images/double_yellow_pai.png) no-repeat;
+		}
+		.bottom{
+			height:230px;
+			background:url(../images/bg_bottom.png);
+			background-size:100% 100%;
+			position: relative;
+		}
+		.bottom div{
+			text-align: center;
+			width:350px;
+			padding-top: 30%;
+			margin:0 auto;
+		}
+		.bottom i{
+			display: inline-block;
+			height:26px;
+			width:26px;
+			float:left;
+			background: url(../images/star.png);
+			background-size:100% 100%; 
+		}
+		.bottom p{
+			width:50%;
+			min-width: 250px;
+			margin:0 auto;
+			float:left;
+			padding:0 20px;
+			font-size: 1em
+		}

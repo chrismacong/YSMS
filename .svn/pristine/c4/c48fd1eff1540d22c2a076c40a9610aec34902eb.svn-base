@@ -1,0 +1,920 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://"
+			+ request.getServerName() + ":" + request.getServerPort()
+			+ path + "/";
+%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>人员安排</title>
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/dialog.css">
+<link type="text/css"
+	href="<%=basePath%>css/jquery-ui-1.8.16.custom.css" rel="stylesheet" />
+<link type="text/css" href="<%=basePath%>css/style.css" rel="stylesheet" />
+<link type="text/css" href="<%=basePath%>css/league.css" rel="stylesheet" />
+<link type="text/css" href="<%=basePath%>css/merberconfig.css" rel="stylesheet" />
+<script src="<%=basePath%>js/jquery.min.js"></script>
+<script src="<%=basePath%>js/jquery-ui.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/ds.dialog.js"></script>
+<style type="text/css">	
+	
+</style>
+</head>
+<body>
+	<div class="div_main">
+		<div class="div_coachconfig_content">
+			<div id="div_leader" class="div_configlist">
+				<div style="float:left;">
+					<img src="${pageContext.request.contextPath}/images/list_coach.png" class="img_configlist_titleico">
+				</div>
+				<div style="float:left;">领队和队医</div>
+				<div style="float:right;margin:15px 10px 0px 0px;">
+					<img id="img_configleader" src="${pageContext.request.contextPath}/images/select_up.png">
+				</div>
+			</div>
+			<div id="div_leaderlist" class="div_configlist_content" style="height:80px;line-height:40px;vertical-align:middle;">
+				<label style="margin-left:20px;">领队姓名:</label>
+				<input id="txtleader" type="text" class="input_leader_docter">
+				<label style="margin-left:20px;">领队电话：</label>
+				<input id="txtleaderphone" type="text" class="input_leader_docter">
+				<br/>
+				<label style="margin-left:20px;">队医姓名:</label>
+				<input id="txtdoctor" type="text" class="input_leader_docter">
+				<label style="margin-left:20px;">队医电话：</label>
+				<input id="txtdoctorphone" type="text" class="input_leader_docter">
+			</div>
+	
+		</div>
+			
+		<div class="div_coachconfig_content">
+			<div id="div_coach" class="div_configlist">
+				<div style="float:left;">
+					<img src="${pageContext.request.contextPath}/images/list_coach.png" class="img_configlist_titleico">
+				</div>
+				<div style="float:left;">教练员</div>
+				<div style="float:right;margin:15px 10px 0px 0px;">
+					<img id="img_configcoach" src="${pageContext.request.contextPath}/images/select_down.png">
+				</div>
+			</div>
+			<div id="div_coachlist" class="div_configlist_content" style="display:none;">
+				<div class="div_configlist_content_left">
+					<div class="div_configlist_content_left_top">
+						<select id="sltSearchCoachType" class="select_searchtype">
+							<option value="0">请选择搜索类型</option>
+							<option value="1">按姓名搜索</option>
+							<option value="2">按身份证号搜索</option>
+							<option value="3">按性别搜索</option>
+						</select>
+						<input id="txtSearchCoach" type="text" class="input_text_search">
+						<input type="button" class="input_button_search" value="搜  索" onclick="searchCoach(1)">
+						<input type="button" class="input_button_search" value="跨校搜索" onclick="searchCoach(2)">
+					</div>
+					<div style="width:100%;height:310px;">
+						<table border="0" cellpadding="0" cellspacing="0" class="table_configlist_title">
+							<tr>
+								<td width="160px" style="background:#127419">姓名</td>
+								<td width="180px">身份证号</td>
+								<td width="80px">性别</td>
+							</tr>
+						</table>
+						<div class="div_configlist_contentlist">
+							<table id="tb_coachlist" border="0" cellpadding="0" cellspacing="0" style="width:100%;">
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="div_configlist_content_center">
+					<p style="margin-top:50px;text-align: center;"> 
+						<input id="btnAddCoach" type="button" value="添 加" class="input_button_addremove" onclick="addCoach()" />
+					</p>
+					<p style="margin-top:20px;text-align: center;">
+						<input id="btnRemoveCoach" type="button" value="移 除" class="input_button_addremove" onclick="removeCoach()" />
+					</p>
+				</div>
+				<div class="div_configlist_content_left">
+					<p class="p_chooselist_title">已配置的球队教练员：</p>
+					<table border="0" cellpadding="0" cellspacing="0" class="table_configchooselist_title">
+						<tr>
+							<td width='150px' style="background:#127419">姓名</td>
+							<td width='170px'>身份证号</td>
+							<td width="80px">性别</td>
+						</tr>
+					</table>
+					<div class="div_configchooselist_contentlist">
+						<table id="tb_choosecoachlist" border="0" cellpadding="0" cellspacing="0" style="width:100%;">
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="div_coachconfig_content">
+			<div id="div_athlete" class="div_configlist">
+				<div style="float:left;">
+					<img src="${pageContext.request.contextPath}/images/list_coach.png" class="img_configlist_titleico">
+				</div>
+				<div style="float:left;">运动员</div>
+				<div style="float:right;margin:15px 10px 0px 0px;">
+					<img id="img_configathlete" src="${pageContext.request.contextPath}/images/select_down.png">
+				</div>
+			</div>
+			<div id="div_athletelist" class="div_configlist_content" style="display:none;">
+				<div class="div_configlist_content_left">
+					<div class="div_configlist_content_left_top">
+						<select id="sltSearchAthleteType" class="select_searchtype">
+							<option value="0">请选择搜索类型</option>
+							<option value="1">按姓名搜索</option>
+							<option value="2">按身份证号搜索</option>
+							<option value="3">按入学年份搜索</option>
+						</select>
+						<input id="txtSearchAthlete" type="text" class="input_text_search">
+						<input type="button" class="input_button_search" value="搜  索" onclick="searchAthlete()">
+					</div>
+					<div style="width:100%;height:310px;">
+						<table border="0" cellpadding="0" cellspacing="0" class="table_configlist_title">
+							<tr>
+								<td width="160px" style="background:#127419">姓名</td>
+								<td width="180px">身份证号</td>
+								<td width="80px">入学年份</td>
+							</tr>
+						</table>
+						<div class="div_configlist_contentlist">
+							<table id="tb_athletelist" border="0" cellpadding="0" cellspacing="0" style="width:100%;">
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="div_configlist_content_center">
+					<p style="margin-top:50px;text-align: center;">
+						<input type="button" value="添 加" class="input_button_addremove" onclick="addAthlete()" />
+					</p>
+					<p style="margin-top:20px;text-align: center;">
+						<input type="button" value="移 除" class="input_button_addremove" onclick="removeAthlete()" />
+					</p>
+				</div>
+				<div class="div_configlist_content_left">
+					<p class="p_chooselist_title">已配置的球队运动员：</p>
+					<table border="0" cellpadding="0" cellspacing="0" class="table_configchooselist_title">
+						<tr>
+							<td width='150px' style="background:#127419">姓名</td>
+							<td width='170px'>身份证号</td>
+							<td width="80px">入学年份</td>
+						</tr>
+					</table>
+					<div class="div_configchooselist_contentlist">
+						<table id="tb_chooseathletelist" border="0" cellpadding="0" cellspacing="0" style="width:100%;">
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<p class="p_bottom">
+			<input type="button" value="确 认" class="input_button_okreset" onclick="btnConfirm()">
+			<input type="button" value="刷 新" class="input_button_okreset" style="margin-right:20px;" onclick="btnRefresh()">
+		</p>
+	</div>
+	<script type="text/javascript">
+		var coach_list = null;
+		var teamcoach_list = null;
+		var athlete_list = null;
+		var teamathlete_list = null;
+		var athletecount = 0;
+	
+		$(function(){
+			path="${pageContext.request.contextPath}";
+			addEvent();
+			loadInfo();
+		});
+		
+		// 绑定事件
+		function addEvent(){
+			$(".div_configlist").click(function(){
+				var id = $(this).attr("id"); 
+				if(id != null && id != ""){
+					if(id == "div_leader"){
+						var visible = $("#div_leaderlist").css("display") == "none" ? "block" : "none";
+						$("#div_leaderlist").css("display", visible);
+						$("#div_coachlist").css("display", "none");
+						$("#div_athletelist").css("display", "none");
+						var src = $("#div_leaderlist").css("display") == "none" ? "select_down.png" : "select_up.png";
+						$("#img_configleader").attr("src", "${pageContext.request.contextPath}/images/" + src);
+						$("#img_configcoach").attr("src", "${pageContext.request.contextPath}/images/select_down.png");
+						$("#img_configathlete").attr("src", "${pageContext.request.contextPath}/images/select_down.png");
+					}
+					else if(id == "div_coach"){
+						var visible = $("#div_coachlist").css("display") == "none" ? "block" : "none";
+						$("#div_coachlist").css("display", visible);
+						$("#div_leaderlist").css("display", "none");
+						$("#div_athletelist").css("display", "none");
+						var src = $("#div_coachlist").css("display") == "none" ? "select_down.png" : "select_up.png";
+						$("#img_configcoach").attr("src", "${pageContext.request.contextPath}/images/" + src);
+						$("#img_configleader").attr("src", "${pageContext.request.contextPath}/images/select_down.png");
+						$("#img_configathlete").attr("src", "${pageContext.request.contextPath}/images/select_down.png");
+					}
+					else if(id == "div_athlete"){
+						var visible = $("#div_athletelist").css("display") == "none" ? "block" : "none";
+						$("#div_athletelist").css("display", visible);
+						$("#div_leaderlist").css("display", "none");
+						$("#div_coachlist").css("display", "none");
+						var src = $("#div_athletelist").css("display") == "none" ? "select_down.png" : "select_up.png";
+						$("#img_configathlete").attr("src", "${pageContext.request.contextPath}/images/" + src);
+						$("#img_configleader").attr("src", "${pageContext.request.contextPath}/images/select_down.png");
+						$("#img_configcoach").attr("src", "${pageContext.request.contextPath}/images/select_down.png");
+					}
+				}
+			});
+		}
+		
+		// 发送获取数据请求并加载数据
+		function loadInfo(){
+			$.ajax({
+				type : 'POST',
+				url : "${pageContext.request.contextPath}/team/getteamconfiglist.html",
+				data : {
+					team_id : "${teamId}",
+				},
+				dataType : "json",
+				success : function(data) {
+					if (data != null) {
+						coach_list = data.coach_list;
+						teamcoach_list = data.teamcoach_list;
+						athlete_list = data.athlete_list;
+						teamathlete_list = data.teamathlete_list;
+						athletecount = data.count;
+						$("#txtleader").val(data.leader_name);
+						$("#txtleaderphone").val(data.leader_phone);
+						$("#txtdoctor").val(data.doctor_name);
+						$("#txtdoctorphone").val(data.doctor_phone);
+						
+						// 加载信息列表
+						loadList();
+					} else {
+						ds.dialog({
+							title : '消息提示',
+							content : "加载信息失败！",
+							onyes : true,
+							icon : "../../images/info.png"
+						});
+					}
+				},
+				error : function() {
+					ds.dialog({
+						title : '消息提示',
+						content : "加载信息失败！",
+						onyes : true,
+						icon : "../../images/info.png"
+					});
+				}
+			});
+		}
+		
+		// 查询教练员列表
+		function searchCoach(style){
+			var searchType= $("#sltSearchCoachType").val();
+			if(searchType > 0 && searchType < 4){
+				var keyWord = $("#txtSearchCoach").val();
+				$.ajax({
+					type : 'POST',
+					url : "${pageContext.request.contextPath}/team/getcoachlistbykeyandtype.html",
+					data : {
+						key : keyWord,
+						type : searchType,
+						style : style
+					},
+					dataType : "json",
+					success : function(data) {
+						if (data != null) {
+							coach_list = data.coach_list;
+							// 加载教练员信息列表
+							loadCoachList();
+						} else {
+							ds.dialog({
+								title : '消息提示',
+								content : "查询教练员信息失败！",
+								onyes : true,
+								icon : "../../images/info.png"
+							});
+						}
+					},
+					error : function() {
+						ds.dialog({
+							title : '消息提示',
+							content : "查询教练员信息失败！",
+							onyes : true,
+							icon : "../../images/info.png"
+						});
+					}
+				});
+			}
+			else{
+				ds.dialog({
+					title : '消息提示',
+					content : "请选择搜索的类型！",
+					onyes : true,
+					icon : "../../images/info.png"
+				});
+			}
+		}
+		
+		// 查询运动员列表
+		function searchAthlete(){
+			var searchType= $("#sltSearchAthleteType").val();
+			if(searchType > 0 && searchType < 4){
+				var keyWord = $("#txtSearchAthlete").val();
+				$.ajax({
+					type : 'POST',
+					url : "${pageContext.request.contextPath}/team/getathletelistbykeyandtype.html",
+					data : {
+						team_id : "${teamId}",
+						key : keyWord,
+						type : searchType
+					},
+					dataType : "json",
+					success : function(data) {
+						if (data != null) {
+							athlete_list = data.athlete_list;
+							// 加载运动员信息列表
+							loadAthleteList();
+						} else {
+							ds.dialog({
+								title : '消息提示',
+								content : "查询运动员信息失败！",
+								onyes : true,
+								icon : "../../images/info.png"
+							});
+						}
+					},
+					error : function() {
+						ds.dialog({
+							title : '消息提示',
+							content : "查询运动员信息失败！",
+							onyes : true,
+							icon : "../../images/info.png"
+						});
+					}
+				});
+			}
+			else{
+				ds.dialog({
+					title : '消息提示',
+					content : "请选择搜索的类型！",
+					onyes : true,
+					icon : "../../images/info.png"
+				});
+			}
+		}
+		
+		// 加载信息列表
+		function loadList(){
+			// 加载教练员列表
+			loadCoachList();
+			// 加载球队教练员列表 
+			loadTeamCoachList();
+			// 加载运动员列表
+			loadAthleteList();
+			// 加载球队运动员列表 
+			loadTeamAthleteList();
+			
+		}
+		
+		// 加载教练员列表
+		function loadCoachList(){
+			$("#tb_coachlist").empty();
+			if(coach_list != null && coach_list.length > 0){
+				$.each(coach_list, function(i, coach){
+					if(coach != null){
+						if(!isCoachSelected(coach.coachId)){
+							var gender = "---";
+							if(coach.identifiedGender == 0){
+								gender = "女";
+							}
+							else if(coach.identifiedGender == 1){
+								gender = "男";
+							}
+							$("#tb_coachlist")
+								.append('<tr>' +
+											'<td width="50px" style="max-width:50px;" class="td_firsttd_content">' + 
+												'<input id="c' + coach.coachId + '" class="checkbox_style" type="checkbox">' +
+											'</td>' +
+											'<td width="110px" style="max-width:110px;">' + coach.identifiedName + '</td>' +
+											'<td width="180px" style="max-width:180px;">' + coach.identifiedId + '</td>' +
+											'<td width="80px" style="max-width:80px;">' + gender + '</td>' +
+										'</tr>');
+						}
+					}
+				});
+			}
+		}
+		
+		// 加载球队教练员列表 
+		function loadTeamCoachList(){
+			$("#tb_choosecoachlist").empty();
+			if(teamcoach_list != null && teamcoach_list.length > 0){
+				$.each(teamcoach_list, function(i, coach){
+					if(coach != null){
+						var gender = "---";
+						if(coach.identifiedGender == 0){
+							gender = "女";
+						}
+						else if(coach.identifiedGender == 1){
+							gender = "男";
+						}
+						$("#tb_choosecoachlist")
+							.append('<tr>' +
+										'<td width="50px" style="max-width:50px;" class="td_firstchoostd_content">' + 
+											'<input id="cc' + coach.coachId + '" class="checkbox_style" type="checkbox">' +
+										'</td>' +
+										'<td width="100px" style="max-width:100px;">' + coach.identifiedName + '</td>' +
+										'<td width="170px" style="max-width:170px;">' + coach.identifiedId + '</td>' +
+										'<td width="80px" style="max-width:80px;">' + gender + '</td>' +
+									'</tr>');
+					}
+				});
+			}
+		}
+		
+		// 加载运动员列表
+		function loadAthleteList(){
+			$("#tb_athletelist").empty();
+			if(athlete_list != null && athlete_list.length > 0){
+				$.each(athlete_list, function(i, athlete){
+					if(athlete != null){
+						if(!isAthleteSelected(athlete.athleteId)){
+							$("#tb_athletelist")
+							.append('<tr>' +
+										'<td width="50px" style="max-width:50px;" class="td_firsttd_content">' + 
+											'<input id="a' + athlete.athleteId + '" class="checkbox_style" type="checkbox">' +
+										'</td>' +
+										'<td width="110px" style="max-width:110px;">' + athlete.identifiedName + '</td>' +
+										'<td width="180px" style="max-width:180px;">' + athlete.identifiedId + '</td>' +
+										'<td width="80px" style="max-width:80px;">' + athlete.athleteSchoolyear + '</td>' +
+									'</tr>');
+						}
+					}
+				});
+			}
+		}
+		
+		// 加载球队运动员列表
+		function loadTeamAthleteList(){
+			$("#tb_chooseathletelist").empty();
+			if(teamathlete_list != null && teamathlete_list.length > 0){
+				$.each(teamathlete_list, function(i, athlete){
+					if(athlete != null){
+						$("#tb_chooseathletelist")
+						.append('<tr>' +
+									'<td width="50px" style="max-width:50px;" class="td_firstchoostd_content">' + 
+										'<input id="ca' + athlete.athleteId + '" class="checkbox_style" type="checkbox">' +
+									'</td>' +
+									'<td width="100px" style="max-width:100px;">' + athlete.identifiedName + '</td>' +
+									'<td width="170px" style="max-width:170px;">' + athlete.identifiedId + '</td>' +
+									'<td width="80px" style="max-width:80px;">' + athlete.athleteSchoolyear + '</td>' +
+								'</tr>');
+					}
+				});
+			}
+		}
+		
+		// 判断教练员是否已经被选择到球队中
+		function isCoachSelected(id){
+			var flag = false;
+			if(teamcoach_list != null && teamcoach_list.length > 0){
+				$.each(teamcoach_list, function(i, coach){
+					if(coach.coachId == id){
+						flag = true;
+					}
+				});
+			}
+			
+			var id_str = "cc" + id;
+			if($("#tb_choosecoachlist input[type='checkbox']").length > 0){
+				$("#tb_choosecoachlist input[type='checkbox']").each(function(){
+					var idstr = $(this).attr("id");
+					if(idstr == id_str){
+						flag = true;
+					}
+				});
+			}
+			
+			return flag;
+		}
+		
+		// 判断运动员是否已经被选择到球队中
+		function isAthleteSelected(id){
+			var flag = false;
+			if(teamathlete_list != null && teamathlete_list.length > 0){
+				$.each(teamathlete_list, function(i, athlete){
+					if(athlete.athleteId == id){
+						flag = true;
+					}
+				});
+			}
+			
+			var id_str = "ca" + id;
+			if($("#tb_chooseathletelist input[type='checkbox']").length > 0){
+				$("#tb_chooseathletelist input[type='checkbox']").each(function(){
+					var idstr = $(this).attr("id");
+					if(idstr == id_str){
+						flag = true;
+					}
+				});
+			}
+			return flag;
+		}
+		
+		// 添加教练员到球队中
+		function addCoach(){
+			var count = $("#tb_coachlist input[class='checkbox_style']:checked").length;
+			if(count < 1){
+				ds.dialog({
+					title : '消息提示',
+					content : "请在左侧列表选择需要添加的教练员！",
+					onyes : true,
+					icon : "../../images/info.png"
+				});
+			}
+			else{
+				var selectCount = $("#tb_choosecoachlist tr").length;
+				var totalCount = count + selectCount;
+				if(totalCount > 2){
+					ds.dialog({
+						title : '消息提示',
+						content : "一支球队最多配置2名教练员！",
+						onyes : true,
+						icon : "../../images/info.png"
+					});
+				}
+				else{
+					$("#tb_coachlist input[class='checkbox_style']:checked").each(function(){
+						var idStr = $(this).attr("id");
+						if(idStr != null && idStr != ""){
+							idStr = idStr + "";
+							var id = idStr.substr(1);
+							if(!isCoachExist("cc" + id)){
+								var selectcoach = getCoachById(id);
+								// 右侧列表中添加
+								if(selectcoach != null){
+									var gender = "---";
+									if(selectcoach.identifiedGender == 0){
+										gender = "女";
+									}
+									else if(selectcoach.identifiedGender == 1){
+										gender = "男";
+									}
+									$("#tb_choosecoachlist")
+										.append('<tr>' +
+													'<td width="50px" style="max-width:50px;" class="td_firstchoostd_content">' + 
+														'<input id="cc' + selectcoach.coachId + '" class="checkbox_style" type="checkbox">' +
+													'</td>' +
+													'<td width="100px" style="max-width:100px;">' + selectcoach.identifiedName + '</td>' +
+													'<td width="170px" style="max-width:170px;">' + selectcoach.identifiedId + '</td>' +
+													'<td width="80px" style="max-width:80px;">' + gender + '</td>' +
+												'</tr>');
+									
+									$("#c" + selectcoach.coachId).parent().parent().remove();
+								}
+							}
+							else{
+								var selectcoach = getCoachById(id);
+								if(selectcoach != null){
+									ds.dialog({
+										title : '消息提示',
+										content : "教练员" + selectcoach.identifiedName + "已经添加到球队中！",
+										onyes : true,
+										icon : "../../images/info.png"
+									});
+								}
+								
+							}
+						}
+					});
+				}
+			}
+		}
+		
+		// 将教练员移出球队
+		function removeCoach(){
+			var count = $("#tb_choosecoachlist input[class='checkbox_style']:checked").length;
+			if(count < 1){
+				ds.dialog({
+					title : '消息提示',
+					content : "请在右侧列表选择需要移除的教练员！",
+					onyes : true,
+					icon : "../../images/info.png"
+				});
+			}
+			else{
+				$("#tb_choosecoachlist input[class='checkbox_style']:checked").each(function(){
+					var idStr = $(this).attr("id");
+					if(idStr != null && idStr != ""){
+						// 左侧列表中移除
+						$(this).parent().parent("tr").remove();
+						
+						var id = idStr.substr(2);
+						var removecoach = getCoachById(id);
+						if(removecoach != null){
+							var gender = "---";
+							if(removecoach.identifiedGender == 0){
+								gender = "女";
+							}
+							else if(removecoach.identifiedGender == 1){
+								gender = "男";
+							}
+							$("#tb_coachlist")
+								.append('<tr>' +
+											'<td width="50px" style="max-width:50px;" class="td_firsttd_content">' + 
+												'<input id="c' + removecoach.coachId + '" class="checkbox_style" type="checkbox">' +
+											'</td>' +
+											'<td width="110px" style="max-width:110px;">' + removecoach.identifiedName + '</td>' +
+											'<td width="180px" style="max-width:180px;">' + removecoach.identifiedId + '</td>' +
+											'<td width="80px" style="max-width:80px;">' + gender + '</td>' +
+										'</tr>');
+						}
+					}
+				});
+			}
+		}
+		
+		// 根据ID获取获取对应教练员信息
+		function getCoachById(id){
+			var coachInfo = null;
+			if(coach_list != null && coach_list.length > 0){
+				$.each(coach_list, function(i, coach){
+					if(coach.coachId == id){
+						coachInfo = coach;
+					}
+				});
+			}
+			return coachInfo;
+		}
+		
+		function isCoachExist(id){
+			var flag = false;
+			
+			if($("#tb_choosecoachlist input[type='checkbox']").length > 0){
+				$("#tb_choosecoachlist input[type='checkbox']").each(function(){
+					var idstr = $(this).attr("id");
+					if(idstr == id){
+						flag = true;
+					}
+				});
+			}
+			
+			return flag;
+		}
+		
+		// 添加运动员到球队中
+		function addAthlete(){
+			var count = $("#tb_athletelist input[class='checkbox_style']:checked").length;
+			if(count < 1){
+				ds.dialog({
+					title : '消息提示',
+					content : "请在左侧列表选择需要添加的运动员！",
+					onyes : true,
+					icon : "../../images/info.png"
+				});
+			}
+			else{
+				var selectCount = $("#tb_chooseathletelist tr").length;
+				var totalCount = count + selectCount;
+				if(totalCount > athletecount){
+					ds.dialog({
+						title : '消息提示',
+						content : "一支球队最多配置" + athletecount + "名运动员！",
+						onyes : true,
+						icon : "../../images/info.png"
+					});
+				}
+				else{
+					$("#tb_athletelist input[class='checkbox_style']:checked").each(function(){
+						var idStr = $(this).attr("id");
+						if(idStr != null && idStr != ""){
+							idStr = idStr + "";
+							var id = idStr.substr(1);
+							if(!isAthleteExist("ca" + id)){
+								var selectathlete = getAthleteById(id);
+								// 右侧列表中添加
+								if(selectathlete != null){
+									$("#tb_chooseathletelist")
+										.append('<tr>' +
+												'<td width="50px" style="max-width:50px;" class="td_firstchoostd_content">' + 
+													'<input id="ca' + selectathlete.athleteId + '" class="checkbox_style" type="checkbox">' +
+												'</td>' +
+												'<td width="100px" style="max-width:100px;">' + selectathlete.identifiedName + '</td>' +
+												'<td width="170px" style="max-width:170px;">' + selectathlete.identifiedId + '</td>' +
+												'<td width="80px" style="max-width:80px;">' + selectathlete.athleteSchoolyear + '</td>' +
+											'</tr>');
+									
+									$("#a" + selectathlete.athleteId).parent().parent().remove();
+								}
+							}
+							else{
+								var selectathlete = getAthleteById(id);
+								if(selectathlete != null){
+									ds.dialog({
+										title : '消息提示',
+										content : "运动员" + selectathlete.identifiedName + "已经添加到球队中！",
+										onyes : true,
+										icon : "../../images/info.png"
+									});
+								}
+							}
+						}
+					});
+				}
+			}
+		}
+		
+		// 将教练员移出球队
+		function removeAthlete(){
+			var count = $("#tb_chooseathletelist input[class='checkbox_style']:checked").length;
+			if(count < 1){
+				ds.dialog({
+					title : '消息提示',
+					content : "请在右侧列表选择需要移除的运动员！",
+					onyes : true,
+					icon : "../../images/info.png"
+				});
+			}
+			else{
+				$("#tb_chooseathletelist input[class='checkbox_style']:checked").each(function(){
+					var idStr = $(this).attr("id");
+					if(idStr != null && idStr != ""){
+						// 左侧列表中移除
+						$(this).parent().parent("tr").remove();
+						
+						var id = idStr.substr(2);
+						var removeathlete = getAthleteById(id);
+						if(removeathlete != null){
+							$("#tb_athletelist")
+							.append('<tr>' +
+										'<td width="50px" style="max-width:50px;" class="td_firsttd_content">' + 
+											'<input id="a' + removeathlete.athleteId + '" class="checkbox_style" type="checkbox">' +
+										'</td>' +
+										'<td width="110px" style="max-width:110px;">' + removeathlete.identifiedName + '</td>' +
+										'<td width="180px" style="max-width:180px;">' + removeathlete.identifiedId + '</td>' +
+										'<td width="80px" style="max-width:80px;">' + removeathlete.athleteSchoolyear + '</td>' +
+									'</tr>');
+						}
+					}
+				});
+			}
+		}
+		
+		
+		// 根据ID获取获取对应运动员信息
+		function getAthleteById(id){
+			var athleteInfo = null;
+			if(athlete_list != null && athlete_list.length > 0){
+				$.each(athlete_list, function(i, athlete){
+					if(athlete.athleteId == id){
+						athleteInfo = athlete;
+					}
+				});
+			}
+			return athleteInfo;
+		}
+		
+		function isAthleteExist(id){
+			var flag = false;
+			if($("#tb_chooseathletelist input[type='checkbox']").length > 0){
+				$("#tb_chooseathletelist input[type='checkbox']").each(function(){
+					var idstr = $(this).attr("id");
+					if(idstr == id){
+						flag = true;
+					}
+				});
+			}
+			
+			return flag;
+		}
+		
+		// 确认
+		function btnConfirm(){
+			ds.dialog({
+				title : '消息提示',
+				content : "确定配置球队信息吗？？",
+				yesText : "确定",
+				onyes : function() {
+					var coachStr = "";
+					if($("#tb_choosecoachlist input[type='checkbox']").length > 0){
+						$("#tb_choosecoachlist input[type='checkbox']").each(function(){
+							var idstr = $(this).attr("id");
+							if(idstr != "" && idstr != "undefine"){
+								idstr = idstr + "";
+								var id = idstr.substr(2);
+								coachStr = coachStr + id + ",";
+							}
+						});
+					}
+					
+					if(coachStr.length > 0){
+						coachStr = coachStr.substr(0, coachStr.length - 1);
+					}
+					
+					var athleteStr = "";
+					if($("#tb_chooseathletelist input[type='checkbox']").length > 0){
+						$("#tb_chooseathletelist input[type='checkbox']").each(function(){
+							var idstr = $(this).attr("id");
+							if(idstr != "" && idstr != "undefine"){
+								idstr = idstr + "";
+								var id = idstr.substr(2);
+								athleteStr = athleteStr + id + ",";
+							}
+						});
+					}
+					
+					var leadername = $("#txtleader").val();
+					var leaderphone = $("#txtleaderphone").val();
+					var doctorname = $("#txtdoctor").val();
+					var doctorphone = $("#txtdoctorphone").val();
+					
+					if(athleteStr.length > 0){
+						athleteStr = athleteStr.substr(0, athleteStr.length - 1);
+					}
+					
+					$.ajax({
+						type : 'POST',
+						url : "${pageContext.request.contextPath}/team/configteammember.html",
+						data : {
+							team_id : "${teamId}",
+							coachstr : coachStr,
+							athletestr : athleteStr,
+							leadername : leadername,
+							leaderphone : leaderphone,
+							doctorname : doctorname,
+							doctorphone : doctorphone
+						},
+						dataType : "json",
+						success : function(data) {
+							if (data != null) {
+								if(data.success){
+									ds.dialog({
+										title : '消息提示',
+										content : "配置球队信息成功！",
+										onyes : true,
+										icon : "../../images/socceralert.png",
+									});
+									window.location.href = "${pageContext.request.contextPath}/team/configteam.html?team_id=${teamId}";
+								}
+								else{
+									ds.dialog({
+										title : '消息提示',
+										content : "配置球队信息失败！",
+										onyes : true,
+										icon : "../../images/info.png"
+									});
+								}
+							} else {
+								ds.dialog({
+									title : '消息提示',
+									content : "配置球队信息失败！",
+									onyes : true,
+									icon : "../../images/info.png"
+								});
+							}
+						},
+						error : function() {
+							ds.dialog({
+								title : '消息提示',
+								content : "配置球队信息失败！",
+								onyes : true,
+								icon : "../../images/info.png"
+							});
+						}
+					});
+				},
+				noText : "取消",
+				onno : function() {
+					this.close();
+				},
+				icon : "../../images/confirm.png"
+			});
+			
+		}
+		
+		// 刷新
+		function btnRefresh(){
+			ds.dialog({
+				title : '消息提示',
+				content : "确定要刷新球队配置信息吗？",
+				yesText : "确定",
+				onyes : function() {
+					window.location.href = "${pageContext.request.contextPath}/team/configteam.html?team_id=${teamId}";
+				},
+				noText : "取消",
+				onno : function() {
+					this.close();
+				},
+				icon : "../../images/confirm.png"
+			});
+			
+		}
+	</script>
+</body>
+</html>

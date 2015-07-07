@@ -1,0 +1,9 @@
+package com.cwkj.ysms.wechat.util;
+
+public class AccountFinalUtil {
+	public static final String token = "chrismacong_ysms";
+	public static final String encodingAESKey = "fjSOkWII2WnGRiBRo32wI32fVbQjQVa10r2HIxXA4he";
+	public static final String appId = "wx82d5423637331349";
+	public static final String appSecret = "1ea62f2f8f7b11e67ffb4d672150df5d ";
+			
+}

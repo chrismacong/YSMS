@@ -1,0 +1,335 @@
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.sql.Array"%>
+<%@page import="java.util.List"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<%
+	List<Integer> list=(List<Integer>)session.getAttribute("userFunction");
+	String  userName=(String)session.getAttribute("userName");
+%>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>南京市青少年足球管理平台</title>
+<link rel="stylesheet" type="text/css" 
+	href="${pageContext.request.contextPath}/css/dialog.css">
+<link rel="stylesheet" type="text/css"
+	href="${pageContext.request.contextPath}/css/style.css">
+<link rel="stylesheet" type="text/css"
+	href="${pageContext.request.contextPath}/css/league.css">
+<link rel="stylesheet" type="text/css"
+	href="${pageContext.request.contextPath}/css/jquery-ui-1.8.16.custom.css">
+
+<script language="javascript"
+	src="${pageContext.request.contextPath}/js/jquery.min.js"></script>
+<script language="javascript"
+	src="${pageContext.request.contextPath}/js/jquery-ui.min.js"></script>
+<script language="javascript" type="text/javascript"
+	src="${pageContext.request.contextPath}/js/Duang.js"></script>
+<script language="javascript" type="text/javascript"
+	src="${pageContext.request.contextPath}/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script type="text/javascript" src="js/md5.js"></script>
+<script src="${pageContext.request.contextPath}/js/ds.dialog.js"></script>
+<script type="text/javascript">
+	$(function() {
+		path="${pageContext.request.contextPath}";
+		load();
+		$("#setting_btn").click(function(event) {
+			if ($("#setting_content").css("display") == "none") {
+				$("#setting_content").css("display", "block");
+				 event.stopPropagation();
+			} else {
+				$("#setting_content").css("display", "none");
+			}
+		})
+		$('body').click(function(){
+				$('#setting_content').hide();
+		})
+		$("#changepwd_btn").click(function() {
+			$("#change_pwd_block").css("display", "block");
+		});
+		$("#logout_btn")
+				.click(
+						function() {
+							window.location.href = "${pageContext.request.contextPath}/login/logout.html";
+						})
+		$('.close').click(function() {
+			$('.change_pwd').hide();
+		})
+		$("#modify_btn")
+				.click(
+						function() {
+							var oldpwd = $("#old_pwd").val();
+							var newpwd = $("#new_pwd").val();
+							var newpwdagain = $("#new_pwd_again").val();
+							if (newpwd != newpwdagain) {
+								ds.dialog({
+									title : '消息提示',
+									content : "两次新密码输入不一致！",
+									onyes : true,
+									icon : "../images/info.png"
+								});
+							} else {
+								$
+										.ajax({
+											type : 'POST',
+											url : "${pageContext.request.contextPath}/usermanagement/changepwd.html",
+											data : {
+												oldpwd : hex_md5(oldpwd),
+												newpwd : hex_md5(newpwd)
+											},
+											dataType : "json",
+											success : function(data) {
+												if (data.success) {
+													ds.dialog({
+														title : '消息提示',
+														content : "修改密码成功！请重新登录！",
+														onyes : true,
+														icon : "../images/socceralert.png",
+													});
+													window.location.href = "${pageContext.request.contextPath}/login/logout.html";
+												} else {
+													ds.dialog({
+														title : '消息提示',
+														content : "原密码输入错误！",
+														onyes : true,
+														icon : "../images/info.png"
+													});
+												}
+											},
+											error : function() {
+												ds.dialog({
+													title : '消息提示',
+													content : "修改失败！请检查网络连接！",
+													onyes : true,
+													icon : "../images/info.png"
+												});
+											}
+										});
+							}
+						})
+	});
+	//加载初始化信息
+	function load() {
+
+		$("#league_left_menu").click(
+				function() {
+					$("#main_content").attr("src",
+							"${pageContext.request.contextPath}/league.html");
+					$("#main_content").css("background", "#FFFFFF");
+				});
+		$("#school_left_menu")
+				.click(
+						function() {
+							$("#main_content")
+									.attr("src",
+											"${pageContext.request.contextPath}/schoolmanagement.html");
+							$("#main_content").css("background", "#FFFFFF");
+						});
+		$("#athlete_left_menu")
+				.click(
+						function() {
+							$("#main_content")
+									.attr("src",
+											"${pageContext.request.contextPath}/athletemanagement.html");
+							$("#main_content").css("background", "#FFFFFF");
+						});
+		$("#coach_left_menu")
+				.click(
+						function() {
+							$("#main_content")
+									.attr("src",
+											"${pageContext.request.contextPath}/coachmanagement.html")
+							$("#main_content").css("background", "#FFFFFF");
+						})
+		$("#user_left_menu")
+				.click(
+						function() {
+							$("#main_content")
+									.attr("src",
+											"${pageContext.request.contextPath}/usermanagement.html")
+							$("#main_content").css("background", "#FFFFFF");
+						})
+		$("#judege_left_menu")
+				.click(
+						function() {
+							$("#main_content")
+									.attr("src",
+											"${pageContext.request.contextPath}/judgemanagement.html")
+							$("#main_content").css("background", "#FFFFFF");
+						})
+		$("#signup_left_menu").click(
+				function() {
+					$("#main_content").attr("src",
+							"${pageContext.request.contextPath}/signup.html")
+					$("#main_content").css("background", "#FFFFFF");
+				})	
+	}
+</script>
+</head>
+<body>
+	<div class="mainbody">
+		<div class="nav_left">
+			<div class="userheader">
+				<div class="header_img">
+					<img src="${pageContext.request.contextPath}/images/headerimg.png" />
+				</div>
+				<p>${username}</p>
+			</div>
+			<div class="nav">
+				<ul>
+					<%
+						if (list.contains(1)) {
+					%>
+					<li id="league_left_menu"><div class="nav_click_red"></div>
+						<div class="icon_nav">赛</div>联赛管理</li>
+					<%
+						}
+					%>
+					<%
+						if (list.contains(2)) {
+					%>
+					<li id="school_left_menu"><div class="nav_click_red"></div>
+						<div class="icon_nav">校</div>学校管理</li>
+					<%
+						}
+					%>
+					<!-- 为方便开发暂时注释掉的菜单 -->
+					<!-- 
+					<li><div class="nav_click_red"></div>
+						<div class="icon_nav">训</div>培训管理</li>
+						 -->
+					<%
+						if (list.contains(3)) {
+					%>
+					<li id="user_left_menu"><div class="nav_click_red"></div>
+						<div class="icon_nav">人</div>用户管理</li>
+					<%
+						}
+					%>
+					<!-- 为方便开发暂时注释掉的菜单 -->
+					<!-- 
+					<li><div class="nav_click_red"></div>
+						<div class="icon_nav">事</div>新闻管理</li>
+					 -->
+					<%
+						if (list.contains(4)) {
+					%>
+					<li id="judege_left_menu"><div class="nav_click_red"></div>
+						<div class="icon_nav">判</div>裁判管理</li>
+					<%
+						}
+					%>
+					<%
+						if (list.contains(5)) {
+					%>
+					<li id="athlete_left_menu"><div class="nav_click_red"></div>
+						<div class="icon_nav">球</div>运动员管理</li>
+					<%
+						}
+					%>
+					<%
+						if (list.contains(6)) {
+					%>
+					<li id="coach_left_menu"><div class="nav_click_red"></div>
+						<div class="icon_nav">教</div>教练员管理</li>
+					<%
+						}
+					%>
+					<%
+						if (list.contains(7)) {
+					%>
+					<li id="signup_left_menu"><div class="nav_click_red"></div>
+						<div class="icon_nav">赛</div>联赛报名</li>
+					<%
+						}
+					%>
+				</ul>
+			</div>
+			<div class="nav_left_bottom"></div>
+		</div>
+		<div class="content_right">
+			<div class="content_top">
+				<div class="waikuang_h_s">
+					<div class="home"></div>
+					<div class="search_wai">
+						<div class="sea_l"></div>
+						<div class="sea_m">
+							<form>
+								<input type="text" id="search">
+							</form>
+						</div>
+						<div class="sea_r"></div>
+					</div>
+					<div id="setting_btn" class="setting">
+						<div id="setting_content" style="display: none;">
+							<p id="changepwd_btn" class="re unselectable">修改密码</p>
+							<p id="logout_btn" class="unselectable">退出</p>
+						</div>
+					</div>
+
+					<div class="message"></div>
+				</div>
+			</div>
+
+			<!--main_content-->
+			<iframe class="main_content" id="main_content" frameborder="0" scrolling="no"
+				style="width: 1080px;background: url(${pageContext.request.contextPath}/images/main_center_bg.jpg);background-size:100% 100%;">
+			</iframe>
+			<!--main_content END-->
+			
+			<div id="change_pwd_block" class="change_pwd" style="display: none;">
+			<div class="neirong">
+				<div class="close" style="top: -34px; right: -34px;"></div>
+				<table style="margin-left:20px;">
+					<tr height="20px"><td height="20px"></td></tr>
+					<tr>
+						<td>原密码：</td>
+						<td>
+							<div class="input_wk">
+								<div class="input_l"></div>
+								<div class="input_m">
+									<input id="old_pwd" type="password" class="input_text"
+										name="default">
+								</div>
+								<div class="input_r"></div>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>新密码：</td>
+						<td><div class="input_wk">
+								<div class="input_l"></div>
+								<div class="input_m">
+									<input id="new_pwd" type="password" class="input_text"
+										name="default">
+								</div>
+								<div class="input_r"></div>
+							</div></td>
+					</tr>
+					<tr>
+						<td>再次输入新密码：</td>
+						<td><div class="input_wk">
+								<div class="input_l"></div>
+								<div class="input_m">
+									<input id="new_pwd_again" type="password" class="input_text"
+										name="default">
+								</div>
+								<div class="input_r"></div>
+							</div></td>
+					</tr>
+					<tr>
+						<td colspan="2">&nbsp;</td>
+					</tr>
+					<tr>
+						<td colspan="2"><a id="modify_btn"></a></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		</div>
+		
+	</div>
+</body>
+</html>

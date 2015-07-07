@@ -1,0 +1,147 @@
+.search_table{
+    	padding-bottom:10px;
+    	margin:0 auto;
+    }
+	.search_table .input_m{
+		width:162px;
+	}
+	.search_table .input_wk{
+		width:250px;
+	}
+	.select_wk select{
+		width:111%;
+		height:100%;
+		line-height: 25px;
+		background: none;
+		border: none;
+		outline:medium;
+	}
+	.neirong_wk{
+		padding:0;
+		height:565px;
+	}
+	.operation .a_caipan{
+		width:520px;
+	}
+	.competition_apply{
+		margin:0 auto;
+	}
+	#competition_apply .input_wk{
+		width:280px;
+	}
+	#competition_apply .input_m{
+		width:212px;
+	}
+	.competition_apply input[type="text"]{
+		height:100%;
+		width: 100%;
+		border: none;
+		background: none;
+		outline:medium;
+	}
+	.edit_match,.saishi_results{
+		position: absolute;
+		top:1%;
+		left:1%;
+		height:98%;
+		width:98%;
+		border-radius: 5px;
+		border:1px solid #aaa;
+		background: #fff;
+		display:none;
+		z-index: 3
+	}
+
+	.close{
+		  right: -13px!important;
+		  top: -13px!important;
+		  cursor: pointer;
+		  background: url(../images/outdiv_delete.png);
+	}
+	.score{
+		height:100px;
+		margin:20px auto;
+		width:600px;
+	}
+	.score table{
+		width:100%;
+		text-align: center;
+	}
+	.score table img{
+		height:74px;
+		width:auto;
+	}
+	.score_score input{
+		width: 50px;
+		height: 50px;
+		text-align: center;
+		font-size: 30px;
+		font-weight: bold;
+		color: #33049f;
+		border:none;
+	}
+	.xijie .fenlai_2{
+		 height: 400px;
+		 width: 100%;
+		 text-align: center;
+	}
+	.fenlai_2 table{
+		 height: 300px;
+		 width: 100%;
+		 border-right:1px solid #a8a1b7;
+		 border-bottom: 1px solid #a8a1b7 
+	}
+	.fenlai_2 table td{
+		height:40px;
+		border-left:1px solid #a8a1b7;
+		border-top:1px solid #a8a1b7;
+	}
+	.fenlai_2 table > thead{background:#bbb;}
+	.fenlai_2 table select{height:25px;}
+	.fenlai_2 table input{height:22px;width:80px;}
+	.fenlai_2 > tbody > tr > td{width:50%;}
+	.fenlai_2 .school_name{
+		padding: 5px 20px;
+		background: #51cdce;
+		color: #fff;
+		border-radius: 5px;
+	}
+	.fenlai_2 .school_name2{
+		padding: 5px 20px;
+		background: #51cdce;
+		color: #fff;
+		border-radius: 5px;
+	}
+	.tab_xijie{
+		  height: 40px;
+		  width: 300px;
+		  margin: 20px auto 0 auto;
+		  line-height: 40px;
+	}
+	.tab_xijie span{
+		border-radius: 5px 5px 0 0 ;
+		border:1px solid #ccc;
+		border-bottom: none;
+		padding:8px 30px;	
+		cursor: pointer;
+	}
+	.span_tab{
+		padding:10px 30px!important;
+		background: #160b2d;
+		color: #fff;
+		font-weight: bold;
+		box-shadow: 0 0 10px #777;
+	}
+	.personscore{display:none;}
+	.fenlai_2 table a{
+		padding:5px 10px;
+		text-decoration: none;	
+		background: #160b2d;
+		color:#fff;
+		box-shadow: 5px;
+		margin:0 20px;
+	}
+	.fenlai_2 table a:hover{
+		background: #4a249b
+	}
+   

@@ -1,0 +1,60 @@
+	*{
+		margin:0;
+		padding:0;
+		font-family: '微软雅黑','黑体';
+	}
+	.main{
+		width:600px;
+		margin:20px auto;
+	}
+	.main td{
+       font-size: 18px;
+       padding:10px;
+       position: relative;
+	}
+	.error,.shuruok{width:auto;height:26px;position:absolute; top: 10px;left:340px;}
+	.shuruok div{width:26px;height:26px;background:url(../images/ok.png) }
+	.error > div{height:26px;float:left;}
+	.error_left{width:12px;background: url(../images/error_01.png)}
+	.error_middle{width:auto;background: url(../images/error_02.png);font-size: 10px ;line-height: 25px;}
+	.error_right{width:3px;background: url(../images/error_03.png)}
+	.main td .inputtext{
+		height: 26px;
+		width:300px;
+		padding:0 10px;
+	}
+	.inputselect{
+		height: 26px;
+		width:320px;
+		padding:0 10px;
+	}
+	.main td .inputbtn{
+		width:300px;
+		height:50px;
+		background:#5abb3c;
+		margin:0 auto;
+		font-family: '微软雅黑','黑体';
+		font-size: 18px;
+		color:#fff;
+		border: none;
+		overflow: hidden;
+		border-radius:10px; 
+	}
+	.main td .inputbtn:hover{
+		background:#48972f;
+	}
+	.radio_{height:20px;width:20px;}
+	.title{
+		font-size: 34px;
+		text-align: center;
+		color:#5abb3c;
+	}
+	.header{
+		height:50px;
+		width: 100%;
+		background:#5abb3c;
+		margin-bottom: 30px
+	}
+	.home{
+		
+	}

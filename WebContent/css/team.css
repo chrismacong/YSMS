@@ -1,0 +1,363 @@
+body{
+	overflow-x:hidden;
+	overflow-y:hidden;
+}
+.input_wk {
+	height: 30px;
+	width: 350px;
+	margin: 4px;
+}
+
+.input_l {
+	float: left;
+	height: 34px;
+	width: 19px;
+	background: url(../images/input_l_thin.png)
+}
+
+.input_m {
+	float: left;
+	height: 34px;
+	width: 312px;
+	background: url(../images/input_m_thin.png);
+	position: relative;
+	line-height: 30px
+}
+
+.input_r {
+	float: left;
+	height: 34px;
+	width: 19px;
+	background: url(../images/input_r_thin.png)
+}
+
+.input_text {
+	text-align: left;
+	line-height: 34px;
+	height: 30px;
+	margin-top: 2px;
+	width: 100%;
+	border: none;
+	font-size: 1em;
+	color: #251b3b;
+	background: #fafafa;
+	font-family: 'Microsoft YaHei', 'SimHei', 'SimSun'
+}
+
+#button_read {
+	border: none;
+	width: 200px;
+	height: 52px;
+	cursor: pointer;
+	background: url(../images/registerread.png) center center;
+}
+
+#button_reset {
+	border: none;
+	width: 200px;
+	height: 52px;
+	cursor: pointer;
+	background: url(../images/registerreset.png) center center
+}
+
+#button_register {
+	border: none;
+	width: 200px;
+	height: 52px;
+	cursor: pointer;
+	background: url(../images/register.png) center center
+}
+
+.center_table {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.operation {
+	height: 140px;
+	width: 1080px;
+	background: #fff;
+	color: #4f4f4f;
+}
+
+.operation ul {
+	height: 100%;
+	text-align: center;
+	margin: 0 auto;
+}
+
+.operation .a_team {
+	width: 960px;
+	margin: 0 auto;
+}
+
+.operation .a_team_short {
+	width: 520px;
+	margin: 0 auto;
+}
+
+.operation .a_team li {
+	float: left;
+	width: 100px;
+	height: 100%;
+	margin: 0 60px;
+	cursor: pointer;
+}
+
+.operation li div {
+	width: 70px;
+	margin: 15px;
+}
+
+.border_bo {
+	border-bottom: 3px solid #127419
+}
+
+.neirong_wk {
+	height: 515px;
+	margin-top: 5px;
+	background: #fff;
+	padding-top: 0px;
+	position: relative;
+}
+
+select {
+	line-height: 30px;
+	height: 30px;
+	margin: -1px 0 0 -1px;
+	width: 120%;
+	border: none;
+	font-size: 1em;
+	color: #251b3b;
+	background: #fafafa;
+	font-family: 'Microsoft YaHei', 'SimHei', 'SimSun'
+}
+
+.select_icon {
+	position: absolute;
+	right: 2px;
+	top: 8px;
+	height: 12px;
+	width: 16px;
+	background: url(../images/select_icon.png);
+	z-index: 2;
+}
+
+.select_wk {
+	line-height: 30px;
+	height: 30px;
+	margin-top: 2px;
+	width: 100%;
+	border: none;
+	overflow: hidden;
+	position: relative;
+	float: left;
+	z-index: 1;
+}
+
+#btn_table {
+	margin-top: 10px;
+}
+
+#team_frame {
+	padding-top:20px;
+	border: none;
+}
+
+#signuptoleague_body{
+	background-image: url(../images/apic525.jpg);
+}
+
+#team_logo{
+	position:absolute;
+	left:65px;
+	top:15px;
+	width:50px;
+	height:50px;
+	background:url(../images/team_logo.png);
+}
+#teamname_div{
+	position:absolute;
+	left:120px;
+	top:30px;
+	color:#EEECDF;
+	cursor:pointer;
+}
+#teamname_input{
+	position:absolute;
+	left:120px;
+	top:30px;
+	width:200px;
+	font-size:18px;
+	visibility:hidden;
+}
+#teamname_modify_btn{
+	position:absolute;
+	top:27px;
+	left:335px;
+	width:30px;
+	height:30px;
+	background:url(../images/modify_pen.png);
+	cursor:pointer;
+	visibility:hidden;
+}
+#leader_img{
+	position:absolute;
+	top:31px;
+	left:380px;
+	width:50px;
+	height:20px;
+	background:url(../images/leader_fr.png) no-repeat center center;
+}
+#leadername_div{
+	position:absolute;
+	top:30px;
+	left:434px;
+	width:150px;
+	height:30px;
+	color:white;
+}
+#doctor_img{
+	position:absolute;
+	top:31px;
+	left:600px;
+	width:50px;
+	height:20px;
+	background:url(../images/doctor_fr.png) no-repeat center center;
+}
+#doctorname_div{
+	position:absolute;
+	top:30px;
+	left:654px;
+	width:200px;
+	height:30px;
+	color:white;
+}
+.member_tr{
+	background:url(../images/member_tb_bak.png) no-repeat center right;
+	margin-left:4px;
+	height:40px;
+	width:380px;
+}
+.member_td{
+	background:url(../images/member_tb_bak.png) no-repeat center right;
+	height:40px;
+}
+.member_tt{
+	background:url(../images/member_tb_bak.png) no-repeat center left;
+	height:40px;
+}
+#athlete_table{
+	position:absolute;
+	width:388px;
+	left:40px;
+	top:185px;
+}
+#athlete_more_table{
+	position:absolute;
+	width:388px;
+	left:510px;
+	top:65px;
+}
+#coach_table{
+	position:absolute;
+	width:388px;
+	left:40px;
+	top:65px;
+}
+#confirm_signup_btn{
+	position:absolute;
+	width:120px;
+	height:35px;
+	left:920px;
+	top:470px;
+	background:url(../images/confirm_signup.png) no-repeat center center;
+	cursor:pointer;
+}
+#cancel_signup_btn{
+	position:absolute;
+	width:120px;
+	height:35px;
+	left:920px;
+	top:520px;
+	background:url(../images/giveup_signup.png) no-repeat center center;
+	cursor:pointer;
+}
+a{
+	cursor:pointer;
+}
+a:link { 
+color: #000000; 
+text-decoration: none; 
+} 
+a:visited { 
+color: #000000; 
+text-decoration: none; 
+} 
+a:hover { 
+color: #999999; 
+text-decoration: underline; 
+} 
+
+.change_num {
+	position: absolute;
+	top: 70px;
+	left: 250px;
+	padding: 20px;
+	background: #fff;
+	border: 1px solid #0fd46c;
+	border-radius: 10px;
+}
+.cloth_div{
+	font-size:24px;
+	text-align:center;
+	background:url(../images/blank_cloth.png) no-repeat center center;
+	width:91px;
+	height:91px;
+	line-height:91px;
+	cursor:pointer;
+}
+.cloth_div_disabled{
+	font-size:24px;
+	text-align:center;
+	background:url(../images/blank_cloth_disabled.png) no-repeat center center;
+	width:91px;
+	height:91px;
+	line-height:91px;
+	cursor:pointer;
+}
+#export_excel{
+	position:absolute;
+	width:45px;
+	height:45px;
+	left:920px;
+	top:15px;
+	background:url(../images/export_excel.png) no-repeat center center;
+	cursor:pointer;
+}
+#export_word{
+	position:absolute;
+	width:45px;
+	height:45px;
+	left:965px;
+	top:15px;
+	background:url(../images/export_word.png) no-repeat center center;
+	cursor:pointer;
+}
+#export_pdf{
+	position:absolute;
+	width:45px;
+	height:45px;
+	left:1010px;
+	top:15px;
+	background:url(../images/export_pdf.png) no-repeat center center;
+	cursor:pointer;
+}
+
+.checkimg{
+	padding-left: 20px;
+}
+
+.positionimg{
+	cursor:pointer;
+}

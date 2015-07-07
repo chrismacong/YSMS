@@ -1,0 +1,179 @@
+body{
+	overflow-x:hidden;
+	overflow-y:hidden;
+}
+.input_wk {
+	height: 30px;
+	width: 350px;
+	margin: 4px;
+}
+
+.input_l {
+	float: left;
+	height: 34px;
+	width: 19px;
+	background: url(../images/input_l_thin.png)
+}
+
+.input_m {
+	float: left;
+	height: 34px;
+	width: 312px;
+	background: url(../images/input_m_thin.png);
+	position: relative;
+	line-height: 30px
+}
+
+.input_r {
+	float: left;
+	height: 34px;
+	width: 19px;
+	background: url(../images/input_r_thin.png)
+}
+
+.input_text {
+	text-align: left;
+	line-height: 34px;
+	height: 30px;
+	margin-top: 2px;
+	width: 312px;
+	border: none;
+	font-size: 1em;
+	color: #251b3b;
+	background: #fafafa;
+	font-family: 'Microsoft YaHei', 'SimHei', 'SimSun'
+}
+
+#button_read {
+	border: none;
+	width: 200px;
+	height: 52px;
+	cursor: pointer;
+	background: url(../images/registerread.png) center center;
+}
+
+#button_reset {
+	border: none;
+	width: 200px;
+	height: 52px;
+	cursor: pointer;
+	background: url(../images/registerreset.png) center center
+}
+
+#button_register {
+	border: none;
+	width: 200px;
+	height: 52px;
+	cursor: pointer;
+	background: url(../images/register.png) center center
+}
+
+.center_table {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.operation {
+	height: 140px;
+	width: 1080px;
+	background: #fff;
+	color: #4f4f4f;
+}
+
+.operation ul {
+	height: 100%;
+	text-align: center;
+	margin: 0 auto;
+}
+
+.operation .a_coach {
+	width: 460px;
+	margin: 0 auto;
+}
+
+
+.operation .a_coach li {
+	float: left;
+	width: 100px;
+	height: 100%;
+	margin: 0 60px;
+	cursor: pointer;
+}
+
+.operation li div {
+	width: 70px;
+	margin: 15px;
+}
+
+.border_bo {
+	border-bottom: 3px solid #f24a56
+}
+
+.neirong_wk {
+	height: 515px;
+	margin-top: 5px;
+	background: #fff;
+	padding-top: 0px;
+	position: relative;
+}
+
+select {
+	line-height: 30px;
+	height: 30px;
+	margin: -1px 0 0 -1px;
+	width: 120%;
+	border: none;
+	font-size: 1em;
+	color: #251b3b;
+	background: #fafafa;
+	font-family: 'Microsoft YaHei', 'SimHei', 'SimSun'
+}
+
+.select_icon {
+	position: absolute;
+	right: 1px;
+	top: 2px;
+	height: 30px;
+	width: 17px;
+	z-index: 2;
+	line-height:30px;
+	vertical-align: middle;
+	background:#fafafa;
+}
+
+.select_wk {
+	line-height: 30px;
+	height: 30px;
+	margin-top: 2px;
+	width: 100%;
+	border: none;
+	overflow: hidden;
+	position: relative;
+	float: left;
+	z-index: 1;
+}
+
+#btn_table {
+	margin-top: 10px;
+}
+
+#coach_frame {
+	padding-top: 20px;
+	border: none;
+}
+
+.btn_upload{
+	width:90px;
+	height:30px;
+	font-size:1.0em;
+	font-family: 'Microsoft YaHei', 'SimHei', 'SimSun';
+	margin-left:30px;
+	margin-top:3px;
+}
+
+.p_filename{
+	width:230px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}

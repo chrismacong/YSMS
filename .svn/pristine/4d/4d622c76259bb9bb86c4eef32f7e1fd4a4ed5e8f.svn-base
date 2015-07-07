@@ -1,0 +1,11 @@
+package com.cwkj.ysms.service;
+
+/**
+ * 新闻资讯Service接口
+ * @author chrismacong
+ * TODO 新闻相关暂不实现
+ *
+ */
+public interface NewsManagement {
+
+}

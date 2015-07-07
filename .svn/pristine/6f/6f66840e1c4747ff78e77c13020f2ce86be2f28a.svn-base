@@ -1,0 +1,197 @@
+package com.cwkj.ysms.service;
+
+import java.util.Date;
+import java.util.List;
+
+import com.cwkj.ysms.model.YsmsFoul;
+import com.cwkj.ysms.model.YsmsGames;
+import com.cwkj.ysms.model.YsmsGoal;
+
+/**
+ * 比赛管理Service接口
+ * 包含比赛信息管理和比赛上报
+ * @author chrismacong
+ * @since 2015-3-5
+ *
+ */
+public interface GamesManagementService {
+	
+	/**
+	 * 添加比赛信息
+	 * @param zoneId
+	 * @param gamesOrder
+	 * @param hostTeamId
+	 * @param hostUniformIsDarK
+	 * @param guestTeamId
+	 * @param guestUniformIsDark
+	 * @param gamesTime
+	 * @param gamesLocation
+	 * @param chiefUmpireId
+	 * @param sideRefereeId_1
+	 * @param sideRefereeId_2
+	 * @param forth_Officer
+	 * @param officer_1
+	 * @param officer_2
+	 * @param recorder_1
+	 * @param recorder_2
+	 * @return
+	 */
+	public boolean addGamesInfo(int zoneId, int gamesOrder, int hostTeamId, boolean hostUniformIsDarK, 
+			int guestTeamId, boolean guestUniformIsDark, Date gamesTime,
+			String gamesLocation, int chiefUmpireId, int sideRefereeId_1,
+			int sideRefereeId_2, int forth_Officer, int officer_1, int officer_2, int recorder_1, int recorder_2);
+	/**
+	 * 更新比赛时间、地点和裁判信息
+	 * 主队、客队信息和场次信息已自动生成
+	 * @param gamesId 比赛Id
+	 * @param gamesTime 比赛时间
+	 * @param gamesLocation 比赛地点
+	 * @param chiefUmpireId 主裁判Id
+	 * @param sideRefereeId_1  边裁Id1
+	 * @param sideRefereeId_2 边裁Id2
+	 * @return 是否成功，true表示成功
+	 */
+	public boolean updateGamesInfo(int gamesId, Date gamesTime,
+			String gamesLocation, int chiefUmpireId, int sideRefereeId_1,
+			int sideRefereeId_2, int forth_Officer, int officer_1, int officer_2, int recorder_1, int recorder_2);
+	
+	/**
+	 * 获取比赛信息
+	 * @param gamesId 比赛Id
+	 * @return 比赛实体
+	 */
+	public YsmsGames getGamesInfo(int gamesId);
+	
+	/**
+	 * 比赛结果上报,也可用于比赛结果更新
+	 * @param gamesId 比赛Id
+	 * @param hostTeamGoals 主队进球数
+	 * @param guestTeamGoals 客队进球数
+	 * @return 是否成功，true表示成功
+	 */
+	public boolean replyGamesInfo(int gamesId, int hostTeamGoals, int guestTeamGoals);
+	
+	/**
+	 * 添加进球记录
+	 * @param gamesId 比赛场次id
+	 * @param shooterId 进球者的athleteId
+	 * @param assistantId 助攻者的athleteId
+	 * @param goalTimeStr 进球时间字符串，为本场比赛时间内的时间，如下半时63分22秒进球:63′22″
+	 * @param goalType 进球方式，0=正常进球 ，1=点球
+	 * @return 是否成功，true表示成功
+	 */
+	public boolean addGoalInfo(int gamesId, int shooterId, int assistantId, String goalTimeStr, 
+			int goalType);
+	
+	/**
+	 * 修改进球记录
+	 * @param goalId 进球Id
+	 * @param shooterId 进球者的athleteId
+	 * @param assistantId 助攻者的athleteId
+	 * @param goalTimeStr 进球时间字符串，为本场比赛时间内的时间，如下半时63分22秒进球:63′22″
+	 * @param goalType 进球方式，0=正常进球 ，1=点球
+	 * @return 是否成功，true表示成功
+	 */
+	public boolean modifyGoalInfo(int goalId, int shooterId, int assistantId, 
+			String goalTimeStr, int goalType);
+	
+	/**
+	 * 删除进球记录
+	 * @param goalId 进球Id
+	 * @return 是否成功，true表示成功
+	 */
+	public boolean deleteGoalInfo(int goalId);
+	
+	/**
+	 * 添加红黄牌记录
+	 * @param gamesId 比赛Id
+	 * @param foulPlayerId 犯规球员Id
+	 * @param foulLevel 犯规严重等级 1=黄牌，2=红牌
+	 * @param foulTimeStr 犯规时间字符串，为本场比赛时间内的时间，如下半时63分22秒犯规:63′22″
+	 * @return 是否成功，true表示成功
+	 */
+	public boolean addFoulInfo(int gamesId, int foulPlayerId, int foulLevel, String foulTimeStr);
+	
+	/**
+	 * 修改红黄牌记录
+	 * @param foulId 犯规Id
+	 * @param gamesId 比赛Id
+	 * @param foulPlayerId 犯规球员Id
+	 * @param foulLevel 犯规严重等级 1=黄牌，2=红牌
+	 * @param foulTimeStr 犯规时间字符串，为本场比赛时间内的时间，如下半时63分22秒犯规:63′22″
+	 * @return 是否成功，true表示成功
+	 */
+	public boolean modifyFoulInfo(int foulId, int gamesId, int foulPlayerId, int foulLevel, 
+			String foulTimeStr);
+	
+	/**
+	 * 删除红黄牌记录
+	 * @param foulId 犯规Id
+	 * @return 是否成功，true表示成功
+	 */
+	public boolean deleteFoulInfo(int foulId);
+	
+	/**
+	 * 获取球队全部赛程
+	 * @param teamId
+	 * @return
+	 */
+	public List<YsmsGames> getGamesByTeam(int teamId);
+	/**
+	 * 获取球队当月赛程
+	 * @param teamId 球队Id
+	 * @return 比赛列表
+	 */
+	public List<YsmsGames> getGamesThisMonthByTeam(int teamId);
+	
+	/**
+	 * 获取球队的下一场比赛
+	 * @param teamId 球队Id
+	 * @return 比赛信息
+	 */
+	public YsmsGames getNextGameByTeam(int teamId);
+	
+	/**
+	 * 获取球队的上一场比赛
+	 * @param teamId 球队Id
+	 * @return 比赛信息
+	 */
+	public YsmsGames getLastGameByTeam(int teamId);
+	
+	/**
+	 * 获取某一天的全部比赛
+	 * @param date 日期
+	 * @return 比赛列表
+	 */
+	public List<YsmsGames> getGamesByDate(Date date);
+	
+	/**
+	 * 获取联赛的全部赛程
+	 * @param zoneId
+	 * @return 比赛列表
+	 */
+	public List<YsmsGames> getGamesByZone(int zoneId);
+	
+	/**
+	 * 根据联赛和日期获取赛程
+	 * @param zoneId 联赛组Id
+	 * @param date 日期
+	 * @return 比赛列表
+	 */
+	public List<YsmsGames> getGamesByZoneAndDate(int zoneId, Date date);
+
+	/**
+	 * 查询某场比赛中的某队进球
+	 * 根据进球的球员Id判断进球是否为主队
+	 * @param gameId 比赛Id
+	 * @return 进球List
+	 */
+	public List<YsmsGoal> getTeamGoalsInGame(int gameId, int teamId);
+	
+	/**
+	 * 查询某场比赛中的某队犯规
+	 * @param gameId 比赛Id
+	 * @return 进球List
+	 */
+	public List<YsmsFoul> getTeamFoulInGame(int gameId, int teamId);
+}

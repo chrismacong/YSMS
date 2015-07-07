@@ -1,0 +1,346 @@
+package com.cwkj.ysms.dao.impl;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.hibernate.Query;
+import org.springframework.stereotype.Repository;
+
+import com.cwkj.ysms.basedao.impl.GenericDaoImpl;
+import com.cwkj.ysms.dao.AthleteDao;
+import com.cwkj.ysms.model.YsmsAthlete;
+import com.cwkj.ysms.util.Page;
+
+@Repository
+public class AthleteDaoImpl extends GenericDaoImpl implements AthleteDao {
+	private static final Log log = LogFactory.getLog(AthleteDaoImpl.class);
+
+	@Override
+	public void save(YsmsAthlete ysmsAthlete) {
+		log.debug("saving YsmsAthlete instance");
+		try {
+			getSession().saveOrUpdate(ysmsAthlete);
+			log.debug("save successful");
+		} catch (RuntimeException re) {
+			log.error("save failed", re);
+			throw re;
+		}
+	}
+
+	@Override
+	public void delete(YsmsAthlete ysmsAthlete) {
+		log.debug("deleting YsmsAthlete instance");
+		try {
+			getSession().delete(ysmsAthlete);
+			log.debug("delete successful");
+		} catch (RuntimeException re) {
+			log.error("delete failed", re);
+			throw re;
+		}
+	}
+
+	@Override
+	public YsmsAthlete findById(Integer athleteId) {
+		log.debug("getting YsmsAthlete instance with athleteId: " + athleteId);
+		try {
+			YsmsAthlete result = (YsmsAthlete) getSession().get(
+					"com.cwkj.ysms.model.YsmsAthlete", athleteId);
+			return result;
+		} catch (RuntimeException re) {
+			log.error("get failed", re);
+			throw re;
+		}
+	}
+
+	@Override
+	public void updata(YsmsAthlete ysmsAthlete) {
+		log.debug("merging YsmsAthlete instance");
+		try {
+			getSession().merge(ysmsAthlete);
+			log.debug("merge successful");
+		} catch (RuntimeException re) {
+			log.error("merge failed", re);
+			throw re;
+		}
+
+	}
+
+	@Override
+	public List<YsmsAthlete> findAll() {
+		log.debug("finding all YsmsAthlete instances");
+		try {
+			String queryString = "from YsmsAthlete where deleteflag = " + 0;
+			queryString += " order by athleteId ";
+			Query queryObject = getSession().createQuery(queryString);
+			return queryObject.list();
+		} catch (RuntimeException re) {
+			log.error("find all failed", re);
+			throw re;
+		}
+	}
+
+	@Override
+	public List<YsmsAthlete> findAllByPage(Page page) {
+		log.debug("finding all YsmsAthlete instances");
+		try {
+			String queryString = "from YsmsAthlete where deleteflag = " + 0;
+			queryString += " order by athleteId ";
+			Query queryObject = getSession().createQuery(queryString);
+			if (page != null) {
+				queryObject.setMaxResults(page.getEveryPage());
+				queryObject.setFirstResult(page.getBeginIndex());
+			}
+			return queryObject.list();
+		} catch (RuntimeException re) {
+			log.error("find all failed", re);
+			throw re;
+		}
+	}
+
+	@Override
+	public List<YsmsAthlete> findByIdentifiedId(String identifiedId) {
+		log.debug("finding YsmsAthlete instance by identifiedId");
+		try {
+			String sql = " from YsmsAthlete where identifiedId = '"
+					+ identifiedId + "' and deleteflag = " + 0;
+			sql += " order by athleteId ";
+			List<Object> objects = findByHQL(sql);
+			List<YsmsAthlete> results = new ArrayList<YsmsAthlete>();
+			for (int i = 0; i < objects.size(); i++) {
+				YsmsAthlete ysmsAthlete = (YsmsAthlete) objects.get(i);
+				results.add(ysmsAthlete);
+			}
+			log.debug("find by identifiedId successful, result size: "
+					+ results.size());
+			return results;
+		} catch (RuntimeException re) {
+			log.error("find by identifiedId failed", re);
+			throw re;
+		}
+	}
+
+	@Override
+	public List<YsmsAthlete> findByFuzzyQuery(Integer schoolId,
+			String identifiedId, String identifiedName,
+			Integer identifiedGender, Integer athletePosition,
+			Integer studentId, String athleteSchoolyear) {
+		log.debug("finding ByFuzzyQuery instances");
+		try {
+			String queryString = "from YsmsAthlete as model where model.deleteflag=0";
+			if (schoolId != null) {
+				queryString += " and model.ysmsSchool.schoolId = " + schoolId;
+			}
+			if (identifiedId != null && !identifiedId.trim().equals("")) {
+				queryString += " and model.identifiedId like '%" + identifiedId
+						+ "%' ";
+			}
+			if (identifiedName != null && !identifiedName.trim().equals("")) {
+				queryString += " and model.identifiedName like '%"
+						+ identifiedName + "%' ";
+			}
+			if (identifiedGender != null) {
+				queryString += " and model.identifiedGender = "
+						+ identifiedGender;
+			}
+			if (athletePosition != null) {
+				queryString += " and model.athletePosition = "
+						+ athletePosition;
+			}
+			if (studentId != null) {
+				queryString += " and model.studentId = " + studentId;
+			}
+			if (athleteSchoolyear != null
+					&& !athleteSchoolyear.trim().equals("")) {
+				queryString += " and model.athleteSchoolyear like '%"
+						+ athleteSchoolyear + "%' ";
+			}
+			queryString += " order by model.athleteId ";
+			Query queryObject = getSession().createQuery(queryString);
+			return queryObject.list();
+		} catch (RuntimeException re) {
+			log.error("find ByFuzzyQuery failed", re);
+			throw re;
+		}
+	}
+
+	@Override
+	public int findByFuzzyQueryAndPageCount(Integer schoolId,
+			String identifiedId, String identifiedName,
+			Integer identifiedGender, Integer athletePosition,
+			Integer studentId, String athleteSchoolyear) {
+		log.debug("finding  ByFuzzyQueryAndPage instances");
+		try {
+			String queryString = "select count(*) from YsmsAthlete as model where model.deleteflag=0";
+			if (schoolId != null) {
+				queryString += " and model.ysmsSchool.schoolId = " + schoolId;
+			}
+			if (identifiedId != null && !identifiedId.trim().equals("")) {
+				queryString += " and model.identifiedId like '%" + identifiedId
+						+ "%' ";
+			}
+			if (identifiedName != null && !identifiedName.trim().equals("")) {
+				queryString += " and model.identifiedName like '%"
+						+ identifiedName + "%' ";
+			}
+			if (identifiedGender != null) {
+				queryString += " and model.identifiedGender = "
+						+ identifiedGender;
+			}
+			if (athletePosition != null) {
+				queryString += " and model.athletePosition = "
+						+ athletePosition;
+			}
+			if (studentId != null) {
+				queryString += " and model.studentId = " + studentId;
+			}
+			if (athleteSchoolyear != null
+					&& !athleteSchoolyear.trim().equals("")) {
+				queryString += " and model.athleteSchoolyear like '%"
+						+ athleteSchoolyear + "%' ";
+			}
+			Query queryObject = getSession().createQuery(queryString);
+			return ((Number) queryObject.uniqueResult()).intValue();
+		} catch (RuntimeException re) {
+			log.error("find ByFuzzyQueryAndPage failed", re);
+			throw re;
+		}
+	}
+
+	@Override
+	public List<YsmsAthlete> findByFuzzyQueryAndPage(Integer schoolId,
+			String identifiedId, String identifiedName,
+			Integer identifiedGender, Integer athletePosition,
+			Integer studentId, String athleteSchoolyear, Page page) {
+		log.debug("finding  ByFuzzyQueryAndPage instances");
+		try {
+			String queryString = "from YsmsAthlete as model where model.deleteflag=0";
+			if (schoolId != null) {
+				queryString += " and model.ysmsSchool.schoolId = " + schoolId;
+			}
+			if (identifiedId != null && !identifiedId.trim().equals("")) {
+				queryString += " and model.identifiedId like '%" + identifiedId
+						+ "%' ";
+			}
+			if (identifiedName != null && !identifiedName.trim().equals("")) {
+				queryString += " and model.identifiedName like '%"
+						+ identifiedName + "%' ";
+			}
+			if (identifiedGender != null) {
+				queryString += " and model.identifiedGender = "
+						+ identifiedGender;
+			}
+			if (athletePosition != null) {
+				queryString += " and model.athletePosition = "
+						+ athletePosition;
+			}
+			if (studentId != null) {
+				queryString += " and model.studentId = " + studentId;
+			}
+			if (athleteSchoolyear != null
+					&& !athleteSchoolyear.trim().equals("")) {
+				queryString += " and model.athleteSchoolyear like '%"
+						+ athleteSchoolyear + "%' ";
+			}
+			queryString += " order by model.athleteId ";
+			Query queryObject = getSession().createQuery(queryString);
+			if (page != null) {
+				queryObject.setMaxResults(page.getEveryPage());
+				queryObject.setFirstResult(page.getBeginIndex());
+			}
+			return queryObject.list();
+		} catch (RuntimeException re) {
+			log.error("find ByFuzzyQueryAndPage failed", re);
+			throw re;
+		}
+	}
+
+	@Override
+	public List<YsmsAthlete> findByFuzzyQueryAndPageAndOrder(Integer schoolId,
+			String identifiedId, String identifiedName,
+			Integer identifiedGender, Integer athletePosition,
+			Integer studentId, String athleteSchoolyear, Page page,
+			String orderString) {
+		log.debug("finding  ByFuzzyQueryAndPage instances");
+		try {
+			String queryString = "from YsmsAthlete as model where model.deleteflag=0";
+			if (schoolId != null) {
+				queryString += " and model.ysmsSchool.schoolId = " + schoolId;
+			}
+			if (identifiedId != null && !identifiedId.trim().equals("")) {
+				queryString += " and model.identifiedId like '%" + identifiedId
+						+ "%' ";
+			}
+			if (identifiedName != null && !identifiedName.trim().equals("")) {
+				queryString += " and model.identifiedName like '%"
+						+ identifiedName + "%' ";
+			}
+			if (identifiedGender != null) {
+				queryString += " and model.identifiedGender = "
+						+ identifiedGender;
+			}
+			if (athletePosition != null) {
+				queryString += " and model.athletePosition = "
+						+ athletePosition;
+			}
+			if (studentId != null) {
+				queryString += " and model.studentId = " + studentId;
+			}
+			if (athleteSchoolyear != null
+					&& !athleteSchoolyear.trim().equals("")) {
+				queryString += " and model.athleteSchoolyear like '%"
+						+ athleteSchoolyear + "%' ";
+			}
+			if (orderString != null)
+				queryString += orderString;
+			Query queryObject = getSession().createQuery(queryString);
+			if (page != null) {
+				queryObject.setMaxResults(page.getEveryPage());
+				queryObject.setFirstResult(page.getBeginIndex());
+			}
+			return queryObject.list();
+		} catch (RuntimeException re) {
+			log.error("find ByFuzzyQueryAndPage failed", re);
+			throw re;
+		}
+	}
+
+	@Override
+	public String createRegisterID(int schoolID, int yearIn, int athleteID) {
+		log.debug("createRegisterID");
+		try {
+			Query query = getSession().createSQLQuery(
+					"call createRegisterID(:schoolID,:yearIn,:athleteID)");
+			query.setParameter("schoolID", schoolID);
+			query.setParameter("yearIn", yearIn);
+			query.setParameter("athleteID", athleteID);
+			String resultString = query.uniqueResult().toString();
+			log.debug("createRegisterID successful");
+			return resultString;
+		} catch (RuntimeException re) {
+			log.error("createRegisterID failed", re);
+			throw re;
+		}
+	}
+
+	@Override
+	public List<YsmsAthlete> findForBinding(String identifiedName,
+			String identifiedId, String registerId) {
+		try {
+			StringBuffer buffer = new StringBuffer();
+			buffer.append("from YsmsAthlete as model where model.deleteflag=0");
+			buffer.append(" and model.identifiedName='" + identifiedName + "'");
+			buffer.append(" and model.identifiedId='" + identifiedId + "'");
+			buffer.append(" and model.register_id='" + registerId + "'");
+			String queryString = buffer.toString();
+			Query queryObject = getSession().createQuery(queryString);
+			return queryObject.list();
+		} catch (RuntimeException re) {
+			log.error("findForBinding failed", re);
+			throw re;
+		}
+	}
+
+}

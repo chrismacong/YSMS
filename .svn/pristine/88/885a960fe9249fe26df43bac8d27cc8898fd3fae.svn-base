@@ -1,0 +1,51 @@
+package com.cwkj.ysms.control;
+
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.cwkj.ysms.service.GamesManagementService;
+
+@Controller
+@RequestMapping(value = "/gamemanagement")
+public class GameManagementControl {
+	private GamesManagementService gameManagementService;
+
+	public GamesManagementService getGameManagementService() {
+		return gameManagementService;
+	}
+
+	public void setGameManagementService(
+			GamesManagementService gameManagementService) {
+		this.gameManagementService = gameManagementService;
+	}
+	
+	@RequestMapping(method = RequestMethod.GET)
+	public ModelAndView listResult(HttpServletRequest request,
+			HttpSession session, HttpServletResponse response) {
+		return new ModelAndView("GameManagementPage");
+	}
+	
+	/**
+	 * 添加比赛
+	 * @param request
+	 * @param session
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "addgame", method = RequestMethod.GET)
+	public Map<String, Object> addGame(HttpServletRequest request,
+			HttpSession session, HttpServletResponse response) throws Exception {
+		return null;
+	}
+}

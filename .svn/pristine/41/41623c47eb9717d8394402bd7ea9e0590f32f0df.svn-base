@@ -1,0 +1,433 @@
+package com.cwkj.ysms.service.impl;
+
+import java.awt.Color;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.List;
+
+import jxl.Workbook;
+import jxl.format.UnderlineStyle;
+import jxl.write.Label;
+import jxl.write.WritableCellFormat;
+import jxl.write.WritableFont;
+import jxl.write.WritableSheet;
+import jxl.write.WritableWorkbook;
+import jxl.write.WriteException;
+import jxl.write.biff.RowsExceededException;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.cwkj.ysms.model.view.ExcelAthleteView;
+import com.cwkj.ysms.model.view.ExcelCoachView;
+import com.cwkj.ysms.service.DataExportingService;
+import com.cwkj.ysms.util.PdfParagraph;
+import com.lowagie.text.BadElementException;
+import com.lowagie.text.Cell;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
+import com.lowagie.text.Font;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
+import com.lowagie.text.Rectangle;
+import com.lowagie.text.Table;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
+import com.lowagie.text.rtf.RtfWriter2;
+import com.lowagie.text.rtf.style.RtfFont;
+
+@Service
+@Transactional(rollbackFor=Exception.class)
+public class DataExportingServiceImpl implements DataExportingService {
+
+	@Override
+	public String exportAthletesForm(String path ,String leagueName ,
+			String leagueLevel ,String schoolName ,String teamName , String leaderName, 
+			List<ExcelAthleteView> athleteViews,
+			List<ExcelCoachView> coachViews){
+		if(athleteViews != null){
+			int athleteViewSize = athleteViews.size();
+			try {
+				File file = new File(path);
+				if (!file.exists()) {
+					file.createNewFile();
+				}
+				//以fileName为文件名来创建一个Workbook
+				WritableWorkbook wwb = Workbook.createWorkbook(file);
+				// 创建工作表
+				WritableSheet sheet = wwb.createSheet("运动员报名表", 0);
+				sheet.setColumnView(0, 10);
+				sheet.setColumnView(1, 10);
+				sheet.setColumnView(2, 15);
+				sheet.setColumnView(3, 25);
+				sheet.setColumnView(4, 20);
+				sheet.setColumnView(5, 20);
+				sheet.setColumnView(6, 25);
+				// 定义格式 字体 下划线 斜体 粗体 颜色
+				WritableFont fontStyle1 = new WritableFont(WritableFont.TIMES, 15,
+						WritableFont.BOLD, false, 
+						UnderlineStyle.NO_UNDERLINE,jxl.format.Colour.BLACK);
+				WritableFont fontStyle2 = new WritableFont(WritableFont.TIMES, 13,
+						WritableFont.BOLD, false, 
+						UnderlineStyle.NO_UNDERLINE,jxl.format.Colour.BLACK);
+				WritableFont fontStyle3 = new WritableFont(WritableFont.ARIAL, 11,WritableFont.BOLD);
+				WritableCellFormat formatCell = new WritableCellFormat(fontStyle1);
+				WritableCellFormat formatCell2 = new WritableCellFormat(fontStyle2);
+				WritableCellFormat formatCell3 = new WritableCellFormat(fontStyle3);
+				WritableCellFormat formatCell4 = new WritableCellFormat(fontStyle3);
+				WritableCellFormat formatCell5 = new WritableCellFormat(fontStyle3);
+				formatCell.setAlignment(jxl.format.Alignment.CENTRE);
+				formatCell2.setAlignment(jxl.format.Alignment.CENTRE);
+				formatCell3.setAlignment(jxl.format.Alignment.CENTRE);
+				//要插入到的Excel表格的行号，默认从0开始
+				sheet.addCell(new Label(0 ,0 ,leagueName+"  ("+leagueLevel+")",formatCell));
+				sheet.addCell(new Label(0 ,1 ,schoolName+"-"+teamName,formatCell2));
+				sheet.addCell(new Label(0 ,2 ,"领队：" + leaderName, formatCell3));
+				String coachStr = "教练员：";
+				for(int i=0;i<coachViews.size();i++){
+					ExcelCoachView coachView = coachViews.get(i);
+					coachStr += coachView.getCoachName() + "(" + coachView.getIdentifiedId() + ")  ";
+				}
+				sheet.addCell(new Label(0 ,3 ,coachStr,formatCell4));
+				//合并单元格从第一行开始，第一行结束，第一列开始，第七列结束
+				sheet.mergeCells(0, 0, 6, 0);
+				sheet.mergeCells(0, 1, 6, 1);
+				sheet.mergeCells(0, 2, 6, 2);
+				sheet.addCell(new Label(0 ,4 ,"序号",formatCell5));
+				sheet.addCell(new Label(1 ,4 ,"球衣号",formatCell5));
+				sheet.addCell(new Label(2 ,4 ,"姓名",formatCell5));
+				sheet.addCell(new Label(3 ,4 ,"身份证",formatCell5));
+				sheet.addCell(new Label(4 ,4 ,"学籍号",formatCell5));
+				sheet.addCell(new Label(5 ,4 ,"联系电话",formatCell5));
+				sheet.addCell(new Label(6 ,4 ,"备注",formatCell5));
+				for(int i=5;i<athleteViewSize+5;i++){
+					ExcelAthleteView athleteView = athleteViews.get(i-5);
+					sheet.addCell(new Label(0, i,i-4+""));
+					sheet.addCell(new Label(1, i,athleteView.getAthleteNum()+""));
+					sheet.addCell(new Label(2, i,athleteView.getIdentifiedName()));
+					sheet.addCell(new Label(3, i,athleteView.getIdentifiedId()));
+					sheet.addCell(new Label(4, i,athleteView.getStudyNum()));
+					sheet.addCell(new Label(5, i,athleteView.getAthleteMobile()));
+					sheet.addCell(new Label(6, i,athleteView.getRemark()));
+				}
+				//写进文档
+				wwb.write();
+				//					// 关闭Excel工作簿对象
+				wwb.close();
+			} catch (RowsExceededException e) {
+				e.printStackTrace();
+			} catch (WriteException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			return path;
+		}
+		return null;
+	}
+
+	@Override
+	public String letExcelIntoWord(String path ,String leagueName ,
+			String leagueLevel ,String schoolName ,String teamName ,String leaderName ,
+			List<ExcelAthleteView> athleteViews,
+			List<ExcelCoachView> coachViews){
+		try {
+			// 创建Document对象(word文档)
+			Document doc = new Document(PageSize.A4);
+			// 新建字节数组输出流 
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			// 建立一个书写器与document对象关联，通过书写器可以将文档写入到输出流中
+			RtfWriter2.getInstance(doc, new FileOutputStream(path));
+			doc.open();
+			// 标题字体
+			RtfFont titleFont = new RtfFont("仿宋_GB2312", 12, Font.NORMAL,
+					Color.BLACK);
+			// 正文字体 
+			RtfFont contextFont = new RtfFont("仿宋_GB2312", 9, Font.NORMAL,
+					Color.BLACK);
+
+			int athleteNumber = athleteViews.size();
+			// 表格设置
+			Table table = new Table(7,athleteNumber);
+			int[] withs = { 6, 6, 9, 15, 12, 12, 15};
+			// 设置每列所占比例
+			table.setWidths(withs);
+			// 表格所占页面宽度
+			table.setWidth(100);
+			// 居中显示
+			table.setAlignment(Element.ALIGN_CENTER);
+			// 自动填满 
+			table.setAutoFillEmptyCells(true);
+			// 第一行（标题）/
+			String titleString = leagueName+"  ("+leagueLevel+")";
+			Paragraph title = new Paragraph(titleString);
+			// 设置标题格式对其方式
+			title.setAlignment(Element.ALIGN_CENTER);
+			title.setFont(titleFont);
+			doc.add(title);
+
+			// 第二行（正文）
+			String contextString = schoolName+"-"+teamName;
+			Paragraph context = new Paragraph(contextString);
+			// 正文格式对齐方式
+			context.setAlignment(Element.ALIGN_CENTER);
+			context.setFont(contextFont);
+			// 与上一段落（标题）的行距
+			context.setSpacingBefore(10);
+			// 设置第一行空的列数（缩进）
+			// context.setFirstLineIndent(20);
+			doc.add(context);
+
+			// 第三行 领队
+			String leaderStr = "领队：" + leaderName;
+			Paragraph leaderContext = new Paragraph(leaderStr);
+			// 正文格式对齐方式
+			leaderContext.setAlignment(Element.ALIGN_CENTER);
+			leaderContext.setFont(contextFont);
+			// 与上一段落（标题）的行距
+			leaderContext.setSpacingBefore(10);
+			// 设置第一行空的列数（缩进）
+			// context.setFirstLineIndent(20);
+			doc.add(leaderContext);
+			//第四行 教练
+			String coachStr = "教练员：";
+			for(int i=0;i<coachViews.size();i++){
+				ExcelCoachView coachView = coachViews.get(i);
+				coachStr += coachView.getCoachName() + "(" + coachView.getIdentifiedId() + ")  ";
+			}
+			Paragraph coachContext = new Paragraph(coachStr);
+			// 正文格式对齐方式
+			coachContext.setAlignment(Element.ALIGN_CENTER);
+			coachContext.setFont(contextFont);
+			// 与上一段落（标题）的行距
+			coachContext.setSpacingBefore(10);
+			// 设置第一行空的列数（缩进）
+			// context.setFirstLineIndent(20);
+			doc.add(coachContext);
+
+			// 第五行（表格） 
+			Cell[] cellHeaders = new Cell[7];
+			cellHeaders[0] = new Cell(new Phrase("序号", contextFont));
+			cellHeaders[1] = new Cell(new Phrase("球衣号", contextFont));
+			cellHeaders[2] = new Cell(new Phrase("姓名", contextFont));
+			cellHeaders[3] = new Cell(new Phrase("身份证", contextFont));
+			cellHeaders[4] = new Cell(new Phrase("学籍号", contextFont));
+			cellHeaders[5] = new Cell(new Phrase("联系电话", contextFont));
+			cellHeaders[6] = new Cell(new Phrase("备注", contextFont));
+			for (int i = 0; i < 7; i++) {
+				// 居中显示
+				cellHeaders[i].setHorizontalAlignment(Element.ALIGN_CENTER);
+				// 纵向居中显示 
+				cellHeaders[i].setVerticalAlignment(Element.ALIGN_MIDDLE);
+				table.addCell(cellHeaders[i]);
+			}
+			for(int i = 0; i < athleteNumber;i++){
+				// 第0列
+				Cell cell0 = new Cell(
+						new Phrase(String.valueOf(i + 1), contextFont));
+				cell0.setHorizontalAlignment(Element.ALIGN_CENTER);
+				cell0.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				table.addCell(cell0);
+				Cell[] dataCell = new Cell[6];
+				dataCell[0] = new Cell(new Phrase(str_changenbsp(athleteViews.get(i)
+						.getAthleteNum()+""), contextFont));
+				dataCell[1] = new Cell(new Phrase(str_changenbsp(athleteViews.get(i)
+						.getIdentifiedName()), contextFont));
+				dataCell[2] = new Cell(new Phrase(str_changenbsp(athleteViews.get(i)
+						.getIdentifiedId()), contextFont));
+				dataCell[3] = new Cell(new Phrase(str_changenbsp(athleteViews.get(i)
+						.getStudyNum()), contextFont));
+				dataCell[4] = new Cell(new Phrase(str_changenbsp(athleteViews.get(i)
+						.getAthleteMobile()), contextFont));
+				dataCell[5] = new Cell(new Phrase(str_changenbsp(athleteViews.get(i)
+						.getRemark()), contextFont));
+				for(int j = 0;j < 6;j++){
+					dataCell[j].setHorizontalAlignment(Element.ALIGN_CENTER);
+					dataCell[j].setVerticalAlignment(Element.ALIGN_MIDDLE);
+					table.addCell(dataCell[j]);
+				}
+			}
+			doc.add(table);
+			// 得到输入流  
+			//			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+			//			File file = new File(path);
+			//			if (!file.exists()) {
+			//				file.createNewFile();
+			//			}
+			//			int ch = 0;
+			//			FileOutputStream fos = new FileOutputStream(file);
+			//			while((ch=bais.read()) != -1){  
+			//				fos.write(ch);  
+			//			}
+			doc.close();
+			//			baos.close();
+			//			fos.close();  
+			//			bais.close();
+			return path;
+		}catch (BadElementException e) {
+			e.printStackTrace();
+		}catch (DocumentException e) {
+			e.printStackTrace();
+		}catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+
+	}
+
+	public String str_changenbsp(String str) {
+		if (str != null) {
+			return str.replaceAll(" ", "");
+		} else {
+			return "";
+		}
+	}
+
+	public String str_changebr(String str) {
+		if (str != null) {
+			return str.replaceAll("<br>", "\n");
+		} else {
+			return "";
+		}
+	}
+
+	@Override
+	public String letExcelIntoPDF(String path, String leagueName,
+			String leagueLevel, String schoolName, String teamName, String leaderName, 
+			List<ExcelAthleteView> athleteViews, List<ExcelCoachView> coachViews) {
+		try {
+			Rectangle pSize = new Rectangle(PageSize.A4);
+			// pSize = rectPageSize.rotate();// 加上这句可以实现A4页面的横置
+			pSize.setBackgroundColor(Color.white);
+			// 创建Document对象(word文档)
+			Document doc = new Document(pSize,50,50,50,50);// 其余4个参数，设置了页面的4个边距
+			// 建立一个书写器与document对象关联，通过书写器可以将文档写入到输出流中
+			PdfWriter.getInstance(doc, new FileOutputStream(path));
+			doc.open();
+			// 标题字体
+			RtfFont titleFont = new RtfFont("仿宋_GB2312", 12, Font.NORMAL,
+					Color.BLACK);
+			// 正文字体 
+			RtfFont contextFont = new RtfFont("仿宋_GB2312", 9, Font.NORMAL,
+					Color.BLACK);
+
+			int athleteNumber = athleteViews.size();
+			// 表格设置
+			PdfPTable  table = new PdfPTable(7);
+			int[] withs = { 6, 6, 9, 15, 12, 12, 15};
+			// 设置每列所占比例
+			table.setWidths(withs);
+			// 表格所占页面宽度
+			table.setWidthPercentage(100);
+			// 第一行（标题）/
+			String titleString = leagueName+"  ("+leagueLevel+")";
+			Paragraph title = new PdfParagraph(titleString);
+			// 设置标题格式对其方式
+			title.setAlignment(Element.ALIGN_CENTER);
+			title.setFont(titleFont);
+			doc.add(title);
+
+			// 第二行（正文）
+			String contextString = schoolName+"-"+teamName;
+			Paragraph context = new PdfParagraph(contextString);
+			// 正文格式对齐方式
+			context.setAlignment(Element.ALIGN_CENTER);
+			context.setFont(contextFont);
+			// 与上一段落（标题）的行距
+			context.setSpacingBefore(10);
+			context.setSpacingAfter(20);
+			// 设置第一行空的列数（缩进）
+			// context.setFirstLineIndent(20);
+			doc.add(context);
+
+
+
+			// 第三行 领队
+			String leaderStr = "领队：" + leaderName;
+			Paragraph leaderContext = new PdfParagraph(leaderStr);
+			// 正文格式对齐方式
+			leaderContext.setAlignment(Element.ALIGN_CENTER);
+			leaderContext.setFont(contextFont);
+			// 与上一段落（标题）的行距
+			leaderContext.setSpacingBefore(10);
+			doc.add(leaderContext);
+			
+			// 第三行（正文）
+			String coachStr = "教练员：";
+			for(int i=0;i<coachViews.size();i++){
+				ExcelCoachView coachView = coachViews.get(i);
+				coachStr += coachView.getCoachName() + "(" + coachView.getIdentifiedId() + ")  ";
+			}
+			Paragraph coachContext = new PdfParagraph(coachStr);
+			// 正文格式对齐方式
+			coachContext.setAlignment(Element.ALIGN_CENTER);
+			coachContext.setFont(contextFont);
+			// 与上一段落（标题）的行距
+			coachContext.setSpacingBefore(10);
+			coachContext.setSpacingAfter(20);
+			// 设置第一行空的列数（缩进）
+			// context.setFirstLineIndent(20);
+			doc.add(coachContext);
+			
+
+			// 第四行（表格） 
+			PdfPCell[] cellHeaders = new PdfPCell[7];
+			cellHeaders[0] = new PdfPCell(new PdfParagraph("序号", 9, true));
+			cellHeaders[1] = new PdfPCell(new PdfParagraph("球衣号", 9, true));
+			cellHeaders[2] = new PdfPCell(new PdfParagraph("姓名", 9, true));
+			cellHeaders[3] = new PdfPCell(new PdfParagraph("身份证", 9, true));
+			cellHeaders[4] = new PdfPCell(new PdfParagraph("学籍号", 9, true));
+			cellHeaders[5] = new PdfPCell(new PdfParagraph("联系电话", 9, true));
+			cellHeaders[6] = new PdfPCell(new PdfParagraph("备注", 9, true));
+			for (int i = 0; i < 7; i++) {
+				// 居中显示
+				cellHeaders[i].setHorizontalAlignment(Element.ALIGN_CENTER);
+				// 纵向居中显示 
+				cellHeaders[i].setVerticalAlignment(Element.ALIGN_MIDDLE);
+				table.addCell(cellHeaders[i]);
+			}
+			for(int i = 0; i < athleteNumber;i++){
+				// 第0列
+				PdfPCell cell0 = new PdfPCell(
+						new Phrase(String.valueOf(i + 1), contextFont));
+				cell0.setHorizontalAlignment(Element.ALIGN_CENTER);
+				cell0.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				table.addCell(cell0);
+				PdfPCell[] dataCell = new PdfPCell[6];
+				dataCell[0] = new PdfPCell(new PdfParagraph(str_changenbsp(athleteViews.get(i)
+						.getAthleteNum()+""), 9, true));
+				dataCell[1] = new PdfPCell(new PdfParagraph(str_changenbsp(athleteViews.get(i)
+						.getIdentifiedName()), 9, true));
+				dataCell[2] = new PdfPCell(new PdfParagraph(str_changenbsp(athleteViews.get(i)
+						.getIdentifiedId()), 9, true));
+				dataCell[3] = new PdfPCell(new PdfParagraph(str_changenbsp(athleteViews.get(i)
+						.getStudyNum()), 9, true));
+				dataCell[4] = new PdfPCell(new PdfParagraph(str_changenbsp(athleteViews.get(i)
+						.getAthleteMobile()), 9, true));
+				dataCell[5] = new PdfPCell(new PdfParagraph(str_changenbsp(athleteViews.get(i)
+						.getRemark()), 9, true));
+				for(int j = 0;j < 6;j++){
+					dataCell[j].setHorizontalAlignment(Element.ALIGN_CENTER);
+					dataCell[j].setVerticalAlignment(Element.ALIGN_MIDDLE);
+					table.addCell(dataCell[j]);
+				}
+			}
+			doc.add(table);
+			doc.close();
+			return path;
+		}catch (BadElementException e) {
+			e.printStackTrace();
+		}catch (DocumentException e) {
+			e.printStackTrace();
+		}catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+}

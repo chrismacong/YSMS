@@ -1,0 +1,134 @@
+*{margin:0;padding:0;font-family: 'SimHei ','Microsoft YaHei'}
+	ul{list-style: none}
+
+	.back{
+		position: absolute;
+		height:100%;
+		width:100%;
+		top:0;
+		left:0;
+		overflow: hidden;
+	}
+	.back li img{
+		height:100%;
+		width:100%;
+	}
+	.login{
+		position: absolute;
+		right:10%;
+		top:50%;
+		height:400px;
+		margin-top:-200px;
+		width:600px;
+		background: url(../images/login_bg_bottom.png) repeat;
+		border: 1px solid #3f3f3f;
+		border-radius:10px; 
+		overflow: hidden;
+	}
+	.header{
+		background: url(../images/header_bg.png) repeat;
+		height:73px;
+		padding:7px 14px;
+	}
+	.header div{
+		float: left;
+		height:73px;
+	}
+	.header_name{
+		margin-left: 20px;
+	}
+	.foot{
+		background: url(../images/foot_bg.png) repeat;
+		height:32px;
+        padding:10px 24px;
+        position: absolute;
+        bottom:0;
+        left:0;
+        width:100%;
+	}
+	.foot div{
+		float:left;
+		height:32px;
+	}
+	.foot_right{
+		margin-left:150px;
+	}
+	.shuru{
+		width:282px;
+		margin:40px auto;
+
+	}
+	.shuru > div{
+		height:31px;
+		margin-top:20px;
+		padding:10px 20px;	
+	}
+	.name,.pwd{
+		background: url(../images/shuru_bg.png);
+		position: relative;	
+	}
+	.icon{
+		height:26px;
+		width:26px;
+		float:left;
+		margin-top:2px;
+	}
+	.name .icon{
+		background: url(../images/icon_name.png);	 
+	}
+	.pwd .icon{
+		background: url(../images/icon_pwd.png);	 
+	}
+	.shuru input{
+		margin-left:15px;
+		height:26px;
+		background: none;
+		border:none;
+		color:#fff;
+		line-height: 26px;
+		font-size: 19px;
+		width:150px;
+		outline:medium;/*去掉浏览器默认点击时input的外框*/
+	}
+	.icon_go{
+		position: absolute;
+		right:0;
+		height:51px;
+		width:69px;
+		top:0;
+	}
+	button{
+		background: none;
+		border: none;
+		height:51px;
+		width:69px;
+		background:url(../images/icon_go.png);
+		outline:medium;/*去掉浏览器默认点击时input的外框*/
+		cursor: pointer;
+	}
+	button:hover{
+		background:url(../images/icon_go2.png);
+	}
+	.remb > div{
+		float: left;
+	}
+	.check{
+		width:62px;
+		height:27px;
+		background: url(../images/check_off.png);
+		position: relative;
+	}
+	.check .check_btn {
+		position: absolute;
+		width:27px;
+		height:27px;
+		top:0;
+		right:39;
+		background: url(../images/check_btn.png);
+		cursor: pointer;
+	}
+	.lable{
+		font-size:20px;
+		color:#fff;
+		margin-left: 10px
+	}

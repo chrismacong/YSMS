@@ -1,0 +1,130 @@
+package com.cwkj.ysms.wechat.controller;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import com.cwkj.ysms.model.YsmsLeague;
+import com.cwkj.ysms.model.view.GameView;
+import com.cwkj.ysms.service.GamesManagementService;
+import com.cwkj.ysms.service.LeagueManagementService;
+import com.cwkj.ysms.util.ThtApplicationContext;
+import com.cwkj.ysms.wechat.entity.ReceiveXmlEntity;
+import com.cwkj.ysms.wechat.util.FormatPicWordXmlResult;
+import com.cwkj.ysms.wechat.util.FormatXmlResult;
+import com.cwkj.ysms.wechat.util.ParseReceiveXml;
+
+/**
+ * 微信流程控制类
+ * @author Administrator
+ *
+ */
+public class WeChatController {
+	public String wechatProcess(String content){
+		//解析接收到的xml数据，转为对象
+		ReceiveXmlEntity rxe = ParseReceiveXml.getMsgEntity(content);
+		String realContent = rxe.getContent();
+		String xmlResult = "";
+		GamesManagementService gamesManagementService = ThtApplicationContext.getBean(GamesManagementService.class);
+		if("最新赛况".equals(realContent)){
+			GameView gameView = gamesManagementService.getLastGameByAthlete(1305);
+			String title = "";
+			if(gameView==null){
+				String tlResult="近期无比赛";
+				xmlResult = FormatXmlResult.getXmlResult(rxe, tlResult);
+				return xmlResult;
+			}
+			Integer hostScore = gameView.getHostScore();
+			Integer guestScore = gameView.getGuestScore();
+			if(hostScore==null||guestScore==null){
+				title="信息暂未上报.";
+			}
+			else{
+				int gap = hostScore - guestScore;
+				int sub = hostScore + guestScore;
+				if(Math.abs(gap)==0){
+					if(hostScore>0)
+						title="势均力敌！";
+					else
+						title="握手言和，";
+				}
+				else if(sub>=6 && gap<=2){
+					title="进球大餐！";
+				}
+				else if(gap==1){
+					title="差之毫厘，";
+				}
+				else if(gap>=4){
+					title="一边倒！";
+				}
+			}
+			title += gameView.getHostSchoolName() + gameView.getHostTeamName() +  " " + 
+					gameView.getHostScore() + ":" + gameView.getGuestScore() +  " " +
+					gameView.getGuestSchoolName() + gameView.getGuestTeamName();
+			String description = "点击查看具体比赛数据";
+			String url = "http://tf.chrisma.cn/wechat/result.html?athlete_id=1305";
+			xmlResult = FormatPicWordXmlResult.getXmlResult(rxe, title, description, url);
+		}
+		else if("最近比赛".equals(realContent)){
+			GameView gameView = gamesManagementService.getNextGameByAthlete(1305);
+			String title = "";
+			if(gameView==null){
+				String tlResult="未来无比赛";
+				xmlResult = FormatXmlResult.getXmlResult(rxe, tlResult);
+				return xmlResult;
+			}
+			String dateStr = gameView.gameTime;
+			if(dateStr!=null){
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+				try {
+					Date date = sdf.parse(dateStr);
+					Calendar calendar = Calendar.getInstance();
+					calendar.setTime(date);
+					title += calendar.get(Calendar.MONTH) + 1 + "月" + calendar.get(Calendar.DAY_OF_MONTH) + "日";
+					SimpleDateFormat simple = new SimpleDateFormat("HH:mm");
+					title += simple.format(date) + " ";
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+				title += gameView.getHostSchoolName() + gameView.getHostTeamName() +  " VS " +
+						gameView.getGuestSchoolName() + gameView.getGuestTeamName();
+			}
+			String description = "点击查看具体比赛数据";
+			String url = "http://tf.chrisma.cn/wechat/game.html?athlete_id=1305";
+			xmlResult = FormatPicWordXmlResult.getXmlResult(rxe, title, description, url);
+		}
+		else{
+			String tlResult = "";
+			if("联赛信息".equals(realContent)){
+				Calendar calendar = Calendar.getInstance();
+				int year = calendar.get(Calendar.YEAR);
+				LeagueManagementService leagueManagementService = ThtApplicationContext.getBean(LeagueManagementService.class);
+				List<YsmsLeague> leagueList = leagueManagementService.getYearlyLeagues(year);
+				System.out.println(leagueList.size());
+				if(leagueList.size()==0){
+					tlResult = "本年度暂时没有联赛";
+				}
+				else{
+					tlResult = "本年度已经或要有组织的联赛包括：";
+					for(int i=0;i<leagueList.size();i++){
+						tlResult += leagueList.get(i).getLeagueName() + "、";
+					}
+					tlResult = tlResult.substring(0, tlResult.lastIndexOf("、"));
+				}
+			}
+			else if("相关产品".equals(realContent)){
+				tlResult = "该功能暂未开放";
+			}
+			else{
+				//调用图灵机器人接口处理模块，获取图灵机器人的结果
+				tlResult = new TulingController().getTulingRe(realContent.replaceAll(" ","")); //去除空格否则报错 	
+			}
+			//封装微信接口的XML数据
+			xmlResult = FormatXmlResult.getXmlResult(rxe, tlResult);
+		}
+
+		return xmlResult;
+	}
+}

@@ -1,0 +1,25 @@
+package com.cwkj.ysms.wechat.controller;
+
+import com.cwkj.ysms.wechat.entity.ReceiveXmlEntity;
+import com.cwkj.ysms.wechat.util.FormatXmlResult;
+import com.cwkj.ysms.wechat.util.ParseReceiveXml;
+
+/**
+ * 微信流程控制类
+ * @author Administrator
+ *
+ */
+public class WeChatController {
+	public String wechatProcess(String content){
+		//解析接收到的xml数据，转为对象
+		ReceiveXmlEntity rxe = ParseReceiveXml.getMsgEntity(content);
+		
+		//调用图灵机器人接口处理模块，获取图灵机器人的结果
+		String tlResult = new TulingController().getTulingRe(rxe.getContent());
+		
+		//封装微信接口的XML数据
+		String xmlResult = FormatXmlResult.getXmlResult(rxe, tlResult);
+		
+		return xmlResult;
+	}
+}

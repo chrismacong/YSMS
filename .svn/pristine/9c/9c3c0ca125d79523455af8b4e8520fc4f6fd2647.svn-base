@@ -1,0 +1,324 @@
+package com.cwkj.ysms.service.impl;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.cwkj.ysms.dao.AthleteAttDao;
+import com.cwkj.ysms.dao.AthleteDao;
+import com.cwkj.ysms.dao.DiplomaDao;
+import com.cwkj.ysms.dao.JobsDao;
+import com.cwkj.ysms.dao.SchoolDao;
+import com.cwkj.ysms.dao.TeammemberDao;
+import com.cwkj.ysms.model.YsmsAthlete;
+import com.cwkj.ysms.model.YsmsAthleteAtt;
+import com.cwkj.ysms.model.YsmsDiploma;
+import com.cwkj.ysms.model.YsmsJobs;
+import com.cwkj.ysms.model.YsmsSchool;
+import com.cwkj.ysms.model.YsmsTeammember;
+import com.cwkj.ysms.service.AthleteManagementService;
+import com.cwkj.ysms.util.Page;
+
+@Service
+public class AthleteManagementServiceImpl implements AthleteManagementService {
+
+	@Resource
+	private AthleteDao athleteDao;
+
+	@Resource
+	private SchoolDao schoolDao;
+
+	@Resource
+	private DiplomaDao diplomaDao;
+
+	@Resource
+	private JobsDao jobsDao;
+
+	@Resource
+	private TeammemberDao teammemberDao;
+
+	@Resource
+	private AthleteAttDao athleteAttDao;
+
+	public AthleteAttDao getAthletePhotoDao() {
+		return athleteAttDao;
+	}
+
+	public void setAthletePhotoDao(AthleteAttDao athletePhotoDao) {
+		this.athleteAttDao = athletePhotoDao;
+	}
+
+	public TeammemberDao getTeammemberDao() {
+		return teammemberDao;
+	}
+
+	public void setTeammemberDao(TeammemberDao teammemberDao) {
+		this.teammemberDao = teammemberDao;
+	}
+
+	public AthleteDao getAthleteDao() {
+		return athleteDao;
+	}
+
+	public void setAthleteDao(AthleteDao athleteDao) {
+		this.athleteDao = athleteDao;
+	}
+
+	public SchoolDao getSchoolDao() {
+		return schoolDao;
+	}
+
+	public void setSchoolDao(SchoolDao schoolDao) {
+		this.schoolDao = schoolDao;
+	}
+
+	public DiplomaDao getDiplomaDao() {
+		return diplomaDao;
+	}
+
+	public void setDiplomaDao(DiplomaDao diplomaDao) {
+		this.diplomaDao = diplomaDao;
+	}
+
+	public JobsDao getJobsDao() {
+		return jobsDao;
+	}
+
+	public void setJobsDao(JobsDao jobsDao) {
+		this.jobsDao = jobsDao;
+	}
+
+	@Override
+	public synchronized boolean  addAthlete(int schoolId, String athleteGuardian1name,
+			String athleteGuardian2name, String athleteGuardian1mobi,
+			String athleteGuardian2mobi, int athleteGuardian1DiplomaId,
+			int athleteGuardian2DiplomaId, int athleteGuardian1JobId,
+			int athleteGuardian2JobId, String identifiedId,
+			String identifiedName, int identifiedGender,
+			Date identifiedBirthday, String identifiedAddress,
+			String identifiedNationality, int athleteFootsize,
+			int athleteHeight, int athleteWeight, int athletePosition,
+			String studentId, String athleteSchoolyear, String athletePhone,
+			String photoBase64, String coachName) {
+		try {
+			YsmsAthlete ysmsAthlete = new YsmsAthlete();
+			YsmsSchool ysmsSchool = schoolDao.findById(schoolId);
+			YsmsJobs athleteGuardian1Job = jobsDao
+					.findById(athleteGuardian1JobId);
+			YsmsJobs athleteGuardian2Job = jobsDao
+					.findById(athleteGuardian2JobId);
+			YsmsDiploma athleteGuardian1Diploma = diplomaDao
+					.findById(athleteGuardian1DiplomaId);
+			YsmsDiploma athleteGuardian2Diploma = diplomaDao
+					.findById(athleteGuardian2DiplomaId);
+			ysmsAthlete.setDeleteflag(0);
+			ysmsAthlete.setAthleteGuardian1(athleteGuardian1name);
+			ysmsAthlete.setGuardian1Mobile(athleteGuardian1mobi);
+			ysmsAthlete.setAthleteGuardian2(athleteGuardian2name);
+			ysmsAthlete.setGuardian2Mobile(athleteGuardian2mobi);
+			ysmsAthlete.setAthleteFootsize(athleteFootsize);
+			ysmsAthlete
+					.setYsmsDiplomaByGuardian1Diploma(athleteGuardian1Diploma);
+			ysmsAthlete
+					.setYsmsDiplomaByGuardian2Diploma(athleteGuardian2Diploma);
+			ysmsAthlete.setYsmsJobsByGuardian1Job(athleteGuardian1Job);
+			ysmsAthlete.setYsmsJobsByGuardian2Job(athleteGuardian2Job);
+			ysmsAthlete.setYsmsSchool(ysmsSchool);
+			ysmsAthlete.setIdentifiedId(identifiedId);
+			ysmsAthlete.setAthleteHeight(athleteHeight);
+			ysmsAthlete.setAthleteWeight(athleteWeight);
+			ysmsAthlete.setAthletePosition(athletePosition);
+			ysmsAthlete.setIdentifiedName(identifiedName);
+			ysmsAthlete.setIdentifiedGender(identifiedGender);
+			ysmsAthlete.setIdentifiedBirthday(identifiedBirthday);
+			ysmsAthlete.setIdentifiedAddress(identifiedAddress);
+			ysmsAthlete.setIdentifiedNationality(identifiedNationality);
+			ysmsAthlete.setStudentId(studentId);
+			ysmsAthlete.setAthleteSchoolyear(athleteSchoolyear);
+			ysmsAthlete.setAthleteMobile(athletePhone);
+			ysmsAthlete.setAthleteCoach(coachName);
+			athleteDao.save(ysmsAthlete);
+			athleteDao.createRegisterID(schoolId,
+					Calendar.getInstance().get(Calendar.YEAR),
+					ysmsAthlete.getAthleteId());
+			YsmsAthleteAtt ysmsAthleteAtt = new YsmsAthleteAtt();
+			ysmsAthleteAtt.setYsmsAthlete(ysmsAthlete);
+			ysmsAthleteAtt.setAttName(photoBase64);
+			ysmsAthleteAtt.setAttType(0);
+			athleteAttDao.save(ysmsAthleteAtt);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Override
+	public boolean updateAthlete(int athleteId, int schoolId,
+			String athleteGuardian1name, String athleteGuardian2name,
+			String athleteGuardian1mobi, String athleteGuardian2mobi,
+			int athleteGuardian1DiplomaId, int athleteGuardian2DiplomaId,
+			int athleteGuardian1JobId, int athleteGuardian2JobId,
+			String identifiedId, String identifiedName, int identifiedGender,
+			Date identifiedBirthday, String identifiedAddress,
+			String identifiedNationality, int athleteFootsize,
+			int athleteHeight, int athleteWeight, int athletePosition,
+			String studentId, String athleteSchoolyear, String athletePhone,
+			String photoBase64, String coachName) {
+		try {
+			YsmsAthlete ysmsAthlete = athleteDao.findById(athleteId);
+			YsmsSchool ysmsSchool = schoolDao.findById(schoolId);
+			YsmsJobs athleteGuardian1Job = jobsDao
+					.findById(athleteGuardian1JobId);
+			YsmsJobs athleteGuardian2Job = jobsDao
+					.findById(athleteGuardian2JobId);
+			YsmsDiploma athleteGuardian1Diploma = diplomaDao
+					.findById(athleteGuardian1DiplomaId);
+			YsmsDiploma athleteGuardian2Diploma = diplomaDao
+					.findById(athleteGuardian2DiplomaId);
+			ysmsAthlete.setDeleteflag(0);
+			ysmsAthlete.setAthleteGuardian1(athleteGuardian1name);
+			ysmsAthlete.setGuardian1Mobile(athleteGuardian1mobi);
+			ysmsAthlete.setAthleteGuardian2(athleteGuardian2name);
+			ysmsAthlete.setGuardian2Mobile(athleteGuardian2mobi);
+			ysmsAthlete.setAthleteFootsize(athleteFootsize);
+			ysmsAthlete
+					.setYsmsDiplomaByGuardian1Diploma(athleteGuardian1Diploma);
+			ysmsAthlete
+					.setYsmsDiplomaByGuardian2Diploma(athleteGuardian2Diploma);
+			ysmsAthlete.setYsmsJobsByGuardian1Job(athleteGuardian1Job);
+			ysmsAthlete.setYsmsJobsByGuardian2Job(athleteGuardian2Job);
+			ysmsAthlete.setYsmsSchool(ysmsSchool);
+			ysmsAthlete.setIdentifiedId(identifiedId);
+			ysmsAthlete.setAthleteHeight(athleteHeight);
+			ysmsAthlete.setAthleteWeight(athleteWeight);
+			ysmsAthlete.setAthletePosition(athletePosition);
+			ysmsAthlete.setIdentifiedName(identifiedName);
+			ysmsAthlete.setIdentifiedGender(identifiedGender);
+			ysmsAthlete.setIdentifiedBirthday(identifiedBirthday);
+			ysmsAthlete.setIdentifiedAddress(identifiedAddress);
+			ysmsAthlete.setIdentifiedNationality(identifiedNationality);
+			ysmsAthlete.setStudentId(studentId);
+			ysmsAthlete.setAthleteSchoolyear(athleteSchoolyear);
+			ysmsAthlete.setAthleteMobile(athletePhone);
+			ysmsAthlete.setAthleteCoach(coachName);
+			athleteDao.updata(ysmsAthlete);
+			athleteDao.createRegisterID(schoolId,
+					Calendar.getInstance().get(Calendar.YEAR),
+					ysmsAthlete.getAthleteId());
+			YsmsAthleteAtt ysmsAthleteAtt = athleteAttDao
+					.findByAthleteId(athleteId);
+			ysmsAthleteAtt.setYsmsAthlete(ysmsAthlete);
+			if (!photoBase64.equals(""))
+				ysmsAthleteAtt.setAttName(photoBase64);
+			ysmsAthleteAtt.setAttType(0);
+			athleteAttDao.save(ysmsAthleteAtt);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Override
+	public boolean deleteAthlete(int athleteId) {
+		try {
+			YsmsAthlete ysmsAthlete = athleteDao.findById(athleteId);
+			List<YsmsTeammember> list = teammemberDao
+					.findByAthleteId(athleteId);
+			// 删除所有球队关系
+			for (int i = 0; i < list.size(); i++) {
+				YsmsTeammember ysmsTeammember = list.get(i);
+				teammemberDao.delete(ysmsTeammember);
+			}
+			ysmsAthlete.setDeleteflag(1);
+			athleteDao.updata(ysmsAthlete);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Override
+	public YsmsAthlete getAthleteByID(int athleteId) {
+		YsmsAthlete ysmsAthlete = athleteDao.findById(athleteId);
+		return ysmsAthlete;
+	}
+
+	@Override
+	public List<YsmsAthlete> getAtheletesByPage(Integer schoolId,
+			String identifiedId, String identifiedName,
+			Integer identifiedGender, Integer athletePosition,
+			Integer studentId, String athleteSchoolyear, Page page) {
+		List<YsmsAthlete> athleteList = athleteDao.findByFuzzyQueryAndPage(
+				schoolId, identifiedId, identifiedName, identifiedGender,
+				athletePosition, studentId, athleteSchoolyear, page);
+		return athleteList;
+	}
+
+	@Override
+	public List<YsmsAthlete> getAtheletesByPageAndOrder(Integer schoolId,
+			String identifiedId, String identifiedName,
+			Integer identifiedGender, Integer athletePosition,
+			Integer studentId, String athleteSchoolyear, Page page,
+			String orderString) {
+		List<YsmsAthlete> athleteList = athleteDao
+				.findByFuzzyQueryAndPageAndOrder(schoolId, identifiedId,
+						identifiedName, identifiedGender, athletePosition,
+						studentId, athleteSchoolyear, page, orderString);
+		return athleteList;
+	}
+
+	@Override
+	public int findByFuzzyQueryAndPageCount(Integer schoolId,
+			String identifiedId, String identifiedName,
+			Integer identifiedGender, Integer athletePosition,
+			Integer studentId, String athleteSchoolyear) {
+		return athleteDao.findByFuzzyQueryAndPageCount(schoolId, identifiedId,
+				identifiedName, identifiedGender, athletePosition, studentId,
+				athleteSchoolyear);
+	}
+
+	@Override
+	public List<YsmsAthlete> getAtheletes(Integer schoolId,
+			String identifiedId, String identifiedName,
+			Integer identifiedGender, Integer athletePosition,
+			Integer studentId, String athleteSchoolyear) {
+		List<YsmsAthlete> athleteList = athleteDao.findByFuzzyQuery(schoolId,
+				identifiedId, identifiedName, identifiedGender,
+				athletePosition, studentId, athleteSchoolyear);
+		return athleteList;
+	}
+
+	@Override
+	public List<YsmsJobs> getAllJobs() {
+		// TODO Auto-generated method stub
+		return jobsDao.findAllBesidesStudent();
+	}
+
+	@Override
+	public List<YsmsDiploma> getAllDiplomas() {
+		// TODO Auto-generated method stub
+		return diplomaDao.findAll();
+	}
+
+	@Override
+	public YsmsAthleteAtt getAthleteAttByAthleteID(int athleteId) {
+		return athleteAttDao.findByAthleteId(athleteId);
+	}
+
+	@Override
+	public boolean isAddingAthletePermitted(String identifiedId) {
+		// TODO Auto-generated method stub
+		List<YsmsAthlete> athleteList = athleteDao.findByIdentifiedId(identifiedId);
+		if(athleteList==null||athleteList.size()==0)
+			return true;
+		else
+			return false;
+	}
+}

@@ -1,0 +1,862 @@
+package com.cwkj.ysms.control;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.cwkj.ysms.model.YsmsAthlete;
+import com.cwkj.ysms.model.YsmsCoach;
+import com.cwkj.ysms.model.YsmsLeague;
+import com.cwkj.ysms.model.YsmsLeagueZone;
+import com.cwkj.ysms.model.YsmsSchool;
+import com.cwkj.ysms.model.YsmsTeam;
+import com.cwkj.ysms.model.view.ExcelAthleteView;
+import com.cwkj.ysms.model.view.ExcelCoachView;
+import com.cwkj.ysms.model.view.TeamView;
+import com.cwkj.ysms.service.DataExportingService;
+import com.cwkj.ysms.service.SchoolManagementService;
+import com.cwkj.ysms.service.TeamManagementService;
+
+@Controller
+@RequestMapping(value = "/team")
+public class TeamManagementControl {
+	@Resource
+	private TeamManagementService teamManagementService;
+	public TeamManagementService getTeamManagementService() {
+		return teamManagementService;
+	}
+	public void setTeamManagementService(TeamManagementService teamManagementService) {
+		this.teamManagementService = teamManagementService;
+	}
+	@Resource
+	private DataExportingService dataExportingService;
+	public DataExportingService getDataExportingService() {
+		return dataExportingService;
+	}
+	public void setDataExportingService(DataExportingService dataExportingService) {
+		this.dataExportingService = dataExportingService;
+	}
+	@Resource
+	private SchoolManagementService schoolManagementService;
+	public SchoolManagementService getSchoolManagementService() {
+		return schoolManagementService;
+	}
+	public void setSchoolManagementService(
+			SchoolManagementService schoolManagementService) {
+		this.schoolManagementService = schoolManagementService;
+	}
+	/**
+	 * 打开管理界面
+	 * 无参数
+	 * @param request
+	 * @param session
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(method = RequestMethod.GET)
+	public ModelAndView listResult(HttpServletRequest request,HttpSession session,HttpServletResponse response){
+		Map<String, Boolean> map = new HashMap<String, Boolean>();
+		Object schoolIdInSession = session.getAttribute("schoolId");
+		if(schoolIdInSession == null){
+			map.put("success",false);
+			return null;
+		}
+		int schoolId = Integer.parseInt(schoolIdInSession.toString());
+		Map<String, Object> model = new HashMap<String, Object>();
+		int zoneId = Integer.parseInt(request.getParameter("zone_id"));
+		int teamId = 0;
+		YsmsTeam team = teamManagementService.getTeamForSchoolAndZone(schoolId, zoneId);
+		if(team != null){
+			teamId = team.getTeamId();
+		}
+
+		model.put("teamId", teamId);
+		session.setAttribute("signedup", false);
+		model.put("signedup", false);
+		return new ModelAndView("TeamManagementPage", model);
+	}
+
+	/**
+	 * 已经注册的界面
+	 * @param request
+	 * @param session
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value="signedup", method = RequestMethod.GET)
+	public ModelAndView hasSignedUp(HttpServletRequest request,HttpSession session,HttpServletResponse response){
+		Map<String, Boolean> map = new HashMap<String, Boolean>();
+		Object schoolIdInSession = session.getAttribute("schoolId");
+		if(schoolIdInSession == null){
+			map.put("success",false);
+			return null;
+		}
+		int schoolId = Integer.parseInt(schoolIdInSession.toString());
+		Map<String, Object> model = new HashMap<String, Object>();
+		int zoneId = Integer.parseInt(request.getParameter("zone_id"));
+		int teamId = teamManagementService.getTeamForSchoolAndZone(schoolId, zoneId).getTeamId();
+		model.put("teamId", teamId);
+		session.setAttribute("signedup", true);
+		session.setAttribute("zoneId", zoneId);
+		model.put("signedup", true);
+		return new ModelAndView("TeamManagementPage", model);
+	}
+
+
+
+	/**
+	 * 添加球队
+	 * 参数：school_id:学校Id	league_id:联赛Id	team_name:球队名字	athletestr:球员Id。逗号分隔
+	 * coachstr:教练Id，逗号分隔
+	 * @param request
+	 * @param session
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "simplyaddteam", method = RequestMethod.POST)
+	public Map<String, Boolean> simplyAddTeam(HttpServletRequest request,HttpSession session,HttpServletResponse response){
+		Map<String, Boolean> map = new HashMap<String, Boolean>();
+		Object schoolIdInSession = session.getAttribute("schoolId");
+		if(schoolIdInSession == null){
+			map.put("success",false);
+			return map;
+		}
+		int schoolId = Integer.parseInt(schoolIdInSession.toString());
+		int zoneId = Integer.parseInt(request.getParameter("zone_id"));
+		session.setAttribute("zoneId", zoneId);
+		//判断是否已存在这样的team
+		YsmsTeam ysmsTeam = teamManagementService.getTeamForSchoolAndZone(schoolId, zoneId);
+		if(ysmsTeam!=null){
+			map.put("success", true);//在这里，如果添加过也正确
+			return map;
+		}
+		boolean result = teamManagementService.simplyAddTeam(zoneId, schoolId);
+		if(result){
+			map.put("success", true);
+		}
+		else
+			map.put("success", false);
+		return map;
+	}
+
+	/**
+	 * 添加球队
+	 * 参数：school_id:学校Id	league_id:联赛Id	team_name:球队名字	athletestr:球员Id。逗号分隔
+	 * coachstr:教练Id，逗号分隔
+	 * @param request
+	 * @param session
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "addteam", method = RequestMethod.GET)
+	public Map<String, Boolean> addTeam(HttpServletRequest request,HttpSession session,HttpServletResponse response){
+		Map<String, Boolean> map = new HashMap<String, Boolean>();
+		int schoolId = Integer.parseInt(request.getParameter("school_id"));
+		int zoneId = Integer.parseInt(request.getParameter("zone_id"));
+		//判断是否已存在这样的team
+		YsmsTeam ysmsTeam = teamManagementService.getTeamForSchoolAndZone(schoolId, zoneId);
+		if(ysmsTeam!=null){
+			map.put("success", false);
+			return map;
+		}
+		String teamName = request.getParameter("team_name");
+		String athletesStr = request.getParameter("athletestr");
+		String coachesStr = request.getParameter("coachstr");
+		List<YsmsAthlete> athletesList = teamManagementService.getAthletesForTeam(athletesStr);
+		List<YsmsCoach> coachesList = teamManagementService.getCoachesForTeam(coachesStr);
+		boolean result = teamManagementService.addTeam(zoneId, schoolId, teamName, coachesList,
+				athletesList);
+		if(result){
+			map.put("success", true);
+		}
+		else
+			map.put("success", false);
+		return map;
+	}
+
+
+	/**
+	 * 点击打开报名参赛界面
+	 * 显示球队信息
+	 * 参数：school_id:学校Id	league_id:联赛Id
+	 * @param request
+	 * @param session
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "leagueteam", method = RequestMethod.GET)
+	public ModelAndView leagueTeam(HttpServletRequest request,HttpSession session,HttpServletResponse response){
+		Map<String, Object> model = new HashMap<String, Object>();
+		int teamId = Integer.parseInt(request.getParameter("team_id"));
+		boolean signedup = (boolean) session.getAttribute("signedup");
+		//int leagueId = (int) session.getAttribute("leagueId");
+		//判断是否已存在这样的team
+		YsmsTeam ysmsTeam = teamManagementService.getTeamById(teamId);
+		List<ExcelAthleteView> athletes = teamManagementService.getAthletesForTeam(teamId);
+		for(int i=0;i<athletes.size();i++){
+			for(int j=0;j<i;j++){
+				//按照位置排序
+				ExcelAthleteView athlete1 = athletes.get(i);
+				ExcelAthleteView athlete2 = athletes.get(j);
+				if(athlete1.getAthletePosition()<athlete2.getAthletePosition()){
+					athletes.set(i, athlete2);
+					athletes.set(j, athlete1);
+				}
+			}
+		}
+		List<ExcelAthleteView> athletes_more = new ArrayList<ExcelAthleteView>();
+		if(athletes.size()>8){ //界面中右侧新建列表
+			for(int i=8;i<athletes.size();i++){
+				athletes_more.add(athletes.get(i));
+			}
+		}
+		List<ExcelCoachView> coaches = teamManagementService.getCoachsForTeam(teamId);
+		model.put("team", ysmsTeam);
+		model.put("athletes", athletes);
+		model.put("athletes_more", athletes_more);
+		model.put("coaches", coaches);
+		model.put("signedup", signedup);
+		//model.put("league_id", leagueId);
+		//TODO 界面信息
+		return new ModelAndView("SignupToLeaguePage",model);
+	}
+	/**
+	 * 修改球队
+	 * 参数：team_id:球队Id		team_name:球队名字	athletestr:球员Id。逗号分隔      coachstr:教练Id，逗号分隔
+	 * @param request
+	 * @param session
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "modifyteam", method = RequestMethod.GET)
+	public Map<String, Boolean> modifyTeam(HttpServletRequest request,HttpSession session,HttpServletResponse response){
+		Map<String, Boolean> map = new HashMap<String, Boolean>();
+		int teamId = Integer.parseInt(request.getParameter("team_id"));
+		String teamName = request.getParameter("team_name");
+		String athletesStr = request.getParameter("athletestr");
+		String coachesStr = request.getParameter("coachstr");
+		List<YsmsAthlete> athletesList = teamManagementService.getAthletesForTeam(athletesStr);
+		List<YsmsCoach> coachesList = teamManagementService.getCoachesForTeam(coachesStr);
+		boolean result = teamManagementService.modifyTeam(teamId, teamName, coachesList, 
+				athletesList);
+		if(result){
+			map.put("success", true);
+		}
+		else
+			map.put("success", false);
+		return map;
+	}
+
+	/**
+	 * 删除球队
+	 * 放弃报名时可以删除球队
+	 * 参数：team_id:球队Id
+	 * @param request
+	 * @param session
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "deleteteam", method = RequestMethod.GET)
+	public Map<String, Boolean> deleteTeam(HttpServletRequest request,HttpSession session,HttpServletResponse response){
+		Map<String, Boolean> map = new HashMap<String, Boolean>();
+		int teamId = Integer.parseInt(request.getParameter("team_id"));
+		boolean result = teamManagementService.deleteTeam(teamId);
+		if(result){
+			map.put("success", true);
+		}
+		else
+			map.put("success", false);
+		return map;
+	}
+
+	/**
+	 * 报名参赛
+	 * 确认队伍后可以报名参赛。报名后不可删除队伍
+	 * 参数：team_id:球队Id
+	 * @param request
+	 * @param session
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "signtoleague", method = RequestMethod.POST)
+	public Map<String, Boolean> signToLeague(HttpServletRequest request,HttpSession session,HttpServletResponse response){
+		Map<String, Boolean> map = new HashMap<String, Boolean>();
+		int teamId = Integer.parseInt(request.getParameter("team_id"));
+		boolean result = teamManagementService.signToZone(teamId);
+		if(result){
+			map.put("success", true);
+		}
+		else
+			map.put("success", false);
+		return map;
+	}
+	/**
+	 * 报名参赛
+	 * 确认队伍后可以报名参赛。报名后不可删除队伍
+	 * 参数：team_id:球队Id
+	 * @param request
+	 * @param session
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "giveupsigntoleague", method = RequestMethod.POST)
+	public Map<String, Boolean> giveUpSignToLeague(HttpServletRequest request,HttpSession session,HttpServletResponse response){
+		Map<String, Boolean> map = new HashMap<String, Boolean>();
+		int teamId = Integer.parseInt(request.getParameter("team_id"));
+		boolean result = teamManagementService.deleteTeam(teamId);
+		if(result){
+			map.put("success", true);
+		}
+		else
+			map.put("success", false);
+		return map;
+	}
+
+	/**
+	 * 获取某学校下属球队列表
+	 * 参数：school_id:学校Id
+	 * @param request
+	 * @param session
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "getschoolteams", method = RequestMethod.GET)
+	public List<YsmsTeam> getSchoolTeams(HttpServletRequest request,HttpSession session,HttpServletResponse response){
+		int schoolId = Integer.parseInt(request.getParameter("school_id"));
+		List<YsmsTeam> teamList = teamManagementService.getTeamInfoBySchool(schoolId);
+		return teamList;
+	}
+
+	/**
+	 * 获取某联赛参赛球队列表
+	 * 参数：league_id:联赛Id
+	 * @param request
+	 * @param session
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "getparticipateteams", method = RequestMethod.GET)
+	public List<TeamView> getParticipageTeams(HttpServletRequest request,HttpSession session,HttpServletResponse response){
+		int zoneId = Integer.parseInt(request.getParameter("zone_id"));
+		List<TeamView> teamList = teamManagementService.getParticipatedTeamByZone(zoneId);
+		return teamList;
+	}
+
+	/**
+	 * 获取某联赛报名球队列表
+	 * 参数：league_id:联赛Id
+	 * @param request
+	 * @param session
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "getsignedteams", method = RequestMethod.GET)
+	public List<TeamView> getSignedTeams(HttpServletRequest request,HttpSession session,HttpServletResponse response){
+		int zoneId = Integer.parseInt(request.getParameter("zone_id"));
+		List<TeamView> teamList = teamManagementService.getSignedTeamByZone(zoneId,0);
+		return teamList;
+	}
+
+	/**
+	 * 修改球队名称
+	 * @param request
+	 * @param session
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "changename", method = RequestMethod.POST)
+	public Map<String, Boolean> changeName(HttpServletRequest request,HttpSession session,HttpServletResponse response){
+		Map<String, Boolean> map = new HashMap<String, Boolean>();
+		int teamId = Integer.parseInt(request.getParameter("team_id"));
+		String teamName = request.getParameter("team_name");
+		boolean result = teamManagementService.modifyTeamName(teamId, teamName);
+		if(result){
+			map.put("success", true);
+		}
+		else
+			map.put("success", false);
+		return map;
+	}
+
+	/**
+	 * 修改球员号码
+	 * @param request
+	 * @param session
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "changeathletenum", method = RequestMethod.POST)
+	public Map<String, Boolean> changeAthleteNum(HttpServletRequest request,HttpSession session,HttpServletResponse response){
+		Map<String, Boolean> map = new HashMap<String, Boolean>();
+		int teamMemberId = Integer.parseInt(request.getParameter("teammember_id"));
+		int athleteNum = Integer.parseInt(request.getParameter("athlete_num"));
+		boolean result = teamManagementService.changeAthleteNum(teamMemberId, athleteNum);
+		if(result){
+			map.put("success", true);
+		}
+		else
+			map.put("success", false);
+		return map;
+	}
+
+
+	/**
+	 * 修改球员位置
+	 * @param request
+	 * @param session
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "changeathleteposition", method = RequestMethod.POST)
+	public Map<String, Boolean> changeAthletePosition(HttpServletRequest request,HttpSession session,HttpServletResponse response){
+		Map<String, Boolean> map = new HashMap<String, Boolean>();
+		int teamMemberId = Integer.parseInt(request.getParameter("teammember_id"));
+		int athletePosition = Integer.parseInt(request.getParameter("athlete_position"));
+		boolean result = teamManagementService.changeAthletePosition(teamMemberId, athletePosition);
+		if(result){
+			map.put("success", true);
+		}
+		else
+			map.put("success", false);
+		return map;
+	}
+
+
+	/**
+	 * 获取excel文件
+	 * @param request
+	 * @param session
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "exportexcel", method = RequestMethod.GET)
+	public void exportExcel(HttpServletRequest request,HttpSession session,HttpServletResponse response){
+		try {
+			int teamId = Integer.parseInt(request.getParameter("team_id"));
+			YsmsTeam ysmsTeam = teamManagementService.getTeamById(teamId);
+			YsmsLeagueZone ysmsLeagueZone = teamManagementService.getZoneByTeam(teamId);
+			YsmsLeague ysmsLeague = ysmsLeagueZone.getYsmsLeague();
+			YsmsSchool ysmsSchool = ysmsTeam.getYsmsSchool();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+			Calendar calendar = Calendar.getInstance();
+			String path = request.getSession().getServletContext().getRealPath("/") + "downloadResource" + 
+					System.getProperty("file.separator") + "athletesForm" + System.getProperty("file.separator") + 
+					ysmsSchool.getSchoolId() + "_" + sdf.format(calendar.getTime()) + ".xls";
+			List<ExcelAthleteView> athleteViews = teamManagementService.getAthletesForTeam(teamId);
+			List<ExcelCoachView> coachViews = teamManagementService.getCoachsForTeam(teamId);
+			response.reset();
+			String fileName = ysmsSchool.getSchoolName() +  "-" + ysmsLeagueZone.getZoneName()+ "-报名表.xls";
+			response.setContentType("application/vnd.ms-excel");
+			response.setHeader("Pragma", "no-cache");
+			response.setHeader("Cache-Control", "no-cache");
+			String userAgent = request.getHeader("User-Agent");
+			if (userAgent.contains("Firefox")) {// 专修火狐编码
+				response.setHeader("Content-Disposition",
+						"attachment;filename="
+								+ new String(fileName.getBytes(), "ISO-8859-1"));// 指定下载的文件名
+				response.setCharacterEncoding("UTF-8");
+			} else {// IE ,google
+				response.setHeader(
+						"Content-Disposition",
+						"attachment;filename="
+								+ java.net.URLEncoder.encode(fileName, "UTF-8"));
+			}
+			response.setDateHeader("Expires", 0);
+			dataExportingService.exportAthletesForm(response.getOutputStream(), ysmsLeague.getLeagueName(), 
+					ysmsLeagueZone.getZoneName(), ysmsSchool, ysmsTeam.getTeamName(), 
+					ysmsTeam.getLeaderName(), ysmsTeam.getLeaderPhone(), ysmsTeam.getDoctorName(), 
+					ysmsTeam.getDoctorPhone(), athleteViews, coachViews);
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 获取word文件
+	 * @param request
+	 * @param session
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "exportword", method = RequestMethod.GET)
+	public void exportWord(HttpServletRequest request,HttpSession session,HttpServletResponse response){
+		int teamId = Integer.parseInt(request.getParameter("team_id"));
+		YsmsTeam ysmsTeam = teamManagementService.getTeamById(teamId);
+		YsmsLeagueZone ysmsLeagueZone = teamManagementService.getZoneByTeam(teamId);
+		YsmsLeague ysmsLeague = ysmsLeagueZone.getYsmsLeague();
+		YsmsSchool ysmsSchool = ysmsTeam.getYsmsSchool();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+		Calendar calendar = Calendar.getInstance();
+		String path = request.getSession().getServletContext().getRealPath("/") + "downloadResource" + 
+				System.getProperty("file.separator") + "athletesWord" + System.getProperty("file.separator") + 
+				ysmsSchool.getSchoolId() + "_" + sdf.format(calendar.getTime()) + ".doc";
+		List<ExcelAthleteView> athleteViews = teamManagementService.getAthletesForTeam(teamId);
+		List<ExcelCoachView> coachViews = teamManagementService.getCoachsForTeam(teamId);
+
+		response.reset();
+		String fileName = ysmsSchool.getSchoolName() +  "-" + ysmsLeagueZone.getZoneName()+ "-报名表.doc";
+		response.setContentType("application/rtf");
+		response.setHeader("Pragma", "no-cache");
+		response.setHeader("Cache-Control", "no-cache");
+		String userAgent = request.getHeader("User-Agent");
+		try {
+			if (userAgent.contains("Firefox")) {// 专修火狐编码
+				response.setHeader("Content-Disposition",
+						"attachment;filename="
+								+ new String(fileName.getBytes(), "ISO-8859-1"));// 指定下载的文件名
+				response.setCharacterEncoding("UTF-8");
+			} else {// IE ,google
+				response.setHeader(
+						"Content-Disposition",
+						"attachment;filename="
+								+ java.net.URLEncoder.encode(fileName, "UTF-8"));
+			}
+			response.setDateHeader("Expires", 0);
+
+			dataExportingService.letExcelIntoWord(response.getOutputStream(), ysmsLeague.getLeagueName(), 
+					ysmsLeagueZone.getZoneName(), ysmsSchool, ysmsTeam.getTeamName(), 
+					ysmsTeam.getLeaderName(), ysmsTeam.getLeaderPhone(), ysmsTeam.getDoctorName(), 
+					ysmsTeam.getDoctorPhone(), athleteViews, coachViews);
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	/**
+	 * 获取pdf文件
+	 * @param request
+	 * @param session
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "exportpdf", method = RequestMethod.GET)
+	public void exportPdf(HttpServletRequest request,HttpSession session,HttpServletResponse response){
+		try {
+			int teamId = Integer.parseInt(request.getParameter("team_id"));
+			YsmsTeam ysmsTeam = teamManagementService.getTeamById(teamId);
+			YsmsLeagueZone ysmsLeagueZone = teamManagementService.getZoneByTeam(teamId);
+			YsmsLeague ysmsLeague = ysmsLeagueZone.getYsmsLeague();
+			YsmsSchool ysmsSchool = ysmsTeam.getYsmsSchool();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+			Calendar calendar = Calendar.getInstance();
+			String path = request.getSession().getServletContext().getRealPath("/") + "downloadResource" + 
+					System.getProperty("file.separator") + "athletesPdf" + System.getProperty("file.separator") + 
+					ysmsSchool.getSchoolId() + "_" + sdf.format(calendar.getTime()) + ".pdf";
+			List<ExcelAthleteView> athleteViews = teamManagementService.getAthletesForTeam(teamId);
+			List<ExcelCoachView> coachViews = teamManagementService.getCoachsForTeam(teamId);
+			response.reset();
+			String fileName = ysmsSchool.getSchoolName() +  "-" + ysmsLeagueZone.getZoneName()+ "-报名表.pdf";
+			response.setContentType("application/pdf");
+			response.setHeader("Pragma", "no-cache");
+			response.setHeader("Cache-Control", "no-cache");
+			String userAgent = request.getHeader("User-Agent");
+			if (userAgent.contains("Firefox")) {// 专修火狐编码
+				response.setHeader("Content-Disposition",
+						"attachment;filename="
+								+ new String(fileName.getBytes(), "ISO-8859-1"));// 指定下载的文件名
+				response.setCharacterEncoding("UTF-8");
+			} else {// IE ,google
+				response.setHeader(
+						"Content-Disposition",
+						"attachment;filename="
+								+ java.net.URLEncoder.encode(fileName, "UTF-8"));
+			}
+			response.setDateHeader("Expires", 0);
+			dataExportingService.letExcelIntoPDF(response.getOutputStream(), ysmsLeague.getLeagueName(), 
+					ysmsLeagueZone.getZoneName(), ysmsSchool, ysmsTeam.getTeamName(), 
+					ysmsTeam.getLeaderName(), ysmsTeam.getLeaderPhone(), ysmsTeam.getDoctorName(), 
+					ysmsTeam.getDoctorPhone(), athleteViews, coachViews);
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+
+	/**
+	 * 打开报名球队配置界面
+	 * 参数：team_id:球队Id
+	 * @param request
+	 * @param session
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "configteam", method = RequestMethod.GET)
+	public ModelAndView configTeam(HttpServletRequest request,HttpSession session,HttpServletResponse response){
+		Map<String, Object> model = new HashMap<String, Object>();
+		int teamId = Integer.parseInt(request.getParameter("team_id"));
+		model.put("teamId", teamId);
+		return new ModelAndView("LeagueTeamConfigPage", model);
+	}
+
+	/**
+	 * 获取报名球队配置列表界面
+	 * 参数：team_id:球队Id
+	 * @param request
+	 * @param session
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "getteamconfiglist", method = RequestMethod.POST)
+	public Map<String, Object> getTeamConfigList(HttpServletRequest request,HttpSession session,HttpServletResponse response){
+		Map<String, Object> map = new HashMap<String, Object>();
+		Object schoolIdInSession = session.getAttribute("schoolId");
+		if(schoolIdInSession == null){
+			map.put("count", 0);
+			map.put("leader_name", false);
+			map.put("coach_list", null);
+			map.put("teamcoach_list", null);
+			map.put("athlete_list", null);
+			map.put("teamathlete_list", null);
+			return map;
+		}
+
+		int schoolId = Integer.parseInt(schoolIdInSession.toString());
+		int schoolCategory = schoolManagementService.getSchoolByID(schoolId).getSchoolCategory();
+		int minusYears = 0;
+		if(schoolCategory==2)
+			minusYears = 6;
+		else if(schoolCategory==3){
+			minusYears = 9;
+		}
+		int count = teamManagementService.getSignUpAthletelimitCountBySchoolId(schoolId);
+
+		int teamId = Integer.parseInt(request.getParameter("team_id"));
+		YsmsLeagueZone leagueZone = teamManagementService.getZoneByTeam(teamId);
+		List<YsmsCoach> coach_list = teamManagementService.getCoachesByProperty(null, schoolId, null, null, null);
+		List<YsmsCoach> teamcoach_list = teamManagementService.getCoachesByTeamId(teamId);
+		List<YsmsAthlete> athlete_list = teamManagementService.getSuitedAthletesByZone(leagueZone.getZoneId(), schoolId);
+		for(int i=0;i<athlete_list.size();i++){
+			YsmsAthlete ysmsAthlete = athlete_list.get(i);
+			int joinSchoolYear = Integer.parseInt(ysmsAthlete.getAthleteSchoolyear());
+			ysmsAthlete.setAthleteSchoolyear(joinSchoolYear+minusYears+"");
+			athlete_list.set(i, ysmsAthlete);
+		}
+		List<YsmsAthlete> teamathlete_list = teamManagementService.getAthletesByTeamId(teamId);
+
+		String leadername = "";
+		String leaderphone = "";
+		String doctorname = "";
+		String doctorphone = "";
+		YsmsTeam team = teamManagementService.getTeamById(teamId);
+		if(team != null){
+			leadername = team.getLeaderName();
+			leaderphone = team.getLeaderPhone();
+			doctorname = team.getDoctorName();
+			doctorphone = team.getDoctorPhone();
+		}
+		map.put("count", count);
+		map.put("leader_name", leadername);
+		map.put("leader_phone", leaderphone);
+		map.put("doctor_name", doctorname);
+		map.put("doctor_phone", doctorphone);
+		map.put("coach_list", coach_list);
+		map.put("teamcoach_list", teamcoach_list);
+		map.put("athlete_list", athlete_list);
+		map.put("teamathlete_list", teamathlete_list);
+		return map;
+	}
+
+	/**
+	 * 配置球队新
+	 * @param request
+	 * @param session
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "configteammember", method = RequestMethod.POST)
+	public Map<String, Boolean> configTeamMember(HttpServletRequest request,HttpSession session,HttpServletResponse response){
+		Map<String, Boolean> map = new HashMap<String, Boolean>();
+		int teamId = Integer.parseInt(request.getParameter("team_id"));
+		String leaderName = request.getParameter("leadername");
+		String leaderPhone = request.getParameter("leaderphone");
+		String doctorName = request.getParameter("doctorname");
+		String doctorPhone = request.getParameter("doctorphone");
+		String coachStr = request.getParameter("coachstr");
+		String athleteStr = request.getParameter("athletestr");
+
+		boolean result = teamManagementService.configTeamMember(teamId, leaderName, leaderPhone,
+				doctorName, doctorPhone, coachStr, athleteStr);
+		if(result){
+			map.put("success", true);
+		}
+		else
+			map.put("success", false);
+		return map;
+	}
+
+	/**
+	 * 根据条件获取教练员列表
+	 * 参数：team_id:球队Id
+	 * @param request
+	 * @param session
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "getcoachlistbykeyandtype", method = RequestMethod.POST)
+	public Map<String, Object> getCoachlistByKeyAndType(HttpServletRequest request,HttpSession session,HttpServletResponse response){
+		Map<String, Object> map = new HashMap<String, Object>();
+		String style = request.getParameter("style");
+		Integer schoolId = null;
+		if(style!=null&&"1".equals(style)){
+			Object schoolIdInSession = session.getAttribute("schoolId");
+			if(schoolIdInSession == null){
+				map.put("confirm", false);
+				map.put("coach_list", null);
+				return map;
+			}
+
+			schoolId = Integer.parseInt(schoolIdInSession.toString());
+		}
+		boolean signedup = (boolean) session.getAttribute("signedup");
+
+		String type = request.getParameter("type");
+		String key = request.getParameter("key");
+		System.out.println("type:" + type + ",key:" + key) ;
+		List<YsmsCoach> coach_list = null;
+		if(key == null || key == ""){
+			coach_list = teamManagementService.getCoachesByProperty(null, schoolId, null, null, null);
+		}
+		else{
+			if(type != null && type != ""){
+				int seleteType = Integer.parseInt(type);
+				if(seleteType == 1){
+					coach_list = teamManagementService.getCoachesByProperty(null, schoolId, null, key.trim(), null);
+				}
+				else if(seleteType == 2){
+					coach_list = teamManagementService.getCoachesByProperty(key.trim(), schoolId, null, null, null);
+				}
+				else if(seleteType == 3){
+					int gender = -1;
+					if(key.trim().equals("男")){
+						gender = 1;
+					}
+					else if(key.trim().equals("女")){
+						gender = 0;
+					}
+					coach_list = teamManagementService.getCoachesByProperty(null, schoolId, null, null, gender);
+				}
+			}
+		}
+
+		map.put("confirm", signedup);
+		map.put("coach_list", coach_list);
+
+		return map;
+	}
+
+	/**
+	 * 根据条件获取运动员列表
+	 * 参数：team_id:球队Id
+	 * @param request
+	 * @param session
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "getathletelistbykeyandtype", method = RequestMethod.POST)
+	public Map<String, Object> getAthletelistByKeyAndType(HttpServletRequest request,HttpSession session,HttpServletResponse response){
+		Map<String, Object> map = new HashMap<String, Object>();
+		Object schoolIdInSession = session.getAttribute("schoolId");
+		if(schoolIdInSession == null){
+			map.put("confirm", false);
+			map.put("athlete_list", null);
+			return map;
+		}
+
+		int schoolId = Integer.parseInt(schoolIdInSession.toString());
+		int schoolCategory = schoolManagementService.getSchoolByID(schoolId).getSchoolCategory();
+		int minusYears = 0;
+		if(schoolCategory==2)
+			minusYears = 6;
+		else if(schoolCategory==3){
+			minusYears = 9;
+		}
+		int teamId = Integer.parseInt(request.getParameter("team_id"));
+		YsmsLeagueZone ysmsLeagueZone = teamManagementService.getZoneByTeam(teamId);
+		boolean signedup = (boolean) session.getAttribute("signedup");
+		String type = request.getParameter("type"); //类型
+		String key = request.getParameter("key"); //关键词
+
+		YsmsLeagueZone leagueZone = teamManagementService.getZoneByTeam(teamId);
+		List<YsmsAthlete> athlete_list = null;
+		if(key == null || key == ""){
+			athlete_list = teamManagementService.getSuitedAthletesByZone(ysmsLeagueZone.getZoneId(), schoolId);
+		}
+		else{
+			if(type != null && type != ""){
+				int seleteType = Integer.parseInt(type);
+				if(seleteType == 1){
+					athlete_list = teamManagementService.getAthletesByProperty(schoolId, null, key.trim(), null, null, null, null);
+				}
+				else if(seleteType == 2){
+					athlete_list = teamManagementService.getAthletesByProperty(schoolId, key.trim(), null, null, null, null, null);
+				}
+				else if(seleteType == 3){
+					int year = Integer.parseInt(key.trim());
+					String realJoinYear = year - minusYears + "";
+					athlete_list = teamManagementService.getAthletesByProperty(schoolId, null, null, null, null, null, realJoinYear);
+				}
+			}
+		}
+		for(int i=0;i<athlete_list.size();i++){
+			YsmsAthlete ysmsAthlete = athlete_list.get(i);
+			int joinSchoolYear = Integer.parseInt(ysmsAthlete.getAthleteSchoolyear());
+			ysmsAthlete.setAthleteSchoolyear(joinSchoolYear+minusYears+"");
+			athlete_list.set(i, ysmsAthlete);
+		}
+		map.put("confirm", signedup);
+		map.put("athlete_list", athlete_list);
+		return map;
+	}
+
+}

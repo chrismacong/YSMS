@@ -1,0 +1,111 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<title>用户绑定</title>
+	<link href="${pageContext.request.contextPath}/css/style.css"
+	rel="stylesheet">
+	<link href="${pageContext.request.contextPath}/css/info_css.css" rel="stylesheet">
+	<script src="${pageContext.request.contextPath}/js/jquery-1.7.2.min.js"></script><!--JQ库-->
+<script src="${pageContext.request.contextPath}/js/Duang.js"></script>
+	<script src="${pageContext.request.contextPath}/js/IDnumV.js"></script>
+	<!--解决IE9以下浏览器不支持html5的问题-->
+	<!--[if lt IE 9]>
+  	   <script src="bootstrap-3.2.0-dist/js/html5.js"></script>
+	<![endif]-->
+</head>
+<body>
+	<div class="header">
+		<div></div>
+		<div>南京少年足球管理平台</div>
+		<div></div>
+	</div>
+	<div class="headimg">
+		<img src="${pageContext.request.contextPath}/images/logo.png"/>
+	</div>
+	<div class="form_div">
+		<form>
+			<input id="name" type="text" placeholder="姓名" onblur="NameV(this)">
+			<div class="prompt"><!--*请输入真实姓名--></div>
+			<input id="IDnum" type="text" placeholder="身份证号" onblur="IDnumV(this)">
+			<div class="prompt"></div>
+			<input id="poll_code" type="text" placeholder="注册码" onblur="RegisternumV(this)">
+			<div class="prompt"><!--*注册码已失效--></div>
+			<input id="bind_btn" type="button" value="绑&nbsp;&nbsp;&nbsp;定">
+		</form>
+	</div>
+</body>
+<script type="text/javascript">
+$(function(){
+	$("#bind_btn").click(function(){
+		if(NameV($("#name"))&&IDnumV($("#IDnum"))&&RegisternumV($("#poll_code"))){
+			var name = $("#name").val();
+			var IDnum = $("#IDnum").val();
+			var registerNum = $("#poll_code").val();
+			loading_juggle_empty_small();
+			$.ajax({
+				"type" : "GET",
+				"contentType" : "application/json",
+				"url" : "${pageContext.request.contextPath}/wechat/binduser.html",
+				"dataType" : "json",
+				"data" : {
+					open_id : "${open_id}",
+					identified_name : name,
+					identified_id : IDnum,
+					register_id : registerNum
+				}, //以json格式传递   
+				"success" : function(data) {
+					if(data.success){
+						alert("绑定成功");//此处应跳转至信息及解除绑定页
+					}
+					else{
+						alert("绑定失败， 您的信息验证失败，请检查！");
+					}
+					cancel_loading();
+				}
+			});
+		}
+	})
+})
+function NameV(obj){
+	var name = $(obj).val();
+	if(name==null||name==""){
+		$(obj).next().text("必须正确输入姓名！");
+		return false;
+	}
+	else{
+		$(obj).next().text("");
+		return true;
+	}
+}
+//验证身份证号码
+function IDnumV(obj){
+	var IDnum=$(obj).val();
+	var str=isCardID(IDnum);
+	if(str!=true){
+		$(obj).next().text(str);
+		return false;
+	}	
+	else{
+		$(obj).next().text("");
+		return true;
+	}
+}
+function RegisternumV(obj){
+	var registerNum = $(obj).val();
+	if(registerNum==null||registerNum.length!=18){
+		$(obj).next().text("必须正确输入16位注册号！");
+		return false;
+	}
+	else{
+		$(obj).next().text("");
+		return true;
+	}
+}
+</script>
+</html>

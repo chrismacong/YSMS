@@ -1,0 +1,102 @@
+package com.cwkj.ysms.service.impl;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.cwkj.ysms.dao.AthleteDao;
+import com.cwkj.ysms.dao.WechataccountDao;
+import com.cwkj.ysms.model.YsmsAthlete;
+import com.cwkj.ysms.model.YsmsWechataccount;
+import com.cwkj.ysms.service.WechatService;
+
+@Service
+public class WechatServiceImpl implements WechatService{
+
+	@Resource
+	private WechataccountDao wechataccountDao;
+	
+	@Resource
+	private AthleteDao athleteDao;
+	public WechataccountDao getWechataccountDao() {
+		return wechataccountDao;
+	}
+
+	public void setWechataccountDao(WechataccountDao wechataccountDao) {
+		this.wechataccountDao = wechataccountDao;
+	}
+
+	public AthleteDao getAthleteDao() {
+		return athleteDao;
+	}
+
+	public void setAthleteDao(AthleteDao athleteDao) {
+		this.athleteDao = athleteDao;
+	}
+
+	@Override
+	public boolean isOpenIdExist(String openId) {
+		YsmsWechataccount ysmsWechataccount = wechataccountDao.findByOpenid(openId);
+		if(ysmsWechataccount==null)
+			return false;
+		return true;
+	}
+
+	@Override
+	public boolean saveWechatAccount(String openId) {
+		YsmsWechataccount ysmsWechataccount = new YsmsWechataccount();
+		ysmsWechataccount.setOpenid(openId);
+		wechataccountDao.save(ysmsWechataccount);
+		return true;
+	}
+
+	@Override
+	public YsmsAthlete findAthleteByOpenId(String openId) {
+		YsmsWechataccount ysmsWechataccount = wechataccountDao.findByOpenid(openId);
+		if(ysmsWechataccount!=null){
+			return ysmsWechataccount.getYsmsAthlete();
+		}
+		return null;
+	}
+
+	@Override
+	public boolean bindAthleteWechat(String openId, String identifiedName,
+			String identifiedId, String registerId) {
+		List<YsmsAthlete> athleteList = athleteDao.findForBinding(identifiedName, identifiedId, registerId);
+		if(athleteList==null||athleteList.size()==0)
+			return false;
+		else{
+			YsmsAthlete ysmsAthlete = athleteList.get(0);
+			YsmsWechataccount ysmsWechataccount = wechataccountDao.findByOpenid(openId);
+			if(ysmsWechataccount==null)
+				return false;
+			ysmsWechataccount.setYsmsAthlete(ysmsAthlete);
+			wechataccountDao.save(ysmsWechataccount);
+			return true;
+		}
+	}
+
+	@Override
+	public boolean unbindAthleteWechat(String openId) {
+		YsmsWechataccount ysmsWechataccount = wechataccountDao.findByOpenid(openId);
+		if(ysmsWechataccount==null)
+			return false;
+		ysmsWechataccount.setYsmsAthlete(null);
+		wechataccountDao.save(ysmsWechataccount);
+		return true;
+	}
+
+	@Override
+	public boolean isBinded(String openId) {
+		YsmsWechataccount ysmsWechataccount = wechataccountDao.findByOpenid(openId);
+		if(ysmsWechataccount==null)
+			return false;
+		YsmsAthlete ysmsAthlete = ysmsWechataccount.getYsmsAthlete();
+		if(ysmsAthlete==null)
+			return false;
+		return true;
+	}
+
+}

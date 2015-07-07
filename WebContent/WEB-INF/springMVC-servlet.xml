@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:task="http://www.springframework.org/schema/task" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/task 
+	http://www.springframework.org/schema/task/spring-task-3.0.xsd
+	http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-3.0.xsd
+	http://www.springframework.org/schema/mvc      
+    http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd  
+	http://www.springframework.org/schema/tx
+	http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+	http://www.springframework.org/schema/aop   
+	http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+
+	<aop:aspectj-autoproxy />
+	<context:component-scan base-package="com.cwkj.ysms">
+		<!-- 修正model类被重载两遍的bug -->
+		<context:exclude-filter type="regex"
+			expression="com.cwkj.ysms.model.*" />
+	</context:component-scan>
+
+
+
+	<bean
+		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+
+		<!-- 配置一下对json数据的转换 -->
+		<property name="messageConverters">
+			<list>
+				<bean
+					class="org.springframework.http.converter.StringHttpMessageConverter">
+					<property name="supportedMediaTypes">
+						<list>
+							<value>application/json; charset=UTF-8</value>
+							<value>text/html;charset=UTF-8</value>
+						</list>
+					</property>
+				</bean>
+				<bean
+					class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter"></bean>
+			</list>
+		</property>
+	</bean>
+
+	<context:property-placeholder location="classpath:db.properties" />
+	<mvc:annotation-driven />
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="classpath:db.properties" />
+	</bean>
+
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!-- set the max upload size100MB -->
+		<property name="maxUploadSize">
+			<value>10485760</value>
+		</property>
+		<property name="maxInMemorySize">
+			<value>4096</value>
+		</property>
+	</bean>
+
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${database.driver}" />
+		<property name="url" value="${database.url}" />
+		<property name="username" value="${database.user}" />
+		<property name="password" value="${database.password}" />
+	</bean>
+
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="dataSource">
+			<ref bean="dataSource" />
+		</property>
+
+		<property name="annotatedClasses">
+			<list>
+				<!-- 在此处插入持久化的model类 -->
+				<value>com.cwkj.ysms.model.YsmsAthlete</value>
+				<value>com.cwkj.ysms.model.YsmsAthleteAtt</value>
+				<value>com.cwkj.ysms.model.YsmsCoach</value>
+				<value>com.cwkj.ysms.model.YsmsCoachAtt</value>
+				<value>com.cwkj.ysms.model.YsmsDiploma</value>
+				<value>com.cwkj.ysms.model.YsmsDistrict</value>
+				<value>com.cwkj.ysms.model.YsmsFoul</value>
+				<value>com.cwkj.ysms.model.YsmsFunction</value>
+				<value>com.cwkj.ysms.model.YsmsGames</value>
+				<value>com.cwkj.ysms.model.YsmsGamesJudge</value>
+				<value>com.cwkj.ysms.model.YsmsGoal</value>
+				<value>com.cwkj.ysms.model.YsmsGroup</value>
+				<value>com.cwkj.ysms.model.YsmsGroupFunction</value>
+				<value>com.cwkj.ysms.model.YsmsJobs</value>
+				<value>com.cwkj.ysms.model.YsmsJudge</value>
+				<value>com.cwkj.ysms.model.YsmsJudgeAtt</value>
+				<value>com.cwkj.ysms.model.YsmsJudgeandlevel</value>
+				<value>com.cwkj.ysms.model.YsmsJudgelevel</value>
+				<value>com.cwkj.ysms.model.YsmsLeague</value>
+				<value>com.cwkj.ysms.model.YsmsLeagueLevel</value>
+				<value>com.cwkj.ysms.model.YsmsLeagueZone</value>
+				<value>com.cwkj.ysms.model.YsmsLog</value>
+				<value>com.cwkj.ysms.model.YsmsSchool</value>
+				<value>com.cwkj.ysms.model.YsmsSchooluser</value>
+				<value>com.cwkj.ysms.model.YsmsTeam</value>
+				<value>com.cwkj.ysms.model.YsmsTeammember</value>
+				<value>com.cwkj.ysms.model.YsmsTrain</value>
+				<value>com.cwkj.ysms.model.YsmsTrainDetail</value>
+				<value>com.cwkj.ysms.model.YsmsUser</value>
+				<value>com.cwkj.ysms.model.YsmsZoneLevel</value>
+				<value>com.cwkj.ysms.model.YsmsZoneTeam</value>
+				<value>com.cwkj.ysms.model.YsmsWechataccount</value>
+				<value>com.cwkj.ysms.model.YsmsWechatnews</value>
+				<value>com.cwkj.ysms.model.YsmsWechatnewsAttr</value>
+				<value>com.cwkj.ysms.model.YsmsVote</value>
+				<value>com.cwkj.ysms.model.YsmsWechatVote</value>
+
+
+			</list>
+		</property>
+
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">com.cwkj.ysms.util.BigDecimalMySQLDialect</prop>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<prop key="hibernate.hbm2ddl.auto">none</prop>
+			</props>
+		</property>
+	</bean>
+	<bean id="urlMapping"
+		class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"></bean>
+	<bean id="jspViewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass"
+			value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/jsp/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="init2" class="com.cwkj.ysms.util.DBInitializing"
+		init-method="tcpInit" />
+	<tx:annotation-driven transaction-manager="transactionManager" />
+	<bean id="thtApplicationContext" class="com.cwkj.ysms.util.ThtApplicationContext"></bean>
+
+	<mvc:interceptors> <bean class="com.cwkj.ysms.interceptor.Interceptor"></bean> 
+		</mvc:interceptors>
+
+</beans>

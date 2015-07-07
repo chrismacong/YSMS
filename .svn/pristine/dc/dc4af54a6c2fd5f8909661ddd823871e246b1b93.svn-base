@@ -1,0 +1,238 @@
+package com.cwkj.ysms.control;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.cwkj.ysms.model.YsmsLeague;
+import com.cwkj.ysms.model.view.GameView;
+import com.cwkj.ysms.model.view.TeamView;
+import com.cwkj.ysms.model.view.ZoneView;
+import com.cwkj.ysms.service.GamesManagementService;
+import com.cwkj.ysms.service.LeagueManagementService;
+import com.cwkj.ysms.service.TeamManagementService;
+import com.cwkj.ysms.util.Page;
+import com.cwkj.ysms.util.PageUtil;
+
+/**
+ * @author Administrator
+ *
+ */
+@Controller
+@RequestMapping(value = "/gamemanagement")
+public class GameManagementControl {
+	@Resource
+	private GamesManagementService gameManagementService;
+
+	public GamesManagementService getGameManagementService() {
+		return gameManagementService;
+	}
+
+	public void setGameManagementService(
+			GamesManagementService gameManagementService) {
+		this.gameManagementService = gameManagementService;
+	}
+	@Resource
+	private LeagueManagementService leagueManagementService;
+	
+	public LeagueManagementService getLeagueManagementService() {
+		return leagueManagementService;
+	}
+
+	public void setLeagueManagementService(
+			LeagueManagementService leagueManagementService) {
+		this.leagueManagementService = leagueManagementService;
+	}
+	@Resource
+	private TeamManagementService teamManagementService;
+
+	public TeamManagementService getTeamManagementService() {
+		return teamManagementService;
+	}
+
+	public void setTeamManagementService(TeamManagementService teamManagementService) {
+		this.teamManagementService = teamManagementService;
+	}
+
+	@RequestMapping(method = RequestMethod.GET)
+	public ModelAndView listResult(HttpServletRequest request,
+			HttpSession session, HttpServletResponse response) {
+		Map<String, Object> model = new HashMap<String, Object>();
+		List<YsmsLeague> leagues = leagueManagementService.getAllLeagues();
+		model.put("leagues", leagues);
+		return new ModelAndView("GameManagementPage", model);
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/getzonesbyleague", method = RequestMethod.POST)
+	public Map<String, Object> getZonesByLeague(HttpServletRequest request,
+			HttpSession session,HttpServletResponse response){
+		Map<String, Object> model = new HashMap<String, Object>();
+		int leagueId = Integer.parseInt(request.getParameter("league_id"));
+		List<ZoneView> zoneList = leagueManagementService.getZonesByLeague(leagueId);
+		model.put("zones", zoneList);
+		return model;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/getteamsbyzone", method = RequestMethod.POST)
+	public Map<String, Object> getTeamsbyzone(HttpServletRequest request,
+			HttpSession session,HttpServletResponse response){
+		Map<String, Object> model = new HashMap<String, Object>();
+		int zoneId = Integer.parseInt(request.getParameter("zone_id"));
+		String[] teamsAlreadySelected = request.getParameter("selected_teamid").split(",");
+		Integer[] teamIdsAlreadySelected = new Integer[teamsAlreadySelected.length];
+		for(int i=0;i<teamsAlreadySelected.length;i++){
+			if(!"".equals(teamsAlreadySelected[i])){
+				teamIdsAlreadySelected[i] = new Integer(teamsAlreadySelected[i]);
+			}
+			else
+				teamIdsAlreadySelected[i] = null;
+		}
+		String groupName = request.getParameter("group_name");
+		List<TeamView> teams = teamManagementService.getTeamsByZone(zoneId==0 ? null : zoneId, 
+				teamIdsAlreadySelected, groupName);
+		model.put("teams", teams);
+		return model;
+	}
+	
+	
+	/**
+	 * 添加比赛
+	 * @param request
+	 * @param session
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "addgame", method = RequestMethod.POST)
+	public Map<String, Object> addGame(HttpServletRequest request,
+			HttpSession session, HttpServletResponse response) throws Exception {
+		Map<String, Object> model = new HashMap<String, Object>();
+		int hostTeamId = Integer.parseInt(request.getParameter("host_team_id"));
+		int guestTeamId = Integer.parseInt(request.getParameter("guest_team_id"));
+		int zoneId = Integer.parseInt(request.getParameter("zone_id"));
+		String gameTimeStr = request.getParameter("game_time");
+		String gameLocation = request.getParameter("game_location");
+		int gameOrder = Integer.parseInt(request.getParameter("game_order"));
+		int hostUniform = Integer.parseInt(request.getParameter("host_uniform"));
+		int guestUniform = Integer.parseInt(request.getParameter("guest_uniform"));
+		Date gamesTime = null;
+		if(!"".equals(gameTimeStr)){
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+			gamesTime = sdf.parse(gameTimeStr);
+		}
+		boolean result = gameManagementService.addGamesInfo(zoneId, gameOrder, hostTeamId, hostUniform, guestTeamId, guestUniform, gamesTime, gameLocation);
+		model.put("success", result);
+		return model;
+	}
+	/**
+	 * 修改比赛
+	 * @param request
+	 * @param session
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "modifygame", method = RequestMethod.POST)
+	public Map<String, Object> modifyGame(HttpServletRequest request,
+			HttpSession session, HttpServletResponse response) throws Exception {
+		Map<String, Object> model = new HashMap<String, Object>();
+		int gameId = Integer.parseInt(request.getParameter("game_id"));
+		String gameTimeStr = request.getParameter("game_time");
+		String gamesLocation = request.getParameter("game_location");
+		int hostUniform = Integer.parseInt(request.getParameter("host_uniform"));
+		int guestUniform = Integer.parseInt(request.getParameter("guest_uniform"));
+		Date gamesTime = null;
+		if(!"".equals(gameTimeStr)){
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+			gamesTime = sdf.parse(gameTimeStr);
+		}
+		boolean result = gameManagementService.modifyGame(gameId, hostUniform, guestUniform, gamesTime, gamesLocation);
+		model.put("success", result);
+		return model;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "getgames", method = RequestMethod.POST)
+	public Map<String, Object> getGames(HttpServletRequest request,
+			HttpSession session, HttpServletResponse response) throws Exception {
+		Map<String, Object> model = new HashMap<String, Object>();
+		Integer leagueId = null;
+		String currentPage = request.getParameter("current_page");
+		String leagueIdStr = request.getParameter("league_id");
+		
+		if(leagueIdStr != null&&!"".equals(leagueIdStr)){
+			leagueId = Integer.parseInt(leagueIdStr);
+		}
+		Integer zoneId = null;
+		String zoneIdStr = request.getParameter("zone_id");
+		if(zoneIdStr != null&&!"".equals(zoneIdStr)){
+			zoneId = Integer.parseInt(zoneIdStr);
+		}
+		String dateStr = request.getParameter("date");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = null;
+		if(dateStr != null&&!"".equals(dateStr)){
+			date = sdf.parse(dateStr);
+		}
+		int count = gameManagementService.getGamesCount(leagueId,
+				zoneId, date);
+		Page returnPage = new Page();
+		Integer returanCurrentPage = 0;
+		if (Integer.parseInt(currentPage) <= PageUtil.getTotalPage(8,
+				count)) {
+			returanCurrentPage = Integer.parseInt(currentPage);
+
+		} else {
+			returanCurrentPage = PageUtil.getTotalPage(8, count);
+		}
+		returnPage.setCurrentPage(returanCurrentPage);
+		returnPage.setHasNextPage(PageUtil.getHasNextPage(
+				PageUtil.getTotalPage(8, count), returanCurrentPage));
+		returnPage
+				.setHasPrePage(PageUtil.getHasPrePage(returanCurrentPage));
+		returnPage.setTotalPage(PageUtil.getTotalPage(8, count));
+		returnPage.setTotalCount(count);
+		List<GameView> viewList = gameManagementService.getGamesByPage(leagueId, zoneId, date,  returanCurrentPage.toString());
+		model.put("page", returnPage);
+		model.put("games", viewList);
+		return model;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "deletegame", method = RequestMethod.POST)
+	public Map<String, Object> deleteGame(HttpServletRequest request,
+			HttpSession session, HttpServletResponse response) throws Exception {
+		Map<String, Object> model = new HashMap<String, Object>();
+		Integer gamesId = Integer.parseInt(request.getParameter("game_id"));
+		boolean result = gameManagementService.deleteGame(gamesId);
+		model.put("success", result);
+		return model;
+	}
+	@ResponseBody
+	@RequestMapping(value = "getsinglegame", method = RequestMethod.POST)
+	public Map<String, Object> getSingleGame(HttpServletRequest request,
+			HttpSession session, HttpServletResponse response) throws Exception {
+		Map<String, Object> model = new HashMap<String, Object>();
+		Integer gamesId = Integer.parseInt(request.getParameter("game_id"));
+		GameView gameView = gameManagementService.getGameById(gamesId);
+		model.put("game", gameView);
+		return model;
+	}
+}

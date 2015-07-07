@@ -1,0 +1,282 @@
+package com.cwkj.ysms.service;
+
+import java.util.List;
+
+import com.cwkj.ysms.model.YsmsAthlete;
+import com.cwkj.ysms.model.YsmsCoach;
+import com.cwkj.ysms.model.YsmsLeagueZone;
+import com.cwkj.ysms.model.YsmsTeam;
+import com.cwkj.ysms.model.view.ExcelAthleteView;
+import com.cwkj.ysms.model.view.ExcelCoachView;
+import com.cwkj.ysms.model.view.TeamView;
+
+/**
+ * 队伍管理Service接口
+ * 负责队伍的增删改查和数据导出操作
+ * @author chrismacong
+ * @since 2015-3-6
+ */
+public interface TeamManagementService {
+	/**
+	 * 增加新球队
+	 * 根据联赛、学校、教练员和运动员信息添加球队
+	 * 一个球队只能参加一次联赛，联赛结束后球队即失效
+	 * 裁判员控制在2名以下
+	 * 运动员控制在20名以下
+	 * @param zoneId 联赛组Id
+	 * @param schoolId 学校Id
+	 * @param teamName 球队名称
+	 * @param coach_list 教练员List，2名以下
+	 * @param athlete_list 运动员List，20名以下
+	 * @return 操作结果，true表示成功
+	 */
+	public boolean addTeam(int zoneId, int schoolId, String teamName,List<YsmsCoach> coach_list, 
+			List<YsmsAthlete> athlete_list);
+	
+	/**
+	 * 增加新球队
+	 * 在简单交互下使用
+	 * @param zoneId
+	 * @param schoolId
+	 * @return
+	 */
+	public boolean simplyAddTeam(int zoneId, int schoolId);
+	
+	/**
+	 * 修改球队信息
+	 * 用于学校账户登录后，已报名但未审核的阶段
+	 * 可以修改球队名称以及教练员和运动员名单，无法修改所参与的联赛
+	 * @param teamId 球队Id
+	 * @param teamName 球队名称
+	 * @param coach_list 教练员List，2名以下
+	 * @param athlete_list 运动员List，20名以下
+	 * @return 操作结果，true表示成功
+	 */
+	public boolean modifyTeam(int teamId, String teamName, List<YsmsCoach> coach_list, 
+			List<YsmsAthlete> athlete_list);
+	
+	/**
+	 * 删除球队
+	 * @param teamId 球队Id
+	 * @return 操作结果，true表示成功
+	 */
+	public boolean deleteTeam(int teamId);
+	
+	/**
+	 * 根据学校查询学校内的球队
+	 * @param schoolId 学校Id
+	 * @return 球队list
+	 */
+	public List<YsmsTeam> getTeamInfoBySchool(int schoolId);
+	
+	/**
+	 * 根据联赛组查询报名联赛的球队
+	 * @param zoneId 联赛组Id
+	 * @return 球队List
+	 */
+	public List<TeamView> getSignedTeamByZone(int zoneId);
+
+	/**
+	 * 修改球队姓名
+	 * @param teamId 球队Id
+	 * @param teamName 修改后的球队名称
+	 * @return 修改结果
+	 */
+	public boolean modifyTeamName(int teamId, String teamName);
+	
+	/**
+	 * 根据联赛查询参加联赛的球队
+	 * @param zoneId 联赛组Id
+	 * @return 球队List
+	 */
+	public List<TeamView> getParticipatedTeamByZone(int zoneId);
+	
+	/**
+	 * 根据联赛Id以及球队名称获取球队信息
+	 * @param zoneId 联赛组Id
+	 * @param teamName 球队名称
+	 */
+	public List<TeamView> getTeamByZoneAndTeamName(int zoneId, String teamName);
+	
+	/**
+	 * 根据联赛Id以及所属学校名称获取球队信息
+	 * @param zoneId 联赛组Id
+	 * @param schoolName 所属学校名称
+	 * @return
+	 */
+	public List<TeamView> getTeamByZoneAndSchoolName(int zoneId, String schoolName);
+	
+	/**
+	 * 根据球队获取联赛信息
+	 * @param teamId 球队Id
+	 * @return 操作结果，true表示成功
+	 */
+	public YsmsLeagueZone getZoneByTeam(int teamId);
+	
+	/**
+	 * 向球队添加球员
+	 * @param teamId 球队Id
+	 * @param athleteId 球员Id
+	 * @return 操作结果，true表示成功
+	 */
+	public boolean addAthleteToTeam(int teamId, int athleteId);
+	
+	/**
+	 * 向球队添加教练员
+	 * @param teamId 球队Id
+	 * @param coachId 教练Id
+	 * @return 操作结果，true表示成功
+	 */
+	public boolean addCoachToTeam(int teamId, int coachId);
+	
+	/**
+	 * 报名参赛
+	 * zoneId在新建球队时便已确定
+	 * @param teamId 球队Id
+	 * @return 操作结果，true表示成功
+	 */
+	public boolean signToZone(int teamId);
+	
+	/**
+	 * 批量获取运动员信息
+	 * @param athletesStr 运动员Id，逗号分隔
+	 * @return 结果列表
+	 */
+	public List<YsmsAthlete> getAthletesForTeam(String athletesStr);
+	
+	/**
+	 * 批量获取叫教练员信息
+	 * @param coachStr 教练员Id，逗号分隔
+	 * @return 结果列表
+	 */
+	public List<YsmsCoach> getCoachesForTeam(String coachStr);
+	
+	/**
+	 * 根据条件获取运动员信息
+	 * @param schoolId 学校Id
+	 * @param identifiedId 身份证
+	 * @param identifiedName 姓名
+	 * @param athleteSchoolyear 入学年份
+	 * @return 结果列表
+	 */
+	public List<YsmsAthlete> getAthletesByProperty(Integer schoolId, String identifiedId,
+			String identifiedName, Integer identifiedGender, Integer athletePosition,
+			Integer studentId,String athleteSchoolyear);
+	
+	/**
+	 * 根据球队Id获取运动员信息
+	 * @param teamId 球队Id
+	 * @return 结果列表
+	 */
+	public List<YsmsAthlete> getAthletesByTeamId(int teamId);
+	
+	/**
+	 * 根据条件获取叫教练员信息
+	 * @param schoolId 学校Id
+	 * @param identifiedId 身份证
+	 * @param identifiedName 姓名
+	 * @param identifiedGender 性别
+	 * @return 结果列表
+	 */
+	public List<YsmsCoach> getCoachesByProperty(String identifiedId, Integer schoolId,
+			String coachContact, String identifiedName, Integer identifiedGender);
+	
+	/**
+	 * 根据球队Id获取叫教练员信息
+	 * @param teamId 球队Id
+	 * @return 结果列表
+	 */
+	public List<YsmsCoach> getCoachesByTeamId(int teamId);
+	
+	/**
+	 * 查找学校在联赛组中的球队
+	 * 用来获取注册后的球队信息，以及判断是否可以再次报名
+	 * @param schoolId 学校Id
+	 * @param zoneId 联赛组Id
+	 * @return 球队信息，null表示没有
+	 */
+	public YsmsTeam getTeamForSchoolAndZone(int schoolId, int zoneId);
+	
+	/**
+	 * 根据teamId查询球队
+	 * @param teamId 球队Id
+	 * @return 球队信息，null表示没有
+	 */
+	public YsmsTeam getTeamById(int teamId);
+	
+	/**
+	 * 获取报名运动员信息用于Excel导出
+	 * @param teamId 球队Id
+	 * @return 结果列表
+	 */
+	public List<ExcelAthleteView> getAthletesForTeam(int teamId);
+	
+	/**
+	 * 获取报名教练员信息用于Excel导出
+	 * @param teamId 球队Id
+	 * @return 结果列表
+	 */
+	public List<ExcelCoachView> getCoachsForTeam(int teamId);
+	
+	/**
+	 * 修改运动员号码
+	 * @param teamMemberId
+	 * @param athleteNum
+	 * @return
+	 */
+	public boolean changeAthleteNum(int teamMemberId, int athleteNum);
+	
+	/**
+	 * 修改运动员位置
+	 * @param teamMemberId
+	 * @param athleteNum
+	 * @return
+	 */
+	public boolean changeAthletePosition(int teamMemberId, int athletePosition);
+	
+	/**
+	 * 配置球队信息
+	 * @param teamId 球队Id
+	 * @param leaderName 领队姓名
+	 * @param leaderPhone 领队电话
+	 * @param doctorName 队医姓名
+	 * @param doctorPhone 队医电话
+	 * @param coachStr 教练员Id列表
+	 * @param athleteStr 运动员列表
+	 * @return
+	 */
+	public boolean configTeamMember(int teamId, String leaderName, String leaderPhone,
+			String doctorName, String doctorPhone, String coachStr, String athleteStr);
+	
+	/**
+	 * 根据组别和学校Id，获取可供选择的默认球员列表
+	 * @param zoneId
+	 * @param schoolId
+	 * @return
+	 */
+	public List<YsmsAthlete> getSuitedAthletesByZone(int zoneId, int schoolId);
+
+	/**
+	 * 根据过滤条件和联赛组别，查询相关的运动员列表
+	 * @param schoolId
+	 * @param identifiedId
+	 * @param identifiedName
+	 * @param identifiedGender
+	 * @param athletePosition
+	 * @param studentId
+	 * @param athleteSchoolyearr
+	 * @param zoneId
+	 * @return
+	 */
+	List<YsmsAthlete> getAthletesByPropertyAndZoneId(Integer schoolId,
+			String identifiedId, String identifiedName,
+			Integer identifiedGender, Integer athletePosition,
+			Integer studentId, String athleteSchoolyearr, int zoneId);
+	
+	/**
+	 * 根据学校编号获取学校一个球队最多报名人数限制
+	 * @param schoolId
+	 * @return
+	 */
+	public int getSignUpAthletelimitCountBySchoolId(Integer schoolId);
+}

@@ -1,0 +1,278 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>查看比分</title>
+<link href="${pageContext.request.contextPath}/css/style.css"
+	rel="stylesheet">
+<link href="${pageContext.request.contextPath}/css/wechat.css"
+	rel="stylesheet">
+<script src="${pageContext.request.contextPath}/js/jquery-1.7.2.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/Duang.js"></script>
+<!--JQ库-->
+<script type="text/javascript">
+$(function() {
+	getData();
+});
+function getData() {
+	loading_juggle_empty();
+	$.ajax({
+		"type" : "GET",
+		"contentType" : "application/json",
+		"url" : "${pageContext.request.contextPath}/wechat/getlatestresult.html",
+		"dataType" : "json",
+		"data" : {
+			athlete_id : "${athlete_id}"
+		}, //以json格式传递   
+		"success" : function(data) {
+			if(data.game!=null){
+				$(".matchtime").text(data.game.gameTime + " " + data.game.gameLocation);
+				$(".leaguename").text(data.game.leagueName);
+				$(".matchlevel").text(data.game.zoneName + " " + data.game.orderName);
+				var hostScore = data.game.hostScore;
+				var guestScore = data.game.guestScore;
+				if(hostScore==null)
+					hostScore = "--";
+				if(guestScore==null)
+					guestScore = "--";
+				$(".hostscore").text(hostScore);
+				$(".guestscore").text(guestScore);
+				$(".hostschoolname").text(data.game.hostSchoolName);
+				$(".hostname").text(data.game.hostSchoolName + "-" + data.game.hostTeamName);
+				$(".guestschoolname").text(data.game.guestSchoolName);
+				$(".guestname").text(data.game.guestSchoolName + "-" + data.game.guestTeamName);
+				var hostgoals = data.host_goals;
+				var hostGoalPlayer = new Array();
+				var hostGoalPlayerName = new Array();
+				var hostGoalArray = new Array();//主队进球数组，一个人进多球要合并
+				var hostGoalArrayCount = 0;//主队进球人指针
+				for(var i=0;i<hostgoals.length;i++){
+					var goal = hostgoals[i];
+					var containsThatPlayer = false;
+					for(var j=0;j<hostGoalPlayer.length;j++){
+						if(hostGoalPlayer[j] == goal.shooterId){
+							containsThatPlayer = true;
+							hostGoalArray[j] += "&nbsp;" + goal.time + "'";
+							if(goal.style==2){
+								hostGoalArray[j] += "(P)";
+							}
+							else if(goal.style==3){
+								hostGoalArray[j] += "(OG)";
+							}
+						}
+					}
+					if(!containsThatPlayer){
+						hostGoalPlayer[hostGoalArrayCount] = goal.shooterId;
+						hostGoalPlayerName[hostGoalArrayCount] = goal.shooterName;
+						hostGoalArray[hostGoalArrayCount] = goal.time + "'";
+						if(goal.style==2){
+							hostGoalArray[hostGoalArrayCount] += "[P]";
+						}
+						else if(goal.style==3){
+							hostGoalArray[hostGoalArrayCount] += "[OG]";
+						}
+						hostGoalArrayCount++;
+					}
+				}
+				for(var i=0;i<hostGoalPlayer.length;i++){
+					$("#hostgoal").append("<li><span></span><p>" + hostGoalPlayerName[i] + "(" + hostGoalArray[i] + ")</p></li>")
+				}
+				
+				var guestgoals = data.guest_goals;
+				var guestGoalPlayer = new Array();
+				var guestGoalPlayerName = new Array();
+				var guestGoalArray = new Array();//客队进球数组，一个人进多球要合并
+				var guestGoalArrayCount = 0;//客队进球人指针
+				for(var i=0;i<guestgoals.length;i++){
+					var goal = guestgoals[i];
+					var containsThatPlayer = false;
+					for(var j=0;j<guestGoalPlayer.length;j++){
+						if(guestGoalPlayer[j] == goal.shooterId){
+							containsThatPlayer = true;
+							guestGoalArray[j] += "&nbsp;" + goal.time + "'";
+							if(goal.style==2){
+								guestGoalArray[j] += "(P)";
+							}
+							else if(goal.style==3){
+								guestGoalArray[j] += "(OG)";
+							}
+						}
+					}
+					if(!containsThatPlayer){
+						guestGoalPlayer[guestGoalArrayCount] = goal.shooterId;
+						guestGoalPlayerName[guestGoalArrayCount] = goal.shooterName;
+						guestGoalArray[guestGoalArrayCount] = goal.time + "'";
+						if(goal.style==2){
+							guestGoalArray[guestGoalArrayCount] += "[P]";
+						}
+						else if(goal.style==3){
+							guestGoalArray[guestGoalArrayCount] += "[OG]";
+						}
+						guestGoalArrayCount++;
+					}
+				}
+				for(var i=0;i<guestGoalPlayer.length;i++){
+					$("#guestgoal").append("<li><span></span><p>" + guestGoalPlayerName[i] + "(" + guestGoalArray[i] + ")</p></li>")
+				}
+				
+				var hostfouls = data.host_fouls;
+				var hostFoulPlayer = new Array();
+				var hostFoulPlayerName = new Array();
+				var hostFoulArrayCount = 0;
+				var hostFoulHtml = new Array();
+				for(var i=0;i<hostfouls.length;i++){
+					var foul = hostfouls[i];
+					var containsThatPlayer = false;
+					for(var j=0;j<hostFoulPlayer.length;j++){
+						if(hostFoulPlayer[j] == foul.athleteId){
+							containsThatPlayer = true;
+							if(foul.foulLevel==1){//说明该人已经存在于列表。这种情况下一定已经拿到过黄牌，否则记录错误
+								hostFoulHtml[j] += "&nbsp;" + foul.time + "'" + "<i class='double_yellow_pai'></i>";
+							}
+							else if(foul.foulLevel==2){
+								hostFoulHtml[j] += "&nbsp;" + foul.time + "'" + "<i class='red_pai'></i>"
+							}
+						}
+					}
+					if(!containsThatPlayer){
+						hostFoulPlayer[hostFoulArrayCount] = foul.athleteId;
+						hostFoulPlayerName[hostFoulArrayCount] = foul.athleteName;
+						if(foul.foulLevel==1){//说明该人已经存在于列表。这种情况下一定已经拿到过黄牌，否则记录错误
+							hostFoulHtml[hostFoulArrayCount] = foul.time + "'" + "<i class='yellow_pai'></i>";
+						}
+						else if(foul.foulLevel==2){
+							hostFoulHtml[hostFoulArrayCount] = foul.time + "'" + "<i class='red_pai'></i>"
+						}
+						hostFoulArrayCount++;
+					}
+				}
+				for(var i=0;i<hostFoulPlayer.length;i++){
+					var html = "<li><span></span><p>";
+					html += hostFoulPlayerName[i] + "(";
+					html += hostFoulHtml[i] + ")</p></li>"
+					$("#hostfoul").append(html)
+				}
+				
+				var guestfouls = data.guest_fouls;
+				var guestFoulPlayer = new Array();
+				var guestFoulPlayerName = new Array();
+				var guestFoulArrayCount = 0;
+				var guestFoulHtml = new Array();
+				for(var i=0;i<guestfouls.length;i++){
+					var foul = guestfouls[i];
+					var containsThatPlayer = false;
+					for(var j=0;j<guestFoulPlayer.length;j++){
+						if(guestFoulPlayer[j] == foul.athleteId){
+							containsThatPlayer = true;
+							if(foul.foulLevel==1){//说明该人已经存在于列表。这种情况下一定已经拿到过黄牌，否则记录错误
+								guestFoulHtml[j] += "&nbsp;" + foul.time + "'" + "<i class='double_yellow_pai'></i>";
+							}
+							else if(foul.foulLevel==2){
+								guestFoulHtml[j] += "&nbsp;" + foul.time + "'" + "<i class='red_pai'></i>"
+							}
+						}
+					}
+					if(!containsThatPlayer){
+						guestFoulPlayer[guestFoulArrayCount] = foul.athleteId;
+						guestFoulPlayerName[guestFoulArrayCount] = foul.athleteName;
+						if(foul.foulLevel==1){//说明该人已经存在于列表。这种情况下一定已经拿到过黄牌，否则记录错误
+							guestFoulHtml[guestFoulArrayCount] = foul.time + "'" + "<i class='yellow_pai'></i>";
+						}
+						else if(foul.foulLevel==2){
+							guestFoulHtml[guestFoulArrayCount] = foul.time + "'" + "<i class='red_pai'></i>"
+						}
+						guestFoulArrayCount++;
+					}
+				}
+				for(var i=0;i<guestFoulPlayer.length;i++){
+					var html = "<li><span></span><p>";
+					html += guestFoulPlayerName[i] + "(";
+					html += guestFoulHtml[i] + ")</p></li>"
+					$("#guestfoul").append(html)
+				}
+				cancel_loading();
+			}
+		}
+	});
+}
+</script>
+</head>
+<body>
+	<div class="bg">
+		<img src="../images/bg2.jpg" />
+	</div>
+	<div class="container">
+		<!--打比分-->
+		<div class="bifen">
+			<div class="logo_wk">
+				<div class="logo"></div>
+				<p class="hostschoolname"></p>
+				<p id="hostteamname"></p>
+			</div>
+			<div class="num hostscore"></div>
+			<div class="vs">
+				<img src="../images/vs.png" />
+			</div>
+			<div class="num guestscore"></div>
+			<div class="logo_wk">
+				<div class="logo"></div>
+				<p class="guestschoolname"></p>
+				<p id="guestteamname"></p>
+			</div>
+		</div>
+
+		<div class="name">
+			<div class="matchlevel"></div>
+			<div class="leaguename"></div>
+			<div class="matchtime"></div>
+		</div>
+
+		<div class="xijie">
+			<!--第一个学校-->
+			<div class="wk_xijie">
+				<div class="title title_color1">
+					<span>主</span>
+					<p class="hostname"></p>
+				</div>
+				<div class="jilu">
+					<div class="title_2">进球得分</div>
+					<ul id="hostgoal" class="score">
+					</ul>
+					<div class="title_2">红黄牌</div>
+					<ul id="hostfoul" class="foul">
+					</ul>
+				</div>
+			</div>
+			<!--第二个学校-->
+			<div class="wk_xijie ">
+				<div class="title title_color1">
+					<span>客</span>
+					<p class="guestname"></p>
+				</div>
+				<div class="jilu">
+					<div class="title_2">进球得分</div>
+					<ul id="guestgoal" class="score">
+					</ul>
+					<div class="title_2">红黄牌</div>
+					<ul id="guestfoul" class="foul">
+					</ul>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="bottom">
+			<div>
+				<i></i>
+				<p>南京少年足球管理平台</p>
+				<i></i>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

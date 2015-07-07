@@ -1,0 +1,40 @@
+package com.cwkj.ysms.dao;
+
+import java.util.Date;
+import java.util.List;
+
+import com.cwkj.ysms.model.YsmsWechatnews;
+
+public interface WechatnewsDao {
+	/**
+	 * 存储新闻
+	 * @param ysmsWechatnews
+	 */
+	public void save(YsmsWechatnews ysmsWechatnews);
+	
+	/**
+	 * 删除新闻
+	 * @param ysmsWechatnews
+	 */
+	public void delete(YsmsWechatnews ysmsWechatnews);
+	
+	/**
+	 * 根据Id查找新闻
+	 * @param wechatId
+	 * @return
+	 */
+	public YsmsWechatnews findById(int wechatId);
+	
+	/**
+	 * 获取全部新闻
+	 * @return
+	 */
+	public List<YsmsWechatnews> findAll();
+	
+	/**
+	 * 根据日期获取新闻
+	 * @param date
+	 * @return
+	 */
+	public List<YsmsWechatnews> findByDate(Date date);
+}

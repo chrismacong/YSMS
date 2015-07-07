@@ -1,0 +1,103 @@
+package com.cwkj.ysms.control;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.cwkj.ysms.wechat.controller.WeChatController;
+import com.cwkj.ysms.wechat.demo.AesException;
+import com.cwkj.ysms.wechat.demo.WXBizMsgCrypt;
+
+@Controller
+@RequestMapping(value = "/wechat")
+public class WeChatControl extends HttpServlet{
+
+    private static String token = "chrismacong_ysms";
+	private static String encodingAESKey = "2LSMdHj0gVIZLyfq8SVBeYMGLughXbotpAwRUKNvJUu";
+	private static String appId = "wx7a705b66a32e3509";
+	private static String appSecret = "eb60d3f56456a4be8e889c6550266c74";
+	
+	@RequestMapping(method = RequestMethod.GET)
+	public void doGet(HttpServletRequest request,
+			HttpSession session, HttpServletResponse response) {
+		 try {
+			// 微信加密签名  
+			 String msg_signature = request.getParameter("msg_signature");
+			// 时间戳  
+			 String timestamp = request.getParameter("timestamp");
+			// 随机数  
+			String nonce = request.getParameter("nonce");  
+			// 随机字符串  
+			String echostr = request.getParameter("echostr");  
+			System.out.println("request=" + request.getRequestURL());
+			PrintWriter out = response.getWriter();  
+			String result = null;
+			try{
+				WXBizMsgCrypt wxcpt = new WXBizMsgCrypt(token, encodingAESKey, appId);
+				result = wxcpt.verifyUrl(msg_signature, timestamp, nonce, echostr);
+			} catch (AesException e){
+				e.printStackTrace();
+			}
+			if(result == null){
+				result = token;
+			}
+			out.print(result);
+			out.close();
+			out = null;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	@RequestMapping(method = RequestMethod.POST)
+	public void listResult(HttpServletRequest request,
+			HttpSession session, HttpServletResponse response) {
+		// 设置编码方式
+		try {
+			request.setCharacterEncoding("UTF-8");
+			response.setCharacterEncoding("UTF-8");
+			response.setContentType("text/html;charset=utf-8");
+			
+			//读取微信客户端post过来的数据
+			InputStream is = request.getInputStream();
+			InputStreamReader isr = new InputStreamReader(is, "UTF-8");
+			BufferedReader br = new BufferedReader(isr);
+			String str = "";
+			StringBuffer sb = new StringBuffer();
+			
+			//按行读取内容
+			while(null != (str = br.readLine())){
+				sb.append(str);
+			}
+			
+			String message = sb.toString();
+			
+			String result = new WeChatController().wechatProcess(message);
+			//返回处理结果
+			OutputStream os = response.getOutputStream();
+			os.write(result.getBytes("UTF-8"));
+			os.flush();
+			os.close();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+}

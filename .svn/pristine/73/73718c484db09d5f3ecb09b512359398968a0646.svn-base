@@ -1,0 +1,177 @@
+package com.cwkj.ysms.test.dao;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.cwkj.ysms.dao.GamesDao;
+import com.cwkj.ysms.dao.LeagueZoneDao;
+import com.cwkj.ysms.dao.TeamDao;
+import com.cwkj.ysms.model.YsmsGames;
+import com.cwkj.ysms.model.YsmsLeagueZone;
+
+@RunWith(SpringJUnit4ClassRunner.class) 
+@ContextConfiguration(locations="file:WebContent/WEB-INF/springMVC-servlet.xml") 
+public class GamesDaoTest {
+	@Autowired
+	private GamesDao gamesDao;
+	
+	@Autowired
+	private LeagueZoneDao leagueZoneDao;
+	
+	@Autowired
+	private TeamDao teamDao;
+	@Test
+	public void testSave(){
+		try {
+			YsmsGames ysmsGames = new YsmsGames();
+			ysmsGames.setGameLocation("测试Location");
+			ysmsGames.setGamesOrder(1);
+			Calendar cal = Calendar.getInstance();
+			cal.set(2015, 3, 22);
+			Date gamesTime = cal.getTime();
+			ysmsGames.setGamesTime(gamesTime);
+			ysmsGames.setGuestScore(1);
+			ysmsGames.setYsmsTeamByGuestTeamid(teamDao.findById(1));
+			ysmsGames.setHostScore(2);
+			ysmsGames.setYsmsTeamByHostTeamid(teamDao.findById(2));
+			YsmsLeagueZone ysmsLeagueZone = leagueZoneDao.findById(1);
+			ysmsGames.setYsmsLeagueZone(ysmsLeagueZone);
+			gamesDao.save(ysmsGames);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testDelete(){
+		YsmsGames ysmsGames = gamesDao.findById(1);
+		if (ysmsGames != null) {
+			gamesDao.delete(ysmsGames);
+		}
+	}
+	
+	@Test
+	public void testFindById(){
+		YsmsGames ysmsGames = gamesDao.findById(1);
+		if (ysmsGames == null) {
+			System.out.println("testFindById success:ysmsGames is null");
+		}
+		else {
+			System.out.println("find by gameId completed: "+ysmsGames.getGamesId());
+		}
+		System.out.println(ysmsGames.getYsmsLeagueZone().getYsmsLeague().getLeagueName());
+	}
+	
+	@Test
+	public void testGetGamesByTeamId(){
+		List<YsmsGames> ysmsGames_list = gamesDao.getGamesByTeamId(2);
+		for (int i = 0; i < ysmsGames_list.size(); i++) {
+			System.out.println(ysmsGames_list.get(i).getGameLocation());
+		}
+	}
+	
+	@Test
+	public void testGetGamesByDate(){
+		Calendar cal = Calendar.getInstance();
+		cal.set(2015,3,20);
+		Date date = cal.getTime();
+		List<YsmsGames> ysmsGames_list = gamesDao.getGamesByDate(date);
+		for (int i = 0; i < ysmsGames_list.size(); i++) {
+			System.out.println(ysmsGames_list.get(i).getGameLocation());
+		}
+	}
+	
+	@Test
+	public void testGetGamesByLeagueId(){
+		List<YsmsGames> ysmsGames_list = gamesDao.getGamesByZoneId(1);
+		for (int i = 0; i < ysmsGames_list.size(); i++) {
+			System.out.println(ysmsGames_list.get(i).getGameLocation());
+		}
+	}
+	
+	@Test
+	public void testGetGamesByLeagueIdAndDate(){
+		Calendar cal = Calendar.getInstance();
+		cal.set(2015,3,20);
+		Date date = cal.getTime();
+		List<YsmsGames> ysmsGames_list = gamesDao.getGamesByZoneIdAndDate(1, date);
+		for (int i = 0; i < ysmsGames_list.size(); i++) {
+			System.out.println(ysmsGames_list.get(i).getGameLocation());
+		}
+	}
+	
+	@Test
+	public void testGetGamesByLeagueIdBetweenDate(){
+		Calendar cal = Calendar.getInstance();
+		cal.set(2015,3,19);
+		Date beginDate = cal.getTime();
+		cal.set(Calendar.DAY_OF_MONTH,23);
+		Date endDate = cal.getTime();
+		List<YsmsGames> ysmsGames_list 
+			= gamesDao.getGamesByZoneIdBetweenDate(1,beginDate,endDate);
+		System.out.println(ysmsGames_list.size());
+	}
+	
+	@Test
+	public void testGetGamesByTeamIdBetweenDate(){
+		Calendar cal = Calendar.getInstance();
+		cal.set(2015,3,19);
+		Date beginDate = cal.getTime();
+		cal.set(Calendar.DAY_OF_MONTH,23);
+		Date endDate = cal.getTime();
+		List<YsmsGames> ysmsGames_list 
+			= gamesDao.getGamesByTeamIdBetweenDate(1,beginDate,endDate);
+		System.out.println(ysmsGames_list.size());
+	}
+	
+	@Test
+	public void testGetNextGameByTeamId(){
+		YsmsGames ysmsGames = gamesDao.getNextGameByTeamId(8);
+		if (ysmsGames == null) {
+			System.out.println("testGetNextGameByTeamId success:ysmsGames is null");
+		}
+		else {
+			System.out.println(ysmsGames.getGamesTime());
+		}
+	}
+	
+	@Test
+	public void testGetLastGameByTeamId(){
+		YsmsGames ysmsGames = gamesDao.getLastGameByTeamId(8);
+		if (ysmsGames == null) {
+			System.out.println("testGetLastGameByTeamId success:ysmsGames is null");
+		}
+		else {
+			System.out.println(ysmsGames.getGamesTime());
+		}
+	}
+	
+	@Test
+	public void testGetNextGameByAthleteId(){
+		YsmsGames ysmsGames = gamesDao.getNextGameByAthleteId(1305);
+		if (ysmsGames == null) {
+			System.out.println("testGetNextGameByTeamId success:ysmsGames is null");
+		}
+		else {
+			System.out.println(ysmsGames.getGamesTime());
+		}
+	}
+	
+	@Test
+	public void testGetLastGameByAthleteId(){
+		YsmsGames ysmsGames = gamesDao.getLastGameByAthleteId(1305);
+		if (ysmsGames == null) {
+			System.out.println("testGetLastGameByTeamId success:ysmsGames is null");
+		}
+		else {
+			System.out.println(ysmsGames.getGamesTime());
+		}
+	}
+}

@@ -1,0 +1,81 @@
+package com.cwkj.ysms.interceptor;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.mvc.multiaction.InternalPathMethodNameResolver;
+import org.springframework.web.servlet.mvc.multiaction.MethodNameResolver;
+import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
+
+
+@Controller
+public class Interceptor extends HandlerInterceptorAdapter implements InitializingBean{  
+	private static final Logger logger = Logger.getLogger(Interceptor.class);
+
+	@Override  
+	public boolean preHandle(HttpServletRequest request,  HttpServletResponse response, Object handler){  
+		// TODO Auto-generated method stub  
+		logger.debug("==============preHandle================"); 
+		String userName = (String) request.getSession().getAttribute("userName");
+		MethodNameResolver methodNameResolver = new InternalPathMethodNameResolver();
+		try {
+			if("login".equals(methodNameResolver.getHandlerMethodName(request))){
+				return true;
+			}
+			else if("wechat".equals(methodNameResolver.getHandlerMethodName(request))){
+				return true;
+			}
+			else if(userName==null||userName.equals("")){
+				 PrintWriter pw=response.getWriter();
+				 pw.print("<script>window.parent.location.href='"+request.getContextPath() + "/login.html'"+";</script>");
+				 //response.sendRedirect(request.getContextPath()+"/login.html");
+				 return false;
+			}
+		} catch (NoSuchRequestHandlingMethodException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return true;
+	}  
+
+	//在业务处理器处理请求执行完成后,生成视图之前执行的动作   
+	@Override  
+	public void postHandle(HttpServletRequest request,  
+			HttpServletResponse response, Object handler,  
+			ModelAndView modelAndView) throws Exception {  
+		// TODO Auto-generated method stub  
+		logger.debug("==============postHandle================");  
+		
+	}  
+
+	/** 
+	 * 在DispatcherServlet完全处理完请求后被调用  
+	 *  
+	 *   当有拦截器抛出异常时,会从当前拦截器往回执行所有的拦截器的afterCompletion() 
+	 */  
+	@Override  
+	public void afterCompletion(HttpServletRequest request,  
+			HttpServletResponse response, Object handler, Exception ex)  
+					throws Exception {  
+		// TODO Auto-generated method stub  
+		logger.debug("==============afterCompletion================");  
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		// TODO Auto-generated method stub
+		System.out.println("=======初始化DetailInterceptor拦截器========="); 
+	}  
+}
+

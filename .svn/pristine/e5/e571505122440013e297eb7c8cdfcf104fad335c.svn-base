@@ -1,0 +1,576 @@
+package com.cwkj.ysms.service.impl;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Component;
+
+import com.cwkj.ysms.dao.AthleteDao;
+import com.cwkj.ysms.dao.FoulDao;
+import com.cwkj.ysms.dao.GamesDao;
+import com.cwkj.ysms.dao.GamesJudgeDao;
+import com.cwkj.ysms.dao.GoalDao;
+import com.cwkj.ysms.dao.JudgeDao;
+import com.cwkj.ysms.dao.LeagueZoneDao;
+import com.cwkj.ysms.dao.TeamDao;
+import com.cwkj.ysms.dao.TeammemberDao;
+import com.cwkj.ysms.dao.ZoneTeamDao;
+import com.cwkj.ysms.model.YsmsAthlete;
+import com.cwkj.ysms.model.YsmsFoul;
+import com.cwkj.ysms.model.YsmsGames;
+import com.cwkj.ysms.model.YsmsGamesJudge;
+import com.cwkj.ysms.model.YsmsGoal;
+import com.cwkj.ysms.model.YsmsJudge;
+import com.cwkj.ysms.model.YsmsTeammember;
+import com.cwkj.ysms.model.YsmsZoneTeam;
+import com.cwkj.ysms.model.view.FoulView;
+import com.cwkj.ysms.model.view.GameView;
+import com.cwkj.ysms.model.view.GoalView;
+import com.cwkj.ysms.service.GamesManagementService;
+import com.cwkj.ysms.util.Page;
+
+@Component
+public class GamesManagementServiceImpl implements GamesManagementService{
+	
+	@Resource
+	private GamesDao gamesDao;
+	@Resource
+	private GoalDao goalDao;
+	@Resource
+	private FoulDao foulDao;
+	@Resource
+	private AthleteDao athleteDao;
+	public ZoneTeamDao getZoneTeamDao() {
+		return zoneTeamDao;
+	}
+
+	public void setZoneTeamDao(ZoneTeamDao zoneTeamDao) {
+		this.zoneTeamDao = zoneTeamDao;
+	}
+
+	@Resource
+	private JudgeDao judgeDao;
+	@Resource 
+	private GamesJudgeDao gamesJudgeDao;
+	@Resource
+	private LeagueZoneDao leagueZoneDao;
+	@Resource
+	private TeamDao teamDao;
+	@Resource
+	private ZoneTeamDao zoneTeamDao;
+	public TeamDao getTeamDao() {
+		return teamDao;
+	}
+
+	public void setTeamDao(TeamDao teamDao) {
+		this.teamDao = teamDao;
+	}
+
+	public LeagueZoneDao getLeagueZoneDao() {
+		return leagueZoneDao;
+	}
+
+	public void setLeagueZoneDao(LeagueZoneDao leagueZoneDao) {
+		this.leagueZoneDao = leagueZoneDao;
+	}
+
+	public GamesJudgeDao getGamesJudgeDao() {
+		return gamesJudgeDao;
+	}
+
+	public void setGamesJudgeDao(GamesJudgeDao gamesJudgeDao) {
+		this.gamesJudgeDao = gamesJudgeDao;
+	}
+
+	public JudgeDao getJudgeDao() {
+		return judgeDao;
+	}
+
+	public void setJudgeDao(JudgeDao judgeDao) {
+		this.judgeDao = judgeDao;
+	}
+	
+	@Resource
+	private TeammemberDao teammemberDao;
+	public TeammemberDao getTeammemberDao() {
+		return teammemberDao;
+	}
+
+	public void setTeammemberDao(TeammemberDao teammemberDao) {
+		this.teammemberDao = teammemberDao;
+	}
+
+	public AthleteDao getAthleteDao() {
+		return athleteDao;
+	}
+
+	public void setAthleteDao(AthleteDao athleteDao) {
+		this.athleteDao = athleteDao;
+	}
+
+	public FoulDao getFoulDao() {
+		return foulDao;
+	}
+
+	public void setFoulDao(FoulDao foulDao) {
+		this.foulDao = foulDao;
+	}
+
+	public GoalDao getGoalDao() {
+		return goalDao;
+	}
+
+	public void setGoalDao(GoalDao goalDao) {
+		this.goalDao = goalDao;
+	}
+
+	public GamesDao getGamesDao() {
+		return gamesDao;
+	}
+
+	public void setGamesDao(GamesDao gamesDao) {
+		this.gamesDao = gamesDao;
+	}
+
+	@Override
+	public boolean updateGamesInfo(int gamesId, Date gamesTime,
+			String gamesLocation, int chiefUmpireId, int sideRefereeId_1,
+			int sideRefereeId_2, int fourth_Officer, int officer_1, int officer_2, int recorder_1, int recorder_2) {
+		YsmsGames ysmsGames = gamesDao.findById(gamesId);
+		ysmsGames.setGamesTime(gamesTime);
+		ysmsGames.setGameLocation(gamesLocation);
+		gamesDao.save(ysmsGames);
+		YsmsJudge chiefJudge = judgeDao.findById(chiefUmpireId);
+		YsmsJudge sideReferee1 = judgeDao.findById(sideRefereeId_1);
+		YsmsJudge sideReferee2 = judgeDao.findById(sideRefereeId_2);
+		YsmsJudge fourthOfficer = judgeDao.findById(fourth_Officer);
+		YsmsJudge officer1 = judgeDao.findById(officer_1);
+		YsmsJudge officer2 = judgeDao.findById(officer_2);
+		YsmsJudge recorder1 = judgeDao.findById(recorder_1);
+		YsmsJudge recorder2 = judgeDao.findById(recorder_2);
+		YsmsGamesJudge chiefGamesJudge = new YsmsGamesJudge();
+		chiefGamesJudge.setJudgePosition(1);
+		chiefGamesJudge.setYsmsGames(ysmsGames);
+		chiefGamesJudge.setYsmsJudge(chiefJudge);
+		gamesJudgeDao.save(chiefGamesJudge);
+		YsmsGamesJudge sideGamesJudge1 = new YsmsGamesJudge();
+		sideGamesJudge1.setJudgePosition(2);
+		sideGamesJudge1.setYsmsGames(ysmsGames);
+		sideGamesJudge1.setYsmsJudge(sideReferee1);
+		gamesJudgeDao.save(sideGamesJudge1);
+		YsmsGamesJudge sideGamesJudge2 = new YsmsGamesJudge();
+		sideGamesJudge2.setJudgePosition(2);
+		sideGamesJudge2.setYsmsGames(ysmsGames);
+		sideGamesJudge2.setYsmsJudge(sideReferee2);
+		gamesJudgeDao.save(sideGamesJudge2);
+		YsmsGamesJudge theFourthOfficer = new YsmsGamesJudge();
+		theFourthOfficer.setJudgePosition(3);
+		theFourthOfficer.setYsmsGames(ysmsGames);
+		theFourthOfficer.setYsmsJudge(fourthOfficer);
+		gamesJudgeDao.save(theFourthOfficer);
+		YsmsGamesJudge theOfficer1 = new YsmsGamesJudge();
+		theOfficer1.setJudgePosition(4);
+		theOfficer1.setYsmsGames(ysmsGames);
+		theOfficer1.setYsmsJudge(officer1);
+		gamesJudgeDao.save(theOfficer1);
+		YsmsGamesJudge theOfficer2 = new YsmsGamesJudge();
+		theOfficer2.setJudgePosition(5);
+		theOfficer2.setYsmsGames(ysmsGames);
+		theOfficer2.setYsmsJudge(officer2);
+		gamesJudgeDao.save(theOfficer2);
+		YsmsGamesJudge theRecorder1 = new YsmsGamesJudge();
+		theRecorder1.setJudgePosition(6);
+		theRecorder1.setYsmsGames(ysmsGames);
+		theRecorder1.setYsmsJudge(recorder1);
+		gamesJudgeDao.save(theRecorder1);
+		YsmsGamesJudge theRecorder2 = new YsmsGamesJudge();
+		theRecorder2.setJudgePosition(7);
+		theRecorder2.setYsmsGames(ysmsGames);
+		theRecorder2.setYsmsJudge(recorder2);
+		gamesJudgeDao.save(theRecorder2);
+		
+		return true; 
+	}
+
+	@Override
+	public GameView getGamesInfo(int gamesId) {
+		GameView gameView = new GameView();
+		YsmsGames ysmsGames = gamesDao.findById(gamesId);
+		gameView.setHostSchoolName(ysmsGames.getYsmsTeamByHostTeamid().getYsmsSchool().getSchoolName());
+		gameView.setGuestSchoolName(ysmsGames.getYsmsTeamByGuestTeamid().getYsmsSchool().getSchoolName());
+		gameView.setHostTeamName(ysmsGames.getYsmsTeamByHostTeamid().getTeamName());
+		gameView.setGuestTeamName(ysmsGames.getYsmsTeamByGuestTeamid().getTeamName());
+		gameView.setHostScore(ysmsGames.getHostScore());
+		gameView.setGuestScore(ysmsGames.getGuestScore());
+		gameView.setHostTeamId(ysmsGames.getYsmsTeamByHostTeamid().getTeamId());
+		gameView.setGuestTeamId(ysmsGames.getYsmsTeamByGuestTeamid().getTeamId());
+		return gameView;
+	}
+
+	@Override
+	public boolean replyGamesInfo(int gamesId, int hostTeamGoals,
+			int guestTeamGoals) {
+		YsmsGames ysmsGames = gamesDao.findById(gamesId);
+		ysmsGames.setHostScore(hostTeamGoals);
+		ysmsGames.setGuestScore(guestTeamGoals);
+		gamesDao.save(ysmsGames);
+		return true;
+	}
+
+	@Override
+	public boolean addGoalInfo(int gamesId, int shooterId, int assistantId,
+			String goalTimeStr, int goalType) {
+		YsmsGoal ysmsGoal = new YsmsGoal();
+		ysmsGoal.setAssistant(assistantId);
+		ysmsGoal.setShooter(shooterId);
+		ysmsGoal.setTime(goalTimeStr);
+		ysmsGoal.setStyle(goalType);
+		goalDao.save(ysmsGoal);
+		return true;
+	}
+
+	@Override
+	public boolean modifyGoalInfo(int goalId, int shooterId,
+			int assistantId, String goalTimeStr, int goalType) {
+		// TODO Auto-generated method stub
+		YsmsGoal ysmsGoal = goalDao.findById(goalId);
+		ysmsGoal.setAssistant(assistantId);
+		ysmsGoal.setShooter(shooterId);
+		ysmsGoal.setTime(goalTimeStr);
+		ysmsGoal.setStyle(goalType);
+		goalDao.save(ysmsGoal);
+		return true;
+	}
+
+	@Override
+	public boolean deleteGoalInfo(int goalId) {
+		YsmsGoal ysmsGoal = goalDao.findById(goalId);
+		goalDao.delete(ysmsGoal);
+		return true;
+	}
+
+	@Override
+	public boolean addFoulInfo(int gamesId, int foulPlayerId, int foulLevel,
+			String foulTimeStr) {
+		// TODO Auto-generated method stub
+		YsmsFoul ysmsFoul = new YsmsFoul();
+		YsmsGames ysmsGames = gamesDao.findById(gamesId);
+		ysmsFoul.setYsmsGames(ysmsGames);
+		YsmsAthlete ysmsAthlete = athleteDao.findById(foulPlayerId);
+		ysmsFoul.setYsmsAthlete(ysmsAthlete);
+		ysmsFoul.setFoulLevel(foulLevel);
+		ysmsFoul.setTime(foulTimeStr);
+		foulDao.save(ysmsFoul);
+		return true;
+	}
+
+	@Override
+	public boolean modifyFoulInfo(int foulId, int gamesId, int foulPlayerId,
+			int foulLevel, String foulTimeStr) {
+		YsmsFoul ysmsFoul = foulDao.findById(foulId);
+		YsmsGames ysmsGames = gamesDao.findById(gamesId);
+		ysmsFoul.setYsmsGames(ysmsGames);
+		YsmsAthlete ysmsAthlete = athleteDao.findById(foulPlayerId);
+		ysmsFoul.setYsmsAthlete(ysmsAthlete);
+		ysmsFoul.setFoulLevel(foulLevel);
+		ysmsFoul.setTime(foulTimeStr);
+		foulDao.save(ysmsFoul);
+		return true;
+	}
+
+	@Override
+	public boolean deleteFoulInfo(int foulId) {
+		YsmsFoul ysmsFoul = foulDao.findById(foulId);
+		foulDao.delete(ysmsFoul);
+		return true;
+	}
+
+	@Override
+	public List<YsmsGames> getGamesByTeam(int teamId) {
+		return gamesDao.getGamesByTeamId(teamId);
+	}
+
+	@Override
+	public List<YsmsGames> getGamesThisMonthByTeam(int teamId) {
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.DAY_OF_MONTH, 1);
+		Date firstDay = cal.getTime();
+		cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+		Date lastDay = cal.getTime();
+		return gamesDao.getGamesByTeamIdBetweenDate(teamId, firstDay, lastDay);
+		
+	}
+
+	@Override
+	public YsmsGames getNextGameByTeam(int teamId) {
+		return gamesDao.getNextGameByTeamId(teamId);
+		
+	}
+
+	@Override
+	public YsmsGames getLastGameByTeam(int teamId) {
+		return gamesDao.getLastGameByTeamId(teamId);
+	}
+
+	@Override
+	public List<YsmsGames> getGamesByDate(Date date) {
+		return gamesDao.getGamesByDate(date);
+	}
+
+	@Override
+	public List<YsmsGames> getGamesByZone(int zoneId) {
+		return gamesDao.getGamesByZoneId(zoneId);
+	}
+
+	@Override
+	public List<YsmsGames> getGamesByZoneAndDate(int zoneId, Date date) {
+		return gamesDao.getGamesByZoneIdAndDate(zoneId, date);
+	}
+
+	@Override
+	public List<GoalView> getTeamGoalsInGame(int gameId, int teamId) {
+		List<GoalView> viewList = new ArrayList<GoalView>();
+		//取出所有进球
+		List<YsmsGoal> goalsList = goalDao.findByGame(gameId);
+		if(goalsList!=null){
+			for(int i=0;i<goalsList.size();i++){
+				boolean ifThisTeamGoal = false;
+				//取出进球球员Id
+				int shooterId = goalsList.get(i).getShooter();
+				//查询球队成员关系中包含该球员的关系
+				List<YsmsTeammember> memberList = teammemberDao.findTeamsByAthleteId(shooterId);
+				//查看是否有该球队包含于这个球队列表中
+				for(int j=0;j<memberList.size();j++){
+					if(memberList.get(j).getYsmsTeam().getTeamId()==teamId){
+						//证明存在这样的球队
+						ifThisTeamGoal = true;
+					}
+				}
+				if(ifThisTeamGoal){
+					YsmsGoal ysmsGoal = goalsList.get(i);
+					GoalView goalView = new GoalView();
+					YsmsAthlete shooter = athleteDao.findById(ysmsGoal.getShooter());
+					YsmsAthlete assistant = athleteDao.findById(ysmsGoal.getAssistant());
+					goalView.setAssistantName(assistant.getIdentifiedName());
+					goalView.setShooterName(shooter.getIdentifiedId());
+					List<YsmsTeammember> tempAssistantList = teammemberDao.findByAthleteId(assistant.getAthleteId());
+					List<YsmsTeammember> tempShooterList = teammemberDao.findByAthleteId(shooter.getAthleteId());
+					if(tempAssistantList.size()>0&&tempShooterList.size()>0){
+						goalView.setAssistantNumber(tempAssistantList.get(0).getAthleteNum());
+						goalView.setShooterNumber(tempShooterList.get(0).getAthleteNum());
+						goalView.setStyle(ysmsGoal.getStyle());
+						goalView.setGoalId(ysmsGoal.getGoalId());
+						goalView.setTime(ysmsGoal.getTime());
+						viewList.add(goalView);
+					}
+				}
+			}
+		}
+		return viewList;
+	}
+
+	@Override
+	public List<FoulView> getTeamFoulInGame(int gameId, int teamId) {
+		// TODO Auto-generated method stub
+		List<FoulView> viewList = new ArrayList<FoulView>();
+		//取出所有进球
+		List<YsmsFoul> foulsList = foulDao.getYsmsFoulsByGamesId(gameId);
+		if(foulsList!=null){
+			for(int i=0;i<foulsList.size();i++){
+				boolean ifThisTeamFoul = false;
+				//取出进球球员Id
+				int playerId = foulsList.get(i).getYsmsAthlete().getAthleteId();
+				//查询球队成员关系中包含该球员的关系
+				List<YsmsTeammember> memberList = teammemberDao.findTeamsByAthleteId(playerId);
+				//查看是否有该球队包含于这个球队列表中
+				for(int j=0;j<memberList.size();j++){
+					if(memberList.get(j).getYsmsTeam().getTeamId()==teamId){
+						//证明存在这样的球队
+						ifThisTeamFoul = true;
+					}
+				}
+				if(ifThisTeamFoul){
+					YsmsFoul ysmsFoul = foulsList.get(i);
+					FoulView foulView = new FoulView();
+					YsmsAthlete fouler = ysmsFoul.getYsmsAthlete();
+					foulView.setAthleteName(fouler.getIdentifiedName());
+					List<YsmsTeammember> tempFoulerList = teammemberDao.findByAthleteId(fouler.getAthleteId());
+					if(tempFoulerList.size()>0){
+						foulView.setAthleteNumber(tempFoulerList.get(0).getAthleteNum());
+						foulView.setFoulId(ysmsFoul.getFoulId());
+						foulView.setFoulLevel(ysmsFoul.getFoulLevel());
+						foulView.setTime(ysmsFoul.getTime());
+						viewList.add(foulView);
+					}
+				}
+			}
+		}
+		return viewList;
+	}
+
+	@Override
+	public boolean addGamesInfo(int zoneId, int gamesOrder, int hostTeamId,
+			int hostUniform, int guestTeamId,
+			int guestUniform, Date gamesTime, String gamesLocation,
+			int chiefUmpireId, int sideRefereeId_1, int sideRefereeId_2,
+			int forth_Officer, int officer_1, int officer_2, int recorder_1,
+			int recorder_2) {
+		YsmsGames ysmsGames = new YsmsGames();
+		ysmsGames.setGamesOrder(gamesOrder);
+		ysmsGames.setYsmsTeamByHostTeamid(teamDao.findById(hostTeamId));
+		ysmsGames.setHostUniform(hostUniform);
+		ysmsGames.setYsmsTeamByGuestTeamid(teamDao.findById(guestTeamId));
+		ysmsGames.setGuestUniform(guestUniform);
+		ysmsGames.setGamesTime(gamesTime);
+		ysmsGames.setGameLocation(gamesLocation);
+		ysmsGames.setYsmsLeagueZone(leagueZoneDao.findById(zoneId));
+		gamesDao.save(ysmsGames);
+		YsmsJudge chiefJudge = judgeDao.findById(chiefUmpireId);
+		YsmsJudge sideReferee1 = judgeDao.findById(sideRefereeId_1);
+		YsmsJudge sideReferee2 = judgeDao.findById(sideRefereeId_2);
+		YsmsJudge fourthOfficer = judgeDao.findById(forth_Officer);
+		YsmsJudge officer1 = judgeDao.findById(officer_1);
+		YsmsJudge officer2 = judgeDao.findById(officer_2);
+		YsmsJudge recorder1 = judgeDao.findById(recorder_1);
+		YsmsJudge recorder2 = judgeDao.findById(recorder_2);
+		YsmsGamesJudge chiefGamesJudge = new YsmsGamesJudge();
+		chiefGamesJudge.setJudgePosition(1);
+		chiefGamesJudge.setYsmsGames(ysmsGames);
+		chiefGamesJudge.setYsmsJudge(chiefJudge);
+		gamesJudgeDao.save(chiefGamesJudge);
+		YsmsGamesJudge sideGamesJudge1 = new YsmsGamesJudge();
+		sideGamesJudge1.setJudgePosition(2);
+		sideGamesJudge1.setYsmsGames(ysmsGames);
+		sideGamesJudge1.setYsmsJudge(sideReferee1);
+		gamesJudgeDao.save(sideGamesJudge1);
+		YsmsGamesJudge sideGamesJudge2 = new YsmsGamesJudge();
+		sideGamesJudge2.setJudgePosition(2);
+		sideGamesJudge2.setYsmsGames(ysmsGames);
+		sideGamesJudge2.setYsmsJudge(sideReferee2);
+		gamesJudgeDao.save(sideGamesJudge2);
+		YsmsGamesJudge theFourthOfficer = new YsmsGamesJudge();
+		theFourthOfficer.setJudgePosition(3);
+		theFourthOfficer.setYsmsGames(ysmsGames);
+		theFourthOfficer.setYsmsJudge(fourthOfficer);
+		gamesJudgeDao.save(theFourthOfficer);
+		YsmsGamesJudge theOfficer1 = new YsmsGamesJudge();
+		theOfficer1.setJudgePosition(4);
+		theOfficer1.setYsmsGames(ysmsGames);
+		theOfficer1.setYsmsJudge(officer1);
+		gamesJudgeDao.save(theOfficer1);
+		YsmsGamesJudge theOfficer2 = new YsmsGamesJudge();
+		theOfficer2.setJudgePosition(4);
+		theOfficer2.setYsmsGames(ysmsGames);
+		theOfficer2.setYsmsJudge(officer2);
+		gamesJudgeDao.save(theOfficer2);
+		YsmsGamesJudge theRecorder1 = new YsmsGamesJudge();
+		theRecorder1.setJudgePosition(5);
+		theRecorder1.setYsmsGames(ysmsGames);
+		theRecorder1.setYsmsJudge(recorder1);
+		gamesJudgeDao.save(theRecorder1);
+		YsmsGamesJudge theRecorder2 = new YsmsGamesJudge();
+		theRecorder2.setJudgePosition(5);
+		theRecorder2.setYsmsGames(ysmsGames);
+		theRecorder2.setYsmsJudge(recorder2);
+		gamesJudgeDao.save(theRecorder2);
+		
+		return true; 
+	}
+
+	@Override
+	public boolean addGamesInfo(int zoneId, int gamesOrder, int hostTeamId,
+			int hostUniform, int guestTeamId,
+			int guestUniform, Date gamesTime, String gamesLocation) {
+		YsmsGames ysmsGames = new YsmsGames();
+		ysmsGames.setGamesOrder(gamesOrder);
+		ysmsGames.setYsmsTeamByHostTeamid(teamDao.findById(hostTeamId));
+		ysmsGames.setHostUniform(hostUniform);
+		ysmsGames.setYsmsTeamByGuestTeamid(teamDao.findById(guestTeamId));
+		ysmsGames.setGuestUniform(guestUniform);
+		ysmsGames.setGamesTime(gamesTime);
+		ysmsGames.setGameLocation(gamesLocation);
+		ysmsGames.setYsmsLeagueZone(leagueZoneDao.findById(zoneId));
+		gamesDao.save(ysmsGames);
+		return true;
+	}
+
+	@Override
+	public List<GameView> getGamesByPage(Integer leagueId, Integer zoneId, Date date, String pageIndex) {
+		List<GameView> viewList = new ArrayList<GameView>();
+		int startIndex = (Integer.parseInt(pageIndex) - 1) * 8;
+		Page page = new Page();
+		page.setEveryPage(8);
+		page.setBeginIndex(startIndex);
+		List<YsmsGames> gameList = gamesDao.findByFuzzyQueryAndPage(leagueId, zoneId, date, page);
+		for(int i=0;i<gameList.size();i++){
+			YsmsGames ysmsGames = gameList.get(i);
+			GameView gameView = new GameView();
+			gameView.setGamesId(ysmsGames.getGamesId());
+			Date ysmsdate = ysmsGames.getGamesTime();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+			gameView.setGameTime(sdf.format(ysmsdate));
+			gameView.setGuestSchoolName(ysmsGames.getYsmsTeamByGuestTeamid().getYsmsSchool().getSchoolName());
+			gameView.setHostSchoolName(ysmsGames.getYsmsTeamByHostTeamid().getYsmsSchool().getSchoolName());
+			gameView.setLeagueName(ysmsGames.getYsmsLeagueZone().getYsmsLeague().getLeagueName());
+			gameView.setOrderName(ysmsGames.getGamesOrder()==1?"小组赛":"淘汰赛");
+			gameView.setZoneName(ysmsGames.getYsmsLeagueZone().getZoneName());
+			viewList.add(gameView);
+		}
+		return viewList;
+	}
+
+	@Override
+	public int getGamesCount(Integer leagueId, Integer zoneId, Date date) {
+		return gamesDao.getGamesCount(leagueId, zoneId, date);
+	}
+
+	@Override
+	public boolean deleteGame(int gamesId) {
+		YsmsGames ysmsGames = gamesDao.findById(gamesId);
+		gamesDao.delete(ysmsGames);
+		return true;
+	}
+
+	@Override
+	public GameView getGameById(int gamesId) {
+		YsmsGames ysmsGames = gamesDao.findById(gamesId);
+		GameView gameView = new GameView();
+		gameView.setGameLocation(ysmsGames.getGameLocation());
+		gameView.setGamesId(ysmsGames.getGamesId());
+		Date date = ysmsGames.getGamesTime();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+		if(date!=null)
+			gameView.setGameTime(sdf.format(date));
+		gameView.setGuestSchoolName(ysmsGames.getYsmsTeamByGuestTeamid().getYsmsSchool().getSchoolName());
+		gameView.setGuestUniform(ysmsGames.getGuestUniform());
+		gameView.setHostSchoolName(ysmsGames.getYsmsTeamByHostTeamid().getYsmsSchool().getSchoolName());
+		gameView.setHostUniform(ysmsGames.getHostUniform());
+		gameView.setLeagueName(ysmsGames.getYsmsLeagueZone().getYsmsLeague().getLeagueName());
+		int gameOrder = ysmsGames.getGamesOrder();
+		if(gameOrder == 1){
+			YsmsZoneTeam ysmsZoneTeam = zoneTeamDao.findByTeamId(ysmsGames.getYsmsTeamByHostTeamid().getTeamId());
+			gameView.setOrderName(ysmsZoneTeam.getZoneGroup() + "组");
+		}
+		else
+			gameView.setOrderName("淘汰赛");
+		gameView.setZoneName(ysmsGames.getYsmsLeagueZone().getZoneName());
+		return gameView;
+	}
+
+	@Override
+	public boolean modifyGame(int gamesId, int hostUniform, int guestUniform,
+			Date gamesTime, String gamesLocation) {
+		YsmsGames ysmsGames = gamesDao.findById(gamesId);
+		ysmsGames.setHostUniform(hostUniform);
+		ysmsGames.setGuestUniform(guestUniform);
+		ysmsGames.setGamesTime(gamesTime);
+		ysmsGames.setGameLocation(gamesLocation);
+		gamesDao.save(ysmsGames);
+		return true;
+	}
+}

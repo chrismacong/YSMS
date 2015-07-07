@@ -1,0 +1,47 @@
+package com.cwkj.ysms.model.view;
+
+public class FoulView {
+	public int foulId;
+	public int getFoulId() {
+		return foulId;
+	}
+	public void setFoulId(int foulId) {
+		this.foulId = foulId;
+	}
+	public String getAthleteName() {
+		return athleteName;
+	}
+	public void setAthleteName(String athleteName) {
+		this.athleteName = athleteName;
+	}
+	public Integer getAthleteNumber() {
+		return athleteNumber;
+	}
+	public void setAthleteNumber(Integer athleteNumber) {
+		this.athleteNumber = athleteNumber;
+	}
+	public int getFoulLevel() {
+		return foulLevel;
+	}
+	public void setFoulLevel(int foulLevel) {
+		this.foulLevel = foulLevel;
+	}
+	public String getTime() {
+		return time;
+	}
+	public void setTime(String time) {
+		this.time = time;
+	}
+	public String athleteName;
+	public Integer athleteNumber;
+	public Integer athleteId;
+	public Integer getAthleteId() {
+		return athleteId;
+	}
+	public void setAthleteId(Integer athleteId) {
+		this.athleteId = athleteId;
+	}
+	public int foulLevel;
+	public String time;
+	
+}

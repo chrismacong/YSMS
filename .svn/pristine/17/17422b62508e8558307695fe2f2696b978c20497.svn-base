@@ -1,0 +1,231 @@
+package com.cwkj.ysms.dao.impl;
+
+import static org.hibernate.criterion.Example.create;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.hibernate.Query;
+import org.hibernate.transform.Transformers;
+import org.springframework.stereotype.Repository;
+
+import com.cwkj.ysms.basedao.impl.GenericDaoImpl;
+import com.cwkj.ysms.dao.ZoneTeamDao;
+import com.cwkj.ysms.model.YsmsZoneTeam;
+import com.cwkj.ysms.util.ToolsUtil;
+
+@Repository
+public class ZoneTeamDaoImpl extends GenericDaoImpl implements ZoneTeamDao{
+	private static final Log log = LogFactory.getLog(ZoneTeamDaoImpl.class);
+	@Override
+	public void save(YsmsZoneTeam ysmsZoneTeam) {
+		log.debug("saving YsmsZoneTeam instance");
+		try {
+			getSession().saveOrUpdate(ysmsZoneTeam);
+			log.debug("save successful");
+		} catch (RuntimeException re) {
+			log.error("save failed", re);
+			throw re;
+		}
+	}
+	@Override
+	public List<YsmsZoneTeam> getSignedTeam(int zoneId,int startIndex) {
+		// TODO Auto-generated method stub
+		log.debug("finding signed YsmsZoneTeam");
+		try {
+			String sql = " from YsmsZoneTeam where zone_id = "+ zoneId + 
+					"and zone_group is not null";
+			Query query=getSession().createQuery(sql);
+			query.setMaxResults(10);
+			query.setFirstResult(startIndex);
+			List<Object> objects=query.list();
+			List<YsmsZoneTeam> results = new ArrayList<YsmsZoneTeam>();
+			for(int i=0;i<objects.size();i++){
+				YsmsZoneTeam zoneTeam = (YsmsZoneTeam)objects.get(i);
+				results.add(zoneTeam);
+			}
+			log.debug("find signed YsmsZoneTeam successful, result size: " + results.size());
+			return results;
+		} catch (RuntimeException re) {
+			log.error("find signed YsmsZoneTeam failed", re);
+			throw re;
+		}
+	}
+	@Override
+	public List<YsmsZoneTeam> getParticipatedTeam(int zoneId) {
+		// TODO Auto-generated method stub
+		log.debug("finding signed YsmsZoneTeam");
+		try {
+			String sql = " from YsmsZoneTeam where zone_id = "+ zoneId + 
+					" and zone_group <> '0' and zone_group is not null";
+			List<Object> objects= findByHQL(sql);
+			List<YsmsZoneTeam> results = new ArrayList<YsmsZoneTeam>();
+			for(int i=0;i<objects.size();i++){
+				YsmsZoneTeam leagueTeam = (YsmsZoneTeam)objects.get(i);
+				results.add(leagueTeam);
+			}
+			log.debug("find signed YsmsZoneTeam successful, result size: " + results.size());
+			return results;
+		} catch (RuntimeException re) {
+			log.error("find signed YsmsZoneTeam failed", re);
+			throw re;
+		}
+	}
+
+	@Override
+	public List<YsmsZoneTeam> findByExample(YsmsZoneTeam ysmsZoneTeam){
+		log.debug("finding YsmsZoneTeam instance by example");
+		try {
+			List<YsmsZoneTeam> results = (List<YsmsZoneTeam>) getSession()
+					.createCriteria("com.cwkj.ysms.model.YsmsZoneTeam")
+					.add( create(ysmsZoneTeam) )
+					.list();
+			log.debug("find by example successful, result size: " + results.size());
+			return results;
+		} catch (RuntimeException re) {
+			log.error("find by example failed", re);
+			throw re;
+		}
+	}
+	@Override
+	public YsmsZoneTeam findById(int detailId) {
+		// TODO Auto-generated method stub
+		log.debug("getting YsmsZoneTeam instance with id: " + detailId);
+		try {
+			YsmsZoneTeam result = (YsmsZoneTeam) getSession()
+					.get("com.cwkj.ysms.model.YsmsZoneTeam", detailId);
+			return result;
+		} catch (RuntimeException re) {
+			log.error("get failed", re);
+			throw re;
+		}
+	}
+	@Override
+	public YsmsZoneTeam findByTeamId(int teamId) {
+		// TODO Auto-generated method stub
+		log.debug("finding signed YsmsZoneTeam");
+		try {
+			String sql = " from YsmsZoneTeam where team_id = "+ teamId;
+			List<Object> objects= findByHQL(sql);
+			List<YsmsZoneTeam> results = new ArrayList<YsmsZoneTeam>();
+			if(objects.size()>0){
+				YsmsZoneTeam leagueTeam = (YsmsZoneTeam)objects.get(0);
+				return leagueTeam;
+			}
+			log.debug("find signed YsmsZoneTeam successful, result size: " + results.size());
+			return null;
+		} catch (RuntimeException re) {
+			log.error("find signed YsmsZoneTeam failed", re);
+			throw re;
+		}
+	}
+	@Override
+	public void delete(YsmsZoneTeam ysmsZoneTeam) {
+		// TODO Auto-generated method stub
+		log.debug("deleting YsmsZoneTeam instance");
+		try {
+			getSession().delete(ysmsZoneTeam);
+			log.debug("delete successful");
+		} catch (RuntimeException re) {
+			log.error("delete failed", re);
+			throw re;
+		}
+	}
+	
+	@Override
+	public List<YsmsZoneTeam> getTeamByIdAndName(int zoneId, String teamName) {
+		// TODO Auto-generated method stub
+		log.debug("finding signed YsmsZoneTeam by leagueId and teamName");
+		try {
+			String sql = " from YsmsZoneTeam as yz where yz.ysmsZone.zoneId ="+ zoneId + 
+					" and yz.ysmsTeam.teamName like '%" + teamName + "%' and yz.zoneGroup is not null";
+			List<Object> objects= findByHQL(sql);
+			List<YsmsZoneTeam> results = new ArrayList<YsmsZoneTeam>();
+			for(int i=0;i<objects.size();i++){
+				YsmsZoneTeam zoneTeam = (YsmsZoneTeam)objects.get(i);
+				results.add(zoneTeam);
+			}
+			log.debug("find signed YsmsZoneTeam by zoneId and teamName successful, result size: " + results.size());
+			return results;
+		} catch (RuntimeException re) {
+			log.error("find signed YsmsZoneTeam by zoneId and teamName failed", re);
+			throw re;
+		}
+	}
+	
+	@Override
+	public List<YsmsZoneTeam> getTeamByIdAndSchoolName(int zoneId,
+			String schoolName) {
+		// TODO Auto-generated method stub
+		log.debug("finding signed YsmsZoneTeam by zoneId and schoolName");
+		try {
+			String sql = " from YsmsZoneTeam as yz where yz.ysmsZone.zoneId="+ zoneId + 
+					" and yz.ysmsTeam.ysmsSchool.schoolName like '%" + schoolName + "%' and yz.zoneGroup is not null";
+			List<Object> objects= findByHQL(sql);
+			List<YsmsZoneTeam> results = new ArrayList<YsmsZoneTeam>();
+			for(int i=0;i<objects.size();i++){
+				YsmsZoneTeam zoneTeam = (YsmsZoneTeam)objects.get(i);
+				results.add(zoneTeam);
+			}
+			log.debug("find signed YsmsZoneTeam by zoneId and schoolName successful, result size: " + results.size());
+			return results;
+		} catch (RuntimeException re) {
+			log.error("find signed YsmsZoneTeam by zoneId and schoolName failed", re);
+			throw re;
+		}
+	}
+	
+	@Override
+	public List<Map<String,Object>> seletedTeam(int zoneId, List<Integer> teamIds) {
+		List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
+		try{
+			String sql="select a.team_id,c.school_name,a.zone_group from ysms_zone_team a left join ysms_team b on b. team_id =a.team_id left join ysms_school c on c.school_id =b.school_id  where a.zone_id="+zoneId+" ";
+			if(!ToolsUtil.isEmpty(teamIds)){
+				sql+=" and a.team_id   not in (:teamIds)";
+			}
+			sql+=" order by c.school_name,a.team_id";
+			Query query=getSession().createSQLQuery(sql);
+			if(!ToolsUtil.isEmpty(teamIds)){
+				query.setParameterList("teamIds", teamIds);
+			}
+			 
+			query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+			list=query.list();
+		}catch(RuntimeException re){
+			
+		}
+		return list;
+	}
+	@Override
+	public boolean update(int zoneId, List<Integer> teamIds,String type) {
+		int c=0;
+		int a=teamIds.size();
+		 
+		try{
+			String sql="update ysms_zone_team set zone_group='"+type+"' where team_id in (:teamIds) and zone_id ="+zoneId+"  ";
+			Query query=getSession().createSQLQuery(sql);
+			 
+			query.setParameterList("teamIds", teamIds);
+			c=query.executeUpdate();
+			 
+			if(c==a){
+				return true;
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return false;
+	}
+	@Override
+	public int getSignedTeamCount(int zoneId) {
+		String sql="select count(*) from ysms_zone_team where zone_group is not null and zone_id="+zoneId+" ";
+		 BigInteger b=(BigInteger) getSession().createSQLQuery(sql).uniqueResult();
+	 
+		return b.intValue();
+	}
+	
+}

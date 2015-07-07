@@ -1,0 +1,738 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link type="text/css"
+	href="${pageContext.request.contextPath}/css/jquery-ui-1.8.16.custom.css"
+	rel="stylesheet" />
+<link type="text/css"
+	href="${pageContext.request.contextPath}/css/dialog.css"
+	rel="stylesheet" />
+<link type="text/css"
+	href="${pageContext.request.contextPath}/css/style.css"
+	rel="stylesheet" />
+<link rel="stylesheet" type="text/css"
+	href="${pageContext.request.contextPath}/css/athlete.css">
+<link rel="stylesheet" type="text/css"
+	href="${pageContext.request.contextPath}/css/jquery.dataTables.css">
+<script src="${pageContext.request.contextPath}/js/jquery.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/jquery-ui.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/jquery.form.js"></script>
+<script src="${pageContext.request.contextPath}/js/jquery.dataTables.js"></script>
+<script language="javascript" type="text/javascript"
+	src="${pageContext.request.contextPath}/js/Duang.js"></script>
+<script language="javascript" type="text/javascript"
+	src="${pageContext.request.contextPath}/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script language="javascript" type="text/javascript"
+	src="${pageContext.request.contextPath}/js/ds.dialog.js"></script>
+<title>教练管理</title>
+<style type="text/css">
+.neirong_wk {
+	height:532px;
+}
+
+.athlete_filter {
+	width: 100%;
+}
+
+.athlete_detailed {
+	position: absolute;
+	top: 10px;
+	left: 130px;
+	padding: 20px;
+	background: #fff;
+	border: 1px solid #0fd46c;
+	border-radius: 10px;
+	width: 800px;
+	z-index: 5;
+}
+
+.tbody_sroll {
+	height: 598px;
+}
+
+.table_head_left {
+	cursor: pointer;
+	background: #127419;
+}
+
+.table_td {
+	table-layout: fixed;
+	margin-top: 1%;
+	width: 100%;
+}
+
+.table_td td {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	height: 40px;
+	border-bottom: 1px solid #a7a7a7;
+	text-align: center;
+}
+
+.table_td thead {
+	background: #160b2d;
+	color: #fff;
+	font-size: 1.2em;
+}
+
+.table_td thead a{
+	color: #fff;
+}
+
+.table_head_left {
+	position: absolute;
+	height: 50px;
+	background: #127419;
+	top: -9px;
+	left: -10px;
+	line-height: 50px;
+}
+
+.dataTables_wrapper {
+	position: relative;
+	clear: both;
+	*zoom: 1;
+	zoom: 1;
+	width: 94%;
+	margin-left: 2%;
+}
+
+table.dataTable thead .sorting {
+	background: url("../images/sort_both.png") no-repeat center right
+		#160B2D;
+}
+
+.close {
+	right: -10px;
+	top: -10px;
+}
+.a_delete{
+    cursor: pointer;
+ 	border-radius: 5px;
+ 	padding: 2px 2px;
+	background: #127419;
+	position: absolute;
+ 	top: 5px;
+ 	left: 0
+}
+.a_delete:hover{
+  background: #144023;
+  
+}
+</style>
+
+<!--[if lt IE 9]>
+    <script  type="text/javascript" src="../js/json2.js"></script>
+<![endif]-->
+
+<script type="text/javascript">
+	var oTable = null;
+	$(function() {
+		path="${pageContext.request.contextPath}";
+		dofilter();
+		$("input:disabled").css('color','#b0b5a0;')
+		$("#checkAll").click(function() {
+			if (this.checked) {
+				$("input[name='checkList']").each(function() {
+					this.checked = true;
+				});
+			} else {
+				$("input[name='checkList']").each(function() {
+					this.checked = false;
+				});
+			}
+		});
+
+		$('.close').click(function() {
+			$('.athlete_detailed').hide();
+			$("#default_photo_img").attr("src", "../images/defaultuser.png");
+			$("#sltTCFCertificateA").hide();
+			$("#sltCFACertificateA").hide();
+			$('#fade').hide();
+			dofilter();
+			//$('.caipan_apply').hide();
+		});
+		
+	    
+		$("#button_change")
+		.click(
+				function() {
+					ds.dialog({
+						title : '消息提示',
+						content : "确定修改教练员信息？",
+						yesText : "确定",
+						onyes : function() {
+							$("#formCard").ajaxSubmit({
+								 type: "POST",
+							     url: "${pageContext.request.contextPath}/coachmanagement/modifycoach.html",
+							     dataType: "json",
+							     success: function(data){
+							    	 if(data.success){
+							    		 ds.dialog({
+												title : '消息提示',
+												content : data.returnMessage,
+												onyes : true,
+												icon : "../../images/socceralert.png"
+											});
+							    		 getCoachById($("#coachid").val());
+							    	 }
+							    	 else{
+							    		 ds.dialog({
+												title : '消息提示',
+												content : data.returnMessage,
+												onyes : true,
+												icon : "../../images/info.png"
+											});
+							    	 }
+							     },
+							     error:function(){
+							    	 ds.dialog({
+											title : '消息提示',
+											content : "修改教练员失败，请重试",
+											onyes : true,
+											icon : "../../images/info.png"
+										});
+							     }
+							}); 
+						},
+						noText : "取消",
+						onno : function() {
+							this.close();
+						},
+						icon : "../../images/confirm.png"
+					});
+				});
+	});
+
+	function deleteALL() {
+		var str = '';
+		$("input[name='checkList']:checked").each(function(i, o) {
+			str += $(this).val();
+			str += ",";
+		});
+		if (str.length > 0) {
+			var IDS = str.substr(0, str.length - 1);
+			$
+					.ajax({
+						url : "${pageContext.request.contextPath}/coachmanagement/deletecoach.html",
+						data : {
+							"id" : IDS
+						},
+						type : "post",
+						success : function(backdata) {
+							if (backdata.returnCode == 200) {
+								oTable.fnDraw();
+							}
+							ds.dialog({
+								title : '消息提示',
+								content : backdata.returnMessage,
+								onyes : true,
+								icon : "../../images/socceralert.png"
+							});
+						},
+						error : function(error) {
+							console.log(error);
+						}
+					});
+		} else {
+			ds.dialog({
+				title : '消息提示',
+				content : "至少选一项",
+				onyes : true,
+				icon : "../../images/info.png"
+			});
+		}
+		$("#checkAll").checked = false;
+	};
+
+	function delCoachById(id) {
+		$.ajax({
+					url : "${pageContext.request.contextPath}/coachmanagement/deletecoach.html",
+					data : {
+						"id" : id
+					},
+					type : "post",
+					success : function(backdata) {
+						if (backdata.returnCode == 200) {
+							oTable.fnDraw();
+						}
+						ds.dialog({
+							title : '消息提示',
+							content : backdata.returnMessage,
+							onyes : true,
+							icon : "../../images/socceralert.png"
+						});
+					},
+					error : function(error) {
+						console.log(error);
+					}
+				});
+	};
+
+	function getCoachById(id)
+	{
+		$.ajax({
+	        async: false,
+	        cache: false,
+			url:"${pageContext.request.contextPath}/coachmanagement/coachbyid.html",
+			data:{"id":id},
+			type:"get",
+			success:function(backdata){
+				if(backdata.returnCode==200)
+				{
+					var tempData= new Date();
+					$("#coachid").val(backdata.coach.coachId);
+					$("#name_input").val(backdata.coach.identifiedName);
+			   		$("#gender_input").val(backdata.coach.identifiedGender==0?"女":"男");
+			   		$("#nation_input").val(backdata.coach.identifiedNationality);
+			   		$("#birthday_input").val(backdata.coach.identifiedBirthday);
+			   		$("#identity_input").val(backdata.coach.identifiedId);
+			   		$("#address_input").val(backdata.coach.identifiedAddress);
+			   		$("#phonenum_input").val(backdata.coach.coachMobile);
+			   		$("#landphonenum_input").val(backdata.coach.coachPhone);
+			   		$("#job_input").val(backdata.coach.coachJob);
+			   		$("#sltTCFCertificate").val(backdata.coach.schoolcoachFlag?1:2);
+			   		$("#sltCFACertificate").val(backdata.coach.coachLevel);
+					$("select option").eq(0).attr('selected', 'false');
+					$("#default_photo_img").css("visibility", "visible");
+					
+					//$("#image_input").val(backdata.athleteatt.attName);
+					if(backdata.coach.identifiedImage)
+					{
+						$("#default_photo_img").attr("src","data:image/jpeg;base64,"+backdata.coach.identifiedImage);
+					}
+					if(backdata.coach.schoolCoachImgPath)
+						{
+					$("#sltTCFCertificateImg").attr("src","${pageContext.request.contextPath}/upload/attachment/"+backdata.coach.schoolCoachImgPath);
+					$("#sltTCFCertificateA").attr("href","${pageContext.request.contextPath}/upload/attachment/"+backdata.coach.schoolCoachImgPath);
+					$("#sltTCFCertificateA").show();
+						}
+					if(backdata.coach.coachLevelImgPath)
+						{
+					$("#sltCFACertificateImg").attr("src","${pageContext.request.contextPath}/upload/attachment/"+backdata.coach.coachLevelImgPath);
+					$("#sltCFACertificateA").attr("href","${pageContext.request.contextPath}/upload/attachment/"+backdata.coach.coachLevelImgPath);
+					$("#sltCFACertificateA").show();
+						}
+					$('#fade').show();
+					$(".athlete_detailed").show();
+				}else
+				{
+					ds.dialog({
+						title : '消息提示',
+						content : backdata.returnMessage,
+						onyes : true,
+						icon : "../../images/info.png"
+					});
+				}
+			},error:function(error){
+				console.log(error);
+			}
+		});
+	};
+	
+    function retrieveData( sSource, aoData, fnCallback ) {   
+        //将客户名称加入参数数组   
+        //var filterurl="";
+		var name=$("#name_filter").val();
+		var identifiedGender=$("#sex_filter").val();
+		var school_filter=$("#school_filter").val();
+		//var year_filter=$("#year_filter").val();
+		if(name!=null&&name!="")
+			aoData.push( { "name": "name_filter", "value": name } );   
+		if(identifiedGender!=-1)
+			aoData.push( { "name": "sex_filter", "value": identifiedGender } );   
+		if(school_filter!=null&&school_filter!=-1)
+            aoData.push( { "name": "school_filter", "value": school_filter} );   
+		//if(year_filter!=null&&year_filter!=-1)
+			//aoData.push( { "name": "year_filter", "value": year_filter} );
+      
+        $.ajax( {   
+            "type": "GET", 
+            "contentType": "application/json",   
+            "url": sSource,    
+            "dataType": "json",   
+            "data": {requestJson:JSON.stringify(aoData)}, //以json格式传递   
+            "success": function(resp) {   
+            	//alert(resp);
+                fnCallback(resp); //服务器端返回的对象的returnObject部分是要求的格式  
+            }   
+        });
+    };
+	
+    function doexport()
+    {
+    	var aoData=[];
+    	var name=$("#name_filter").val();
+		var identifiedGender=$("#sex_filter").val();
+		var school_filter=$("#school_filter").val();
+		//var year_filter=$("#year_filter").val();
+		if(name!=null&&name!="")
+			aoData.push( { "name": "name_filter", "value": name } );   
+		if(identifiedGender!=-1)
+			aoData.push( { "name": "sex_filter", "value": identifiedGender } );   
+		if(school_filter!=null&&school_filter!=-1)
+            aoData.push( { "name": "school_filter", "value": school_filter} );   
+		//if(year_filter!=null&&year_filter!=-1)
+			//aoData.push( { "name": "year_filter", "value": year_filter} );
+      
+        $.ajax( {   
+            "type": "GET", 
+            "contentType": "application/json",   
+            "url": sSource,    
+            "dataType": "json",   
+            "data": {requestJson:JSON.stringify(aoData)}, //以json格式传递   
+            "success": function(resp) { 
+            	 ds.dialog({
+						title : '消息提示',
+						content : resp,
+						onyes : true,
+						icon : "../../images/socceralert.png"
+					});
+                //fnCallback(resp); //服务器端返回的对象的returnObject部分是要求的格式  
+            }   
+        });
+    }
+	
+	//加载初始化信息
+	function dofilter() {
+	if (oTable == null) { 
+		oTable=$('#athlete_list')
+				.dataTable(
+						{
+						"bAutoWidth": false,                    //不自动计算列宽度   
+            			"aoColumns": [                          //设定各列宽度   
+            			    {"sWidth": "120px","mDataProp" : "schoolName","sClass":"table_td"},
+                            {"sWidth": "100px","mDataProp" : "identifiedName","sClass":"table_td"},   
+                            {"sWidth": "80px",	"mDataProp" : "identifiedGender","sClass":"table_td"}, 
+                            //{"sWidth": "210px","mDataProp":"identifiedId","sClass":"table_td"},
+                             {"sWidth": "140px","mDataProp" : "coachMobile","sClass":"table_td"},  
+                            {"sWidth": "200px","mDataProp" : "identifiedAddress","sClass":"table_td"},   
+                            {"sWidth": "40px","mDataProp":"schoolcoachFlag","sClass":"table_td",
+                            	"fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                            		if(sData==true)
+                            			{
+                            			$(nTd).html("<img src='../images/coach/S.png' style='width:40px;height:40px'/>");//选择框
+                            			}
+                            		else
+                            			{
+                            			$(nTd).html("<img src='../images/coach/S2.png' style='width:40px;height:40px'/>");//选择框
+                            			}
+                            }},
+                            {"sWidth": "40px","mDataProp":"coachLevel","sClass":"table_td",
+                            	"fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                            			$(nTd).html("<img src='../images/coach/"+sData+".png' style='width:40px;height:40px'/>");//选择框
+                            }},
+                            {"mDataProp": "coachId","sClass":"table_td","sWidth": "30px",
+               				 "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                    		  $(nTd).html("<input type='checkbox' name='checkList' value='" + sData + "'>");}},//选择框
+                    		  {"mDataProp": "coachId","sClass":"table_td","sWidth": "80px",
+                    				 "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                         		  $(nTd).html("<div class='input_l'></div><div class='input_m detailed' style='width: auto;' onclick='delCoachById(" + sData + ")'>删除</div><div class='input_r'></div>");}},//删除按钮
+                         		 {"mDataProp": "coachId","sClass":"table_td","sWidth": "80px",
+                        			"fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                             		$(nTd).html("<div class='input_l'></div><div class='input_m detailed' style='width: auto;' onclick='getCoachById(" + sData + ")'>详细</div><div class='input_r'></div>");}}//详细按钮
+                        ],
+                        "aoColumnDefs": [{
+                      "bSortable": false,
+                      "aTargets": [4,5,6,7,8,9]
+                       },{
+                       	"render":function(data, type, row) {
+         			 			return data==0?"女":"男";
+       						 },
+        				"targets" : 2
+                       }],
+            			"bProcessing": true,                    //加载数据时显示正在加载信息   
+            			"bServerSide": true,                    //指定从服务器端获取数据   
+            			"bFilter": false,                       //不使用过滤功能   
+            			"bLengthChange": false,                 //用户不可改变每页显示数量 
+            			"sAjaxDataProp":"athletes",
+            			"sAjaxSource": "${pageContext.request.contextPath}/coachmanagement/listpagecoach.html",//获取数据的url   
+            			"fnServerData": retrieveData,           //获取数据的处理函数   
+            			//"sPaginationType": "full_numbers",      //翻页界面类型   
+							"iDisplayLength" : 10,//默认十条
+							"oLanguage" : {
+								"sUrl" : "${pageContext.request.contextPath}/L10n/en_cn.txt"
+							},
+							"ajax" : {
+								"dataSrc" : "coaches"
+							},
+							"columns" : [ {
+								"data" : "identifiedId"
+							}, {
+								"data" : "identifiedName"
+							}, {
+								"data" : "identifiedGender"
+							}, {
+							"data" : "schoolName"
+							}, {
+							"data" : "identifiedAddress"
+							}, {
+								"data" : "coachContact"
+							}, {
+								"data" : "coachId"
+							},{
+								"data" : "coachId"
+							},{
+								"data" : "coachId"
+							} ]
+						});
+						}
+				else{
+				      oTable.fnDraw();
+				}
+						
+		//oTable.fnDraw();
+	};
+</script>
+</head>
+<body>
+	<div class="neirong_wk">
+		<!--运动员信息查看-->
+		<div class="athlete_filter">
+		<form action="exportexcel.html" method="post">
+			<table class="center_table" border="0" cellpadding="0"
+				cellspacing="0">
+				<tr>
+					<td><label for="namefilter">姓名：</label></td>
+					<td><div class="input_wk" style="width:140px;">
+							<div class="input_l"></div>
+							<div class="input_m" style="width:100px;"><input id="name_filter" name="name_filter" class="input_text" type="text" style="width:100px;"/></div>
+							<div class="input_r"></div>
+						</div></td>
+					<td><label for="sex_filter">性别:</label></td>
+					<td><div class="input_wk" style="width:150px;">
+							<div class="input_l"></div>
+							<div class="input_m" style="width:110px;"><select id="sex_filter"  name="sex_filter"  class="input_text" ><option value="-1">--未选择--</option>
+							<option value="1">男</option>
+							<option value="0">女</option></select></div>
+							<div class="input_r"></div></div></td>
+							<c:if test="${school_list!=null}">
+					<td><label>学校:</label></td>
+					<td><div class="input_wk" style="width:150px;">
+							<div class="input_l"></div>
+							<div class="input_m" style="width:110px;">
+							<select id="school_filter" style="width: 110px"  class="input_text">
+								<option value="-1">--未选择--</option>
+							<c:forEach
+								items="${school_list}" var="school" varStatus="loop">
+								<option value="${school.schoolId}">${school.schoolName}
+								</option>
+							</c:forEach>
+							</select></div>
+							<div class="input_r"></div>
+						</div></td>
+						</c:if>
+					<td style="text-align: center;"><input type="button" id="button_filter"
+						onclick="dofilter();"></td>
+						<td style="text-align:center;"><input type="submit" id="button_export"  value=""/></td>
+				</tr>
+			</table>
+			</form>
+		</div>
+		<table id="athlete_list" class="table_td unselectable" cellpadding="0" cellspacing="0" >
+			<thead>
+				<tr>
+					<td width="130px"
+						style="border-right: 1px solid rgb(167, 167, 167);"><div
+							class="table_head_left" style="width: 130px">学校</div></td>
+					<td width="100px">姓名</td>
+					<td width="80px">性别</td>
+					<!-- <td width="160px">身份证号</td> -->
+					<td width="140px">联系方式</td>
+					<td width="200px">地址</td>
+					<td width="140px" colspan="2">证书</td>
+					<td width="30px"><input type="checkbox" id='checkAll' /></td>
+					<td width="80px"><a class="a_delete" onclick="deleteALL()"
+						>批量删除</a></td>
+					<td width="80px"></td>
+					<td></td>
+				</tr>
+			</thead>
+		</table>
+		<!--运动员信息查看-->
+
+
+
+		<!--修改运动员信息-->
+		<div class="athlete_detailed" style="display: none">
+			<div class="neirong">
+				<div class="close"></div>
+				<form id="formCard" method="POST" enctype="multipart/form-data">
+			<table class="center_table" border="0" cellpadding="0"
+				cellspacing="0">
+				<tr>
+					<td width="120px">姓名(<font style="color:red;">*</font>)：</td>
+					<td><div class="input_wk">
+							<div class="input_l"></div>
+							<div class="input_m">
+								<input id="name_input" type="text" class="input_text"
+									name="name" disabled="disabled">
+							</div>
+							<div class="input_r"></div>
+						</div>
+					</td>
+					<td align="center" rowspan="7" colspan="2" width="325px"> <img id="default_photo_img" name="image" width="150px" height="180px"
+						src="../images/defaultuser.png" style="position: relative; left: -20px; top: 5px;"></td>
+				</tr>
+				<tr>
+					<td>性别(<font style="color:red;">*</font>)：</td>
+					<td>
+						<div class="input_wk">
+							<div class="input_l"></div>
+							<div class="input_m">
+								<input id="gender_input" type="text" class="input_text"
+									name="gender" disabled="disabled">
+							</div>
+							<div class="input_r"></div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>民族(<font style="color:red;">*</font>)：</td>
+					<td><div class="input_wk">
+							<div class="input_l"></div>
+							<div class="input_m">
+								<input id="nation_input" type="text" class="input_text"
+									name="nation" disabled="disabled">
+							</div>
+							<div class="input_r" ></div>
+						</div></td>
+				</tr>
+				<tr>
+					<td>生日(<font style="color:red;">*</font>)：</td>
+					<td><div class="input_wk">
+							<div class="input_l"></div>
+							<div class="input_m">
+								<input id="birthday_input" type="text" class="input_text" 
+									name="birthday" disabled="disabled">
+							</div>
+							<div class="input_r"></div>
+						</div></td>
+				</tr>
+				<tr>
+					<td>身份证号(<font style="color:red;">*</font>)：</td>
+					<td><div class="input_wk">
+							<div class="input_l"></div>
+							<div class="input_m">
+								<input id="identity_input" type="text" class="input_text"
+									name="identity" disabled="disabled">
+							</div>
+							<div class="input_r"></div>
+						</div></td>
+				</tr>
+				<tr>
+					<td>户籍地址(<font style="color:red;">*</font>)：</td>
+					<td><div class="input_wk">
+							<div class="input_l"></div>
+							<div class="input_m">
+								<input id="address_input" type="text" class="input_text"
+									name="address" disabled="disabled">
+							</div>
+							<div class="input_r"></div>
+						</div></td>
+				</tr>
+				<tr>
+					<td>电话号码：</td>
+					<td><div class="input_wk">
+							<div class="input_l"></div>
+							<div class="input_m">
+								<input id="phonenum_input" type="text" class="input_text"
+									name="phonenum">
+							</div>
+							<div class="input_r"></div>
+						</div></td>
+				</tr>
+				<tr>
+					<td>固定电话：</td>
+					<td><div class="input_wk">
+							<div class="input_l"></div>
+							<div class="input_m">
+								<input id="landphonenum_input" type="text" class="input_text"
+									name="landphonenum">
+							</div>
+							<div class="input_r"></div>
+						</div></td>
+				</tr>
+				<tr>
+					<td>职业：</td>
+					<td><div class="input_wk">
+							<div class="input_l"></div>
+							<div class="input_m">
+								<select id="job_input" name="job_input" style="width:100%;margin-top:2px;">
+									<c:forEach items="${jobs_list}" var="xx" varStatus="loop">
+											<option value="${xx.getJobId()}">${xx.getJobName()}</option>
+									</c:forEach>
+								</select>
+							</div>
+							<div class="input_r"></div>
+						</div></td>
+				</tr>
+				<tr>
+					<td>校园足球证书：</td>
+					<td>
+						<div class="input_wk">
+							<div class="input_l"></div>
+							<div class="input_m">
+								<select id="sltTCFCertificate" disabled="disabled" name="tcfcertificate" style="width:100%;margin-top:2px;">
+									<option value="1">已获取</option>
+									<option value="2" selected="selected">未获取</option>
+								</select>
+							</div>
+							<div class="input_r"></div>
+						</div> 
+					</td>
+					<td rowspan="2">
+						<a id="sltTCFCertificateA" target="_blank"><img id="sltTCFCertificateImg" style="width:80px;height:80px"/></a>
+					</td >
+					<td rowspan="2">
+						<a id="sltCFACertificateA" target="_blank"><img id="sltCFACertificateImg" style="width:80px;height:80px"/></a>
+					</td>
+				</tr>
+				<tr>
+					<td>中国足协证书：</td>
+					<td><div class="input_wk">
+							<div class="input_l"></div>
+							<div class="input_m">
+								<select id="sltCFACertificate" disabled="disabled" name="cfacertificate" style="width:100%;margin-top:2px;">
+									<option value="0" selected="selected">无证书</option>
+									<option value="4">中国足协A级教练员证书</option>
+									<option value="3">中国足协B级教练员证书</option>
+									<option value="2">中国足协C级教练员证书</option>
+									<option value="1">中国足协D级教练员证书</option>
+								</select>
+							</div>
+							<div class="input_r"></div>
+						</div>
+					</td>
+				</tr>
+			</table>
+			<input id="image_input" type="text" class="input_text"
+									name="base64Image" style="display:none;">
+			<input id="image_tcffilename" type="text" class="input_text"
+									name="tcffilename" style="display:none;">
+			<input id="image_cfafilename" type="text" class="input_text"
+									name="cfafilename" style="display:none;">
+			<table id="btn_table" class="center_table" style="margin-top:5px;">
+				<tr>
+					<td width="250px;"><input id="button_change" type="button"
+						name="btnChange" /><input id="coachid" name="coachid" type="text" style="display:none;" /></td>
+				</tr>
+			</table>
+		</form>
+			</div>
+		</div>
+	</div>
+	
+		<!-- 分页 -->
+	<div id="paging" class="choose_bottom">
+		<div class="choose_btn_delete"></div>
+	</div>
+	<!-- 分页 -->
+</body>
+</html>

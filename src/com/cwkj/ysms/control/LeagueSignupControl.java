@@ -1,0 +1,114 @@
+package com.cwkj.ysms.control;
+
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.cwkj.ysms.model.YsmsLeague;
+import com.cwkj.ysms.model.view.LeagueView;
+import com.cwkj.ysms.model.view.ZoneView;
+import com.cwkj.ysms.service.LeagueManagementService;
+
+@Controller
+@RequestMapping(value = "/signup")
+public class LeagueSignupControl {
+	@Resource
+	private LeagueManagementService leagueManagementService;
+
+	public LeagueManagementService getLeagueManagementService() {
+		return leagueManagementService;
+	}
+
+	public void setLeagueManagementService(
+			LeagueManagementService leagueManagementService) {
+		this.leagueManagementService = leagueManagementService;
+	}
+	/**
+	 * 获取当前年份的联赛信息
+	 * 无参数
+	 * @param request
+	 * @param session
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(method = RequestMethod.GET)
+	public ModelAndView listResult(HttpServletRequest request,HttpSession session,HttpServletResponse response){
+		Object schoolIdInSession = session.getAttribute("schoolId");
+		if(schoolIdInSession == null){
+			return null;
+		}
+		Calendar calendar = Calendar.getInstance();
+		int year = calendar.get(Calendar.YEAR);
+		Map<String, Object> model = new HashMap<String, Object>();
+		model.put("year", year);
+		return new ModelAndView("LeagueSignupPage", model);
+	}
+	
+	/**
+	 * 根据年份获取联赛信息
+	 * 参数：year，年份
+	 * @param request
+	 * @param session
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/leaguesbyyear", method = RequestMethod.POST)
+	public Map<String, Object> leaguesByYear(HttpServletRequest request,
+			HttpSession session,HttpServletResponse response){
+		int year = Integer.parseInt(request.getParameter("year"));
+		Object schoolIdInSession = session.getAttribute("schoolId");
+		Map<String, Object> map = new HashMap<String, Object>();
+		if(schoolIdInSession == null){
+			map.put("year", year);
+			map.put("league_list", null);
+			return map;
+		}
+		int schoolId = Integer.parseInt(schoolIdInSession.toString());
+		List<LeagueView> leagues = leagueManagementService.getYearlyLeagueViews(year, schoolId);
+		map.put("year", year);
+		map.put("league_list", leagues);
+		return map;
+	}
+	
+	/**
+	 * 获取当前联赛下组别信息
+	 * 无参数
+	 * @param request
+	 * @param session
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/zonesbyleague", method = RequestMethod.GET)
+	public ModelAndView zoonByLeagueId(HttpServletRequest request,
+			HttpSession session,HttpServletResponse response){
+		Map<String, Object> model = new HashMap<String, Object>();
+		Object schoolIdInSession = session.getAttribute("schoolId");
+		if(schoolIdInSession == null){
+			return null;
+		}
+		int schoolId = Integer.parseInt(schoolIdInSession.toString());
+		int leagueId  = Integer.parseInt(request.getParameter("league_id"));
+		
+		List<ZoneView> zoneList = leagueManagementService.getZonesByLeagueAndSchool(leagueId, schoolId);
+		boolean isModifyPermitted = leagueManagementService.isModifyPermitted(leagueId);
+		boolean isRegisterEnd = leagueManagementService.isRegisterEnd(leagueId);
+		model.put("is_signup_start", isModifyPermitted);
+		model.put("is_signup_end", isRegisterEnd);
+		model.put("zone_list", zoneList);
+		return new ModelAndView("LeagueSignupZonePage", model);
+	}
+	
+}

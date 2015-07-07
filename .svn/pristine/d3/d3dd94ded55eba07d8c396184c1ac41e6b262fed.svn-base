@@ -1,0 +1,52 @@
+package com.cwkj.ysms.service;
+
+import com.cwkj.ysms.model.YsmsAthlete;
+
+public interface WechatService {
+	/**
+	 * 查询openId是否存在
+	 * @param openId
+	 * @return
+	 */
+	public boolean isOpenIdExist(String openId);
+	
+	/**
+	 * 保存微信用户登录信息
+	 * @param openId
+	 * @return
+	 */
+	public boolean saveWechatAccount(String openId);
+	/**
+	 * 根据openId查询运动员信息
+	 * @param openId
+	 * @return
+	 */
+	public YsmsAthlete findAthleteByOpenId(String openId);
+	
+	/**
+	 * 用户绑定
+	 * 如果姓名、身份证号、注册号匹配正确，添加运动员绑定，并返回true
+	 * 否则返回false
+	 * @param identifiedName
+	 * @param identifiedId
+	 * @param regiesterId
+	 * @return
+	 */
+	public boolean bindAthleteWechat(String openId, String identifiedName, String identifiedId, String registerId);
+	
+	
+	/**
+	 * 接触微信号与运动员之间的绑定关系
+	 * @param openId
+	 * @return
+	 */
+	public boolean unbindAthleteWechat(String openId);
+	
+	/**
+	 * 查找是否已经绑定了运动员
+	 * @param openId
+	 * @return
+	 */
+	public boolean isBinded(String openId);
+	
+}

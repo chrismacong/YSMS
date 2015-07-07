@@ -1,0 +1,209 @@
+package com.cwkj.ysms.wechat.controller;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import com.cwkj.ysms.model.YsmsAthlete;
+import com.cwkj.ysms.model.YsmsLeague;
+import com.cwkj.ysms.model.view.GameView;
+import com.cwkj.ysms.service.GamesManagementService;
+import com.cwkj.ysms.service.LeagueManagementService;
+import com.cwkj.ysms.service.WechatService;
+import com.cwkj.ysms.util.ThtApplicationContext;
+import com.cwkj.ysms.wechat.entity.ReceiveXmlEntity;
+import com.cwkj.ysms.wechat.util.FormatPicWordXmlResult;
+import com.cwkj.ysms.wechat.util.FormatXmlResult;
+import com.cwkj.ysms.wechat.util.ParseReceiveXml;
+
+/**
+ * 微信流程控制类
+ * @author Administrator
+ *
+ */
+public class WeChatController {
+	public String wechatProcess(String content){
+		//解析接收到的xml数据，转为对象
+		ReceiveXmlEntity rxe = ParseReceiveXml.getMsgEntity(content);
+		String realContent = rxe.getContent();
+		String xmlResult = "";
+		String userOpenId = rxe.getFromUserName(); //用户的OPENID值
+		WechatService wechatService = ThtApplicationContext.getBean(WechatService.class);
+		if(!wechatService.isOpenIdExist(userOpenId)){
+			//此openid尚未登录
+			//此处应获取全部用户信息并保存，这需要认证后的微信账号
+			wechatService.saveWechatAccount(userOpenId);
+		}
+		boolean isBinded = wechatService.isBinded(userOpenId);
+		GamesManagementService gamesManagementService = ThtApplicationContext.getBean(GamesManagementService.class);
+		if("最新赛况".equals(realContent)){
+			if(!isBinded){
+				xmlResult = FormatXmlResult.getXmlResult(rxe, "抱歉，必须进行用户绑定后才能使用本功能，请点击“我的账户-用户绑定”完成用户绑定.");
+				return xmlResult;
+			}
+			YsmsAthlete ysmsAthlete = wechatService.findAthleteByOpenId(userOpenId);
+			GameView gameView = gamesManagementService.getLastGameByAthlete(ysmsAthlete.getAthleteId());
+			String title = "";
+			if(gameView==null){
+				String tlResult="近期无比赛";
+				xmlResult = FormatXmlResult.getXmlResult(rxe, tlResult);
+				return xmlResult;
+			}
+			Integer hostScore = gameView.getHostScore();
+			Integer guestScore = gameView.getGuestScore();
+			if(hostScore==null||guestScore==null){
+				title="信息暂未上报.";
+			}
+			else{
+				int gap = hostScore - guestScore;
+				int sub = hostScore + guestScore;
+				if(Math.abs(gap)==0){
+					if(hostScore>0)
+						title="势均力敌！";
+					else
+						title="握手言和，";
+				}
+				else if(sub>=6 && gap<=2){
+					title="进球大餐！";
+				}
+				else if(gap==1){
+					title="差之毫厘，";
+				}
+				else if(gap>=4){
+					title="一边倒！";
+				}
+			}
+			title += gameView.getHostSchoolName() + gameView.getHostTeamName() +  " " + 
+					gameView.getHostScore() + ":" + gameView.getGuestScore() +  " " +
+					gameView.getGuestSchoolName() + gameView.getGuestTeamName();
+			String description = "点击查看具体比赛数据";
+			String url = "http://tf.chrisma.cn/wechat/result.html?athlete_id=" + ysmsAthlete.getAthleteId();
+			xmlResult = FormatPicWordXmlResult.getXmlResult(rxe, title, description, url);
+		}
+		else if("最近比赛".equals(realContent)){
+			if(!isBinded){
+				xmlResult = FormatXmlResult.getXmlResult(rxe, "抱歉，必须进行用户绑定后才能使用本功能，请点击“我的账户-用户绑定”完成用户绑定.");
+				return xmlResult;
+			}
+			YsmsAthlete ysmsAthlete = wechatService.findAthleteByOpenId(userOpenId);
+			GameView gameView = gamesManagementService.getNextGameByAthlete(ysmsAthlete.getAthleteId());
+			String title = "";
+			if(gameView==null){
+				String tlResult="未来无比赛";
+				xmlResult = FormatXmlResult.getXmlResult(rxe, tlResult);
+				return xmlResult;
+			}
+			String dateStr = gameView.gameTime;
+			if(dateStr!=null){
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+				try {
+					Date date = sdf.parse(dateStr);
+					Calendar calendar = Calendar.getInstance();
+					calendar.setTime(date);
+					title += calendar.get(Calendar.MONTH) + 1 + "月" + calendar.get(Calendar.DAY_OF_MONTH) + "日";
+					SimpleDateFormat simple = new SimpleDateFormat("HH:mm");
+					title += simple.format(date) + " ";
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+				title += gameView.getHostSchoolName() + gameView.getHostTeamName() +  " VS " +
+						gameView.getGuestSchoolName() + gameView.getGuestTeamName();
+			}
+			String description = "点击查看具体比赛数据";
+			String url = "http://tf.chrisma.cn/wechat/game.html?athlete_id=" + ysmsAthlete.getAthleteId();
+			xmlResult = FormatPicWordXmlResult.getXmlResult(rxe, title, description, url);
+		}
+		else{
+			String tlResult = "";
+			if("联赛信息".equals(realContent)){
+				Calendar calendar = Calendar.getInstance();
+				int year = calendar.get(Calendar.YEAR);
+				LeagueManagementService leagueManagementService = ThtApplicationContext.getBean(LeagueManagementService.class);
+				List<YsmsLeague> leagueList = leagueManagementService.getYearlyLeagues(year);
+				if(leagueList.size()==0){
+					tlResult = "本年度暂时没有联赛";
+				}
+				else{
+					tlResult = "本年度已经或要有组织的联赛包括：";
+					for(int i=0;i<leagueList.size();i++){
+						tlResult += leagueList.get(i).getLeagueName() + "、";
+					}
+					tlResult = tlResult.substring(0, tlResult.lastIndexOf("、"));
+				}
+			}
+			else if("相关产品".equals(realContent)){
+				tlResult = "该功能暂未开放";
+			}
+			else if("用户绑定".equals(realContent)){
+				if(isBinded){
+					//已完成绑定，给他回复一个绑定信息界面
+					String title = "用户已绑定";
+					String description = "点击查看绑定用户信息";
+					String url = "http://tf.chrisma.cn/wechat/unbind.html?open_id=" + userOpenId;
+					xmlResult = FormatPicWordXmlResult.getXmlResult(rxe, title, description, url);
+					return xmlResult;
+				}
+				else{
+					//未完成绑定，给他回复一个绑定界面
+					String title = "用户绑定";
+					String description = "点击进入绑定页";
+					String url = "http://tf.chrisma.cn/wechat/bind.html?open_id=" + userOpenId;
+					xmlResult = FormatPicWordXmlResult.getXmlResult(rxe, title, description, url);
+					return xmlResult;
+				}
+				//坑爹玩意儿弄了半天也不给微信认证，受不了了，先直接写用户绑定
+				//此处还需要判断是否用户已经关注了本订阅号，如果没关注不为他提供信息。以及用户微信昵称，微信头像
+				//留到后面做吧卧槽
+				//先这样写
+				
+				//后面要加上下面的
+				//后来想想应该加在第一次发现openid不存在时，直接保存在数据库里
+//				String access_token = WechatResourceUtil.getAccess_token();
+//				String userInfo_for_api = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" + 
+//						access_token + "&openid=" + userOpenId + "&lang=zh_CN";
+//				System.out.println(userInfo_for_api);
+//				try {
+//					URL urlGet = new URL(userInfo_for_api);
+//					HttpURLConnection http = (HttpURLConnection) urlGet.openConnection();    
+//
+//					http.setRequestMethod("GET");      //必须是get方式请求    
+//					http.setRequestProperty("Content-Type","application/x-www-form-urlencoded");    
+//					http.setDoOutput(true);        
+//					http.setDoInput(true);
+//					System.setProperty("sun.net.client.defaultConnectTimeout", "30000");//连接超时30秒
+//					System.setProperty("sun.net.client.defaultReadTimeout", "30000"); //读取超时30秒
+//
+//					http.connect();
+//
+//					InputStream is =http.getInputStream();
+//					int size =is.available();
+//					byte[] jsonBytes =new byte[size];
+//					is.read(jsonBytes);
+//					String message=new String(jsonBytes,"UTF-8");
+//
+//					JSONObject demoJson = new JSONObject(message);
+//					System.out.println(message.toString());
+//					String subscribe = demoJson.getString("subscribe");//是否订阅公众号，若为0表示没有，那么我们就不为它提供其他信息
+//					String nickname = demoJson.getString("nickname");//用户昵称
+//					String headimgurl = demoJson.getString("headimgurl");//用户头像
+//					
+//					tlResult = subscribe + " " + nickname + " " + headimgurl;
+//					
+//
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+			}
+			else{
+				//调用图灵机器人接口处理模块，获取图灵机器人的结果
+				tlResult = new TulingController().getTulingRe(realContent.replaceAll(" ","")); //去除空格否则报错 	
+			}
+			//封装微信接口的XML数据
+			xmlResult = FormatXmlResult.getXmlResult(rxe, tlResult);
+		}
+
+		return xmlResult;
+	}
+}
