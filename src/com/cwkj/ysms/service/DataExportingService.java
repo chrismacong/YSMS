@@ -80,6 +80,11 @@ public interface DataExportingService {
 	 * @return
 	 */
 	public List<CardAthleteView> exportCard_Athlete(int schoolId);
+	/**
+	 * 找带金字儿的
+	 * @return
+	 */
+	public List<CardAthleteView> exportCard_AthleteJin();
 	
 	/**
 	 * 制卡-获取教练员列表

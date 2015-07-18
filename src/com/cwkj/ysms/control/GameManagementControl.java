@@ -175,6 +175,11 @@ public class GameManagementControl {
 	@RequestMapping(value = "getgames", method = RequestMethod.POST)
 	public Map<String, Object> getGames(HttpServletRequest request,
 			HttpSession session, HttpServletResponse response) throws Exception {
+		String userGroup = session.getAttribute("userGroup").toString();
+		boolean isRecorder = false;
+		if("3".equals(userGroup)){
+			isRecorder = true;
+		}
 		Map<String, Object> model = new HashMap<String, Object>();
 		Integer leagueId = null;
 		String currentPage = request.getParameter("current_page");
@@ -215,6 +220,7 @@ public class GameManagementControl {
 		List<GameView> viewList = gameManagementService.getGamesByPage(leagueId, zoneId, date,  returanCurrentPage.toString());
 		model.put("page", returnPage);
 		model.put("games", viewList);
+		model.put("isrecorder", isRecorder);
 		return model;
 	}
 

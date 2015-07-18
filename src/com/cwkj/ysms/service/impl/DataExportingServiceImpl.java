@@ -953,4 +953,26 @@ public class DataExportingServiceImpl implements DataExportingService {
 		}
 		return exports;
 	}
+
+	@Override
+	public List<CardAthleteView> exportCard_AthleteJin() {
+		List<YsmsAthlete> athletes = athleteDao.findIncludingJin();
+		List<CardAthleteView> exports = new ArrayList<CardAthleteView>();
+		for(int i=0;i<athletes.size();i++){
+			YsmsAthlete athlete = athletes.get(i);
+			CardAthleteView cav = new CardAthleteView();
+			cav.setAthleteId(athlete.getAthleteId());
+			cav.setGender(athlete.getIdentifiedGender()==0?"女":"男");
+			cav.setIdentifiedNum(athlete.getIdentifiedId());
+			cav.setName(athlete.getIdentifiedName());
+			cav.setNation(athlete.getIdentifiedNationality());
+			cav.setPhone(athlete.getGuardian1Mobile());
+			cav.setRegisterNum(athlete.getRegister_id());
+			cav.setSchool(athlete.getYsmsSchool().getSchoolName());
+			cav.setSchoolNum(athlete.getStudentId());
+			cav.setPhotoBase64(athleteAttDao.findByAthleteId(athlete.getAthleteId()).getAttName());
+			exports.add(cav);
+		}
+		return exports;
+	}
 }

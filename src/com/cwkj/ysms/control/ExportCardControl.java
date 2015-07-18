@@ -63,5 +63,13 @@ public class ExportCardControl {
 		return result;
 	}
 	
+	@ResponseBody
+	@RequestMapping(value = "/jin", method = RequestMethod.POST)
+	public List<CardAthleteView> getJin(HttpServletRequest request,
+			HttpSession session,HttpServletResponse response){
+		List<CardAthleteView> result = dataExportingService.exportCard_AthleteJin();
+		return result;
+	}
+	
 	
 }

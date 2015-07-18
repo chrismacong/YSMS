@@ -28,6 +28,7 @@
     <script language="javascript" type="text/javascript"
 	src="${pageContext.request.contextPath}/js/ds.dialog.js"></script>
 <script type="text/javascript">
+	var selected_news;
 	$(function() {
 		// 时间设置
 		$("#time").datepicker();
@@ -124,11 +125,53 @@
 				$('.look_newinfo').click(function() {
 					var this_new = $(this).parent();
 					var news = this_new.attr("id").substring(5);
+					selected_news = news;
 					$('.new_page').show();
-					$('.new_page_neirong').load("${pageContext.request.contextPath}/newsmanagement/news.html?nid=" + news);
+					$('.new_page_neirong').load("${pageContext.request.contextPath}/newsmanagement/newsformodify.html?nid=" + news);
 				})
 				$('.close').click(function() {
 					$('.new_page').hide();
+				})
+				$('.saveok').click(function() {
+					var content = $('#news_content').html();
+					$.ajax({
+						type : 'POST',
+						data : {
+							news_id : selected_news,
+							content : content
+						},
+						dataType : "json",
+						url : "${pageContext.request.contextPath}/newsmanagement/newsmodify.html",
+						//请求的action路径
+						error : function() { //请求失败处理函数
+							ds.dialog({
+								title : '消息提示',
+								content : "修改新闻失败!",
+								onyes : true,
+								icon : "../../images/info.png"
+							});
+							cancel_loading();
+						},
+						success : function(data) { //请求成功后处理函数。 
+							if(data.success){
+								ds.dialog({
+									title : '消息提示',
+									content : "修改新闻成功!",
+									onyes : true,
+									icon : "../../images/socceralert.png"
+								});
+							}
+							else{
+								ds.dialog({
+									title : '消息提示',
+									content : "修改新闻失败!",
+									onyes : true,
+									icon : "../../images/info.png"
+								});
+							}
+							cancel_loading();
+						}
+					})
 				})
 
 				//一个小样式
@@ -185,6 +228,7 @@
 		<div class="new_page" style="display: none">
 			<div class="new_page_neirong"></div>
 			<div class="close"></div>
+			<div class="saveok"></div>
 		</div>
 		<!--新闻查看详细 END-->
 	</div>

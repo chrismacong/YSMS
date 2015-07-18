@@ -343,4 +343,18 @@ public class AthleteDaoImpl extends GenericDaoImpl implements AthleteDao {
 		}
 	}
 
+	@Override
+	public List<YsmsAthlete> findIncludingJin() {
+		log.debug("finding all YsmsAthlete instances");
+		try {
+			String queryString = "from YsmsAthlete where deleteflag = " + 0 + " and identified_name like '%金%'";
+			queryString += " order by athleteId ";
+			Query queryObject = getSession().createQuery(queryString);
+			return queryObject.list();
+		} catch (RuntimeException re) {
+			log.error("find all failed", re);
+			throw re;
+		}
+	}
+
 }

@@ -347,4 +347,32 @@ public class NewsManagementServiceImpl implements NewsManagementService{
 		System.out.println("群发结果（服务号）:" + result);
 		return result;
 	}
+
+	@Override
+	public Map<String, Object> getNewsForModify(int newsId) {
+		Map<String, Object> model = new HashMap<String, Object>();
+		YsmsWechatnews wechatNews = wechatNewsDao.findById(newsId);
+		NewsView newsView = new NewsView();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+		newsView.setAuthor(wechatNews.getAuthor());
+		newsView.setDateStr(sdf.format(wechatNews.getDate()));
+		newsView.setNid(wechatNews.getNid());
+		newsView.setTitle(wechatNews.getTitle());
+		YsmsWechatnewsAttr newsattr = wechatnewsAttrDao.findByNewsId(newsId);
+		String content = newsattr.getContent();
+		content = content.replaceAll("contenteditable=\"false\"", "contenteditable=\"true\"");
+		newsattr.setContent(content);
+		model.put("news", newsView);
+		model.put("newsattr", newsattr);
+		return model;
+	}
+
+	@Override
+	public boolean updateNewsContent(int newsId, String content) {
+		YsmsWechatnewsAttr newsattr = wechatnewsAttrDao.findByNewsId(newsId);
+		content = content.replaceAll("contenteditable=\"true\"", "contenteditable=\"false\"");
+		newsattr.setContent(content);
+		wechatnewsAttrDao.save(newsattr);
+		return true;
+	}
 }

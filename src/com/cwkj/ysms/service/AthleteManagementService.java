@@ -190,4 +190,5 @@ public interface AthleteManagementService {
 	 * @return
 	 */
 	public boolean isAddingAthletePermitted(String identifiedId);
+	
 }

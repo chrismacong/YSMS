@@ -366,15 +366,10 @@
 	<a id="export_excel"></a>
 	<a id="export_word"></a>
 	<a id="export_pdf"></a>
-	<!-- <c:if test="${signedup==false}">
+	<c:if test="${signedup==false}">
 		<a id="confirm_signup_btn"></a>
 		<a id="cancel_signup_btn"></a>
-	</c:if> --> <!-- 这段代码是为了在报名后依然可以修改 -->
-	
-	<!-- 下面这一段也是为了可以修改 -->
-		<a id="confirm_signup_btn"></a>
-		<a id="cancel_signup_btn"></a>
-	<!--  -->
+	</c:if>
 
 	<!--选择球衣-->
 	<div id="div_choosenum" class="change_num" style="display: none">

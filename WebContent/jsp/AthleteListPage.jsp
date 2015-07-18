@@ -559,6 +559,7 @@ table.dataTable thead .sorting {
 					$("#guardian2job_select")[0].selectedIndex =backdata.athlete.ysmsJobsByGuardian2JobId-1;
 					$("#guardian2phone_input").val(backdata.athlete.guardian2Mobile);
 					$("#coachname_input").val(backdata.athlete.athleteCoach);
+					$("#schoolname_input").val(backdata.athlete.schoolName);
 					
 					if(backdata.athleteatt)
 						{
@@ -858,8 +859,17 @@ table.dataTable thead .sorting {
 									<div class="input_r"></div>
 								</div>
 							</td>
-							<td width="30px" rowspan=9>&nbsp;</td>
-
+							<td class="text_width">学校名称：</td>
+							<td>
+								<div class="input_wk">
+									<div class="input_l"></div>
+									<div class="input_m">
+										<input id="schoolname_input" type="text" class="input_text"
+											name="schoolname" disabled="disabled">
+									</div>
+									<div class="input_r"></div>
+								</div>
+							</td>
 						</tr>
 
 						<tr>

@@ -221,7 +221,7 @@ public class GamesDaoImpl extends GenericDaoImpl implements GamesDao {
 					String sql = " select g from YsmsGames g" + 
 							" where g.ysmsTeamByHostTeamid.teamId = " + teamId + 
 							" or g.ysmsTeamByGuestTeamid.teamId = " + teamId + 
-							" and g.gamesTime < ? order by g.gamesTime asc";
+							" and g.gamesTime < ? order by g.gamesTime desc";
 					Query query = getSession().createQuery(sql);
 					query.setDate(0,date);
 					List<YsmsGames> objects = query.list();
@@ -254,7 +254,7 @@ public class GamesDaoImpl extends GenericDaoImpl implements GamesDao {
 				queryString += " and yg.gamesTime like '%" + sdf.format(date)
 						+ "%' ";
 			}
-			queryString += " order by yg.gamesTime ";
+			queryString += " order by yg.gamesTime asc, yg.gamesId asc";
 			Query queryObject = getSession().createQuery(queryString);
 			if (page != null) {
 				queryObject.setMaxResults(page.getEveryPage());
@@ -308,7 +308,7 @@ public class GamesDaoImpl extends GenericDaoImpl implements GamesDao {
 					" and tm.ysmsAthlete.athleteId = " + athleteId + 
 					" and g.gamesTime > ? order by g.gamesTime asc";
 			Query query = getSession().createQuery(sql);
-			query.setDate(0, date);
+			query.setString(0, dateStr);
 			List<YsmsGames> objects = query.list();
 			if (objects.size() < 1) {
 				return null;
@@ -336,9 +336,9 @@ public class GamesDaoImpl extends GenericDaoImpl implements GamesDao {
 					" or g.ysmsTeamByGuestTeamid.teamId = t.teamId)" + 
 					" and t.teamId = tm.ysmsTeam.teamId" + 
 					" and tm.ysmsAthlete.athleteId = " + athleteId + 
-					" and g.gamesTime < ? order by g.gamesTime asc";
+					" and g.gamesTime < ? order by g.gamesTime desc";
 			Query query = getSession().createQuery(sql);
-			query.setDate(0, date);
+			query.setString(0, dateStr);
 			List<YsmsGames> objects = query.list();
 			if (objects.size() < 1) {
 				return null;

@@ -103,4 +103,6 @@ public interface AthleteDao extends GenericDao {
 	public String createRegisterID(int schoolID, int yearIn, int athleteID);
 	
 	public List<YsmsAthlete> findForBinding(String identifiedName, String identifiedId, String registerId);
+	
+	public List<YsmsAthlete> findIncludingJin();
 }

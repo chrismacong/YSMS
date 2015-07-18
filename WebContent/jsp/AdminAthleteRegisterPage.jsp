@@ -373,9 +373,16 @@ td.textbox1 {
 					onyes : true,
 					icon : "../../images/info.png"
 				});
+        		var file = $("#picFile") 
+				file.after(file.clone().val("")); 
+				file.remove(); 
+				$("#default_photo_img").css("visibility", "visible");
+				$("#default_photo_img").attr("src", "../images/defaultuser.png")
         	}
-        	form.base64Image.value = _result.substring(_result.indexOf("base64")+7);
-    		$("#default_photo_img").attr("src",_result);
+        	else{
+            	form.base64Image.value = _result.substring(_result.indexOf("base64")+7);
+        		$("#default_photo_img").attr("src",_result);
+        	}
         }   
 	}   
 

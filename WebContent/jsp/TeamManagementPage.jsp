@@ -60,18 +60,12 @@
 					<img src="${pageContext.request.contextPath}/images/a_fanhui.png" />
 				</div>
 				<p>联赛列表</p></li>
-			<!--点击返回联赛列表页-->
-			<!-- 此处用于在已经报名的情况下依然显示 -->
-			<!-- <c:if test="${signedup==false}">
+			<c:if test="${signedup==false}">
 				<li id="a_team_members"><div>
 						<img src="${pageContext.request.contextPath}/images/list_coach.png" />
 					</div>
 					<p>人员安排</p></li>
-			</c:if> -->
-			<li id="a_team_members"><div>
-						<img src="${pageContext.request.contextPath}/images/list_coach.png" />
-					</div>
-					<p>人员安排</p></li>
+			</c:if>
 			<li id="a_signuptoleague" class="border_bo"><div>
 					<img src="${pageContext.request.contextPath}/images/a_signup.png" />
 				</div>

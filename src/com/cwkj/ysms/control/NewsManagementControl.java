@@ -57,13 +57,13 @@ public class NewsManagementControl {
 			HttpSession session, HttpServletResponse response) {
 		return new ModelAndView("NewsListPage");
 	}
-	
+
 	@RequestMapping(value = "newslistforverify", method = RequestMethod.GET)
 	public ModelAndView listNewsForVerify(HttpServletRequest request,
 			HttpSession session, HttpServletResponse response) {
 		return new ModelAndView("NewsVerifyPage");
 	}
-	
+
 	@RequestMapping(value = "votelist", method = RequestMethod.GET)
 	public ModelAndView listVote(HttpServletRequest request,
 			HttpSession session, HttpServletResponse response) {
@@ -75,7 +75,7 @@ public class NewsManagementControl {
 			HttpSession session, HttpServletResponse response) {
 		return new ModelAndView("NewsEditPage");
 	}
-	
+
 	@RequestMapping(value = "news", method = RequestMethod.GET)
 	public ModelAndView news(HttpServletRequest request,
 			HttpSession session, HttpServletResponse response) {
@@ -90,7 +90,22 @@ public class NewsManagementControl {
 			return new ModelAndView("redirect:/newsmanagement/voteresult.html?nid=" + newsId);
 		return new ModelAndView("NewsPage", model);
 	}
-	
+
+	@RequestMapping(value = "newsformodify", method = RequestMethod.GET)
+	public ModelAndView newsformodify(HttpServletRequest request,
+			HttpSession session, HttpServletResponse response) {
+		int newsId= Integer.parseInt(request.getParameter("nid"));
+		String openIdStr = request.getParameter("open_id");
+		String openId = "0";
+		if(openIdStr!=null)
+			openId = openIdStr;
+		Map<String, Object> model = newsManagementService.getNewsForModify(newsId);
+		model.put("openid", openId);
+		if(newsManagementService.isVoted(newsId, openId))
+			return new ModelAndView("redirect:/newsmanagement/voteresult.html?nid=" + newsId);
+		return new ModelAndView("NewsPage", model);
+	}
+
 	@RequestMapping(value = "voteresult", method = RequestMethod.GET)
 	public ModelAndView voteResult(HttpServletRequest request,
 			HttpSession session, HttpServletResponse response) {
@@ -118,7 +133,7 @@ public class NewsManagementControl {
 		}
 		return model;
 	}
-	
+
 	@ResponseBody
 	@RequestMapping(value = "getnewsforverify", method = RequestMethod.POST)
 	public Map<String, Object> getNewsForVerify(HttpServletRequest request,
@@ -136,7 +151,7 @@ public class NewsManagementControl {
 		}
 		return model;
 	}
-	
+
 	@ResponseBody
 	@RequestMapping(value = "getvote", method = RequestMethod.POST)
 	public Map<String, Object> getVote(HttpServletRequest request,
@@ -154,7 +169,7 @@ public class NewsManagementControl {
 		}
 		return model;
 	}
-	
+
 	@ResponseBody
 	@RequestMapping(value = "vote", method = RequestMethod.POST)
 	public Map<String, Object> vote(HttpServletRequest request,
@@ -167,7 +182,7 @@ public class NewsManagementControl {
 		model.put("success", result);
 		return model;
 	}
-	
+
 	@ResponseBody
 	@RequestMapping(value = "switchnews", method = RequestMethod.POST)
 	public Map<String, Object> switchNews(HttpServletRequest request,
@@ -179,7 +194,7 @@ public class NewsManagementControl {
 		model.put("success", result);
 		return model;
 	}
-	
+
 	@ResponseBody
 	@RequestMapping(value = "deletenews", method = RequestMethod.POST)
 	public Map<String, Object> deleteNews(HttpServletRequest request,
@@ -190,7 +205,7 @@ public class NewsManagementControl {
 		model.put("success", result);
 		return model;
 	}
-	
+
 
 	@ResponseBody
 	@RequestMapping(value="uploadimage", method = RequestMethod.POST)
@@ -239,7 +254,7 @@ public class NewsManagementControl {
 		}
 		return map;
 	}
-	
+
 	@ResponseBody
 	@RequestMapping(value="verify", method = RequestMethod.POST)
 	public Map<String, Object> verify(HttpServletRequest request,
@@ -256,7 +271,7 @@ public class NewsManagementControl {
 		}
 		return map;
 	}
-	
+
 	/**
 	 * @param request
 	 * @param session
@@ -366,7 +381,7 @@ public class NewsManagementControl {
 		}
 		return map;
 	}
-	
+
 
 	@ResponseBody
 	@RequestMapping(value="broadcast", method = RequestMethod.POST)
@@ -390,7 +405,7 @@ public class NewsManagementControl {
 		}
 		return map;
 	}
-	
+
 	@ResponseBody
 	@RequestMapping(value="broadcastservice", method = RequestMethod.POST)
 	public Map<String, Object> broadcastService(HttpServletRequest request,
@@ -411,6 +426,22 @@ public class NewsManagementControl {
 			e.printStackTrace();
 			map.put("success", false);
 		}
+		return map;
+	}
+	@ResponseBody
+	@RequestMapping(value="newsmodify", method = RequestMethod.POST)
+	public Map<String, Object> newsmodify(HttpServletRequest request,
+			HttpSession session, HttpServletResponse response) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		Object userIdInSession = session.getAttribute("userId");
+		String content = request.getParameter("content");
+		int newsId = Integer.parseInt(request.getParameter("news_id"));
+		if (userIdInSession == null) {
+			map.put("success",false);
+			return map;
+		}
+		boolean result = newsManagementService.updateNewsContent(newsId, content);
+		map.put("success", result);
 		return map;
 	}
 }

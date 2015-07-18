@@ -68,6 +68,12 @@ public interface NewsManagementService {
 	 */
 	public Map<String, Object> getNews(int newsId);
 	/**
+	 * 获取可以修改的新闻
+	 * @param newsId
+	 * @return
+	 */
+	public Map<String, Object> getNewsForModify(int newsId);
+	/**
 	 * 按照view获取某条新闻信息
 	 * @param newsId
 	 * @return
@@ -121,4 +127,12 @@ public interface NewsManagementService {
 	 * @return
 	 */
 	public boolean broadcastService(String checked, String forwardDir);
+	
+	/**
+	 * 修改消息内容
+	 * @param newsId
+	 * @param content
+	 * @return
+	 */
+	public boolean updateNewsContent(int newsId, String content);
 }

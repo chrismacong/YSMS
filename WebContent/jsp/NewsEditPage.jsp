@@ -73,7 +73,7 @@
 				<div class="editor_person">
 					<input type="checkbox" id="zhiding" name="zhiding"><label for="zhiding">&nbsp;新闻置顶&nbsp;&nbsp;</label>	
 					<label>&nbsp;&nbsp;封面：</label>
-					<input type="file" id="coverimg_upload" name="coverimg" accept="image/*">
+					<input type="file" id="coverimg_upload" onchange="readFile(this)" name="coverimg" accept="image/*">
 					<input type="text" id="news_html" name="news_html" style="display:none;">
 				</div>
 				</form>
@@ -155,153 +155,224 @@
 			</div>
 </body>
 <script type="text/javascript">
-	$(function(){
-		$('.option_li li').click(function(){
-			$(this).css('background','#4C4342').siblings().css('background','#c1aea1');
-			switch ($(this).index())
-			{
-				case 0:$('#moban_s').load("${pageContext.request.contextPath}/jsp/moban_title.jsp");break;
-				case 1:$('#moban_s').load("${pageContext.request.contextPath}/jsp/moban_textbody.jsp");break;
-				case 2:$('#moban_s').load("${pageContext.request.contextPath}/jsp/moban_img.jsp");break; 
-				case 3:$('#moban_s').load("${pageContext.request.contextPath}/jsp/moban_vote.jsp");break;
-			}
-		})
-
-		$('.color-swatch').click(function(){
-			var color_now=$(this).css('background-color')
-			$('#custom-color-text').val(color_now);
-			$('#custom-color-text').css('background-color',color_now);
-			
-		})
-		
-		$('#refresh').click(function(){
-			$('#edit_new_edit').html('');
-		})
-
-		$('#editor_cover_image').click(function(){
-			$('.upload_out').show();
-		})
-		
-		$("#submit_pic").click(function(){
-			$("#imgform").ajaxSubmit({
-				 type: "POST",
-			     url: "${pageContext.request.contextPath}/newsmanagement/uploadimage.html",
-			     dataType: "json",
-			     success: function(data){
-			    	 if(data.success){
-			    		 $(selected_obj).attr("src","${pageContext.request.contextPath}/YSMSRepo/news/attachment/" + data.dir);
-			    		 if($(selected_obj).attr("name")=="checkbox_img"){
-			    			 $(selected_obj).parent().parent().attr("id", "voteimage_" + data.dir);
-			    		 }
-			    		 $('.upload_out').hide();
-			    		 $("#dd").empty();
-			    	 }
-			    	 else{
-			    		 ds.dialog({
-								title : '消息提示',
-								content : "图片上传失败！",
-								onyes : true,
-								icon : "../../images/info.png"
-							});
-			    	 }
-			     },
-			     error:function(){
-			    	 ds.dialog({
-							title : '消息提示',
-							content : "网络连接异常！",
-							onyes : true,
-							icon : "../../images/info.png"
-						});
-			     }
-			}); 
-		})
-		$('.input_btn').click(function(){
-			var news_title = $("#news_title_text").val();
-			if(news_title==""){
-				 ds.dialog({
-						title : '消息提示',
-						content : "新闻标题不能为空！",
-						onyes : true,
-						icon : "../../images/info.png"
-					});
-				 return;
-			}
-			var news_author = $("#news_author_text").val();
-			if(news_author==""){
-				 ds.dialog({
-						title : '消息提示',
-						content : "新闻作者不能为空！",
-						onyes : true,
-						icon : "../../images/info.png"
-					});
-				 return;
-			}
-			var isTop = $("#zhiding").is(':checked');
-			var coverFileName = $("#coverimg_upload").val();
-			if(coverFileName == null || coverFileName == ""){
-			}
-			else{
-				if(!coverFileName.match(/.jpg|.gif|.png|.bmp/i)){
-					ds.dialog({
-						title : '消息提示',
-						content : "封面图片附件格式不符合！(仅支持.jpg|.gif|.png|.bmp文件)",
-						onyes : true,
-						icon : "../../images/info.png"
-					});
-					return false;
-				}
-			}
-			var htmlContent = $("#edit_new_edit").html();
-			if(htmlContent.length>65535){
+	function readFile(obj) {
+		var file = obj.files[0];
+		//判断类型是不是图片  
+		if (!/image\/\w+/.test(file.type)) {
+			ds.dialog({
+				title : '消息提示',
+				content : "请确保为图像类型！",
+				onyes : true,
+				icon : "../../images/info.png"
+			});
+			return false;
+		}
+		var reader = new FileReader();
+		reader.readAsDataURL(file);
+		reader.onload = function(e) {
+			var _result = this.result;
+			if (_result.length > 65535) {
 				ds.dialog({
 					title : '消息提示',
-					content : "新闻过长！请控制字数！",
+					content : "图片过大，请选择小于64KB的封面图片！",
 					onyes : true,
 					icon : "../../images/info.png"
 				});
-				return false;
+				var file = $("#coverimg_upload") 
+				file.after(file.clone().val("")); 
+				file.remove(); 
 			}
-			$("#news_html").val($("#edit_new_edit").html());
-			$("#news_form").ajaxSubmit({
-				 type: "POST",
-			     url: "${pageContext.request.contextPath}/newsmanagement/uploadnews.html",
-			     dataType: "json",
-			     success: function(data){
-			    	 if(data.success){
-			    		 ds.dialog({
-								title : '消息提示',
-								content : "新闻已发布！",
-								yesText : "回到列表",
-								onyes : function() {
-									window.parent.location.href = "${pageContext.request.contextPath}/newsmanagement.html";
-								},
-								noText : "再写一篇",
-								onno : function() {
-									location.reload();
-								},
-								icon : "../../images/socceralert.png"
-							});
-			    	 }
-			    	 else{
-			    		 ds.dialog({
-								title : '消息提示',
-								content : "新闻发布失败！",
-								onyes : true,
-								icon : "../../images/info.png"
-							});
-			    	 }
-			     },
-			     error:function(){
-			    	 ds.dialog({
-							title : '消息提示',
-							content : "网络连接异常！",
-							onyes : true,
-							icon : "../../images/info.png"
-						});
-			     }
-			}); 
-			
+		}
+	}
+	$(function() {
+		$('.option_li li')
+				.click(
+						function() {
+							$(this).css('background', '#4C4342').siblings()
+									.css('background', '#c1aea1');
+							switch ($(this).index()) {
+							case 0:
+								$('#moban_s')
+										.load(
+												"${pageContext.request.contextPath}/jsp/moban_title.jsp");
+								break;
+							case 1:
+								$('#moban_s')
+										.load(
+												"${pageContext.request.contextPath}/jsp/moban_textbody.jsp");
+								break;
+							case 2:
+								$('#moban_s')
+										.load(
+												"${pageContext.request.contextPath}/jsp/moban_img.jsp");
+								break;
+							case 3:
+								$('#moban_s')
+										.load(
+												"${pageContext.request.contextPath}/jsp/moban_vote.jsp");
+								break;
+							}
+						})
+
+		$('.color-swatch').click(function() {
+			var color_now = $(this).css('background-color')
+			$('#custom-color-text').val(color_now);
+			$('#custom-color-text').css('background-color', color_now);
+
 		})
+
+		$('#refresh').click(function() {
+			$('#edit_new_edit').html('');
+		})
+
+		$('#editor_cover_image').click(function() {
+			$('.upload_out').show();
+		})
+
+		$("#submit_pic")
+				.click(
+						function() {
+							$("#imgform")
+									.ajaxSubmit(
+											{
+												type : "POST",
+												url : "${pageContext.request.contextPath}/newsmanagement/uploadimage.html",
+												dataType : "json",
+												success : function(data) {
+													if (data.success) {
+														$(selected_obj)
+																.attr(
+																		"src",
+																		"${pageContext.request.contextPath}/YSMSRepo/news/attachment/"
+																				+ data.dir);
+														if ($(selected_obj)
+																.attr("name") == "checkbox_img") {
+															$(selected_obj)
+																	.parent()
+																	.parent()
+																	.attr(
+																			"id",
+																			"voteimage_"
+																					+ data.dir);
+														}
+														$('.upload_out').hide();
+														$("#dd").empty();
+													} else {
+														ds
+																.dialog({
+																	title : '消息提示',
+																	content : "图片上传失败！",
+																	onyes : true,
+																	icon : "../../images/info.png"
+																});
+													}
+												},
+												error : function() {
+													ds
+															.dialog({
+																title : '消息提示',
+																content : "网络连接异常！",
+																onyes : true,
+																icon : "../../images/info.png"
+															});
+												}
+											});
+						})
+		$('.input_btn')
+				.click(
+						function() {
+							var news_title = $("#news_title_text").val();
+							if (news_title == "") {
+								ds.dialog({
+									title : '消息提示',
+									content : "新闻标题不能为空！",
+									onyes : true,
+									icon : "../../images/info.png"
+								});
+								return;
+							}
+							var news_author = $("#news_author_text").val();
+							if (news_author == "") {
+								ds.dialog({
+									title : '消息提示',
+									content : "新闻作者不能为空！",
+									onyes : true,
+									icon : "../../images/info.png"
+								});
+								return;
+							}
+							var isTop = $("#zhiding").is(':checked');
+							var coverFileName = $("#coverimg_upload").val();
+							if (coverFileName == null || coverFileName == "") {
+							} else {
+								if (!coverFileName
+										.match(/.jpg|.gif|.png|.bmp/i)) {
+									ds
+											.dialog({
+												title : '消息提示',
+												content : "封面图片附件格式不符合！(仅支持.jpg|.gif|.png|.bmp文件)",
+												onyes : true,
+												icon : "../../images/info.png"
+											});
+									return false;
+								}
+							}
+							var htmlContent = $("#edit_new_edit").html();
+							if (htmlContent.length > 65535) {
+								ds.dialog({
+									title : '消息提示',
+									content : "新闻过长！请控制字数！",
+									onyes : true,
+									icon : "../../images/info.png"
+								});
+								return false;
+							}
+							$("#news_html").val($("#edit_new_edit").html());
+							$("#news_form")
+									.ajaxSubmit(
+											{
+												type : "POST",
+												url : "${pageContext.request.contextPath}/newsmanagement/uploadnews.html",
+												dataType : "json",
+												success : function(data) {
+													if (data.success) {
+														ds
+																.dialog({
+																	title : '消息提示',
+																	content : "新闻已发布！",
+																	yesText : "回到列表",
+																	onyes : function() {
+																		window.parent.location.href = "${pageContext.request.contextPath}/newsmanagement.html";
+																	},
+																	noText : "再写一篇",
+																	onno : function() {
+																		location
+																				.reload();
+																	},
+																	icon : "../../images/socceralert.png"
+																});
+													} else {
+														ds
+																.dialog({
+																	title : '消息提示',
+																	content : "新闻发布失败！",
+																	onyes : true,
+																	icon : "../../images/info.png"
+																});
+													}
+												},
+												error : function() {
+													ds
+															.dialog({
+																title : '消息提示',
+																content : "网络连接异常！",
+																onyes : true,
+																icon : "../../images/info.png"
+															});
+												}
+											});
+
+						})
 	})
 </script>
 </html>

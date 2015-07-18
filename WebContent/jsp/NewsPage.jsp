@@ -100,7 +100,9 @@
 		<br/>
 		<h2 style="text-align:center; font-size:14px; color:#CCCC00;">${news.getDateStr()} &nbsp;&nbsp;${news.getAuthor()}</h2>
 		<br/>
+		<div id="news_content">
 		${newsattr.getContent()}
+		</div>
 	</div>
 </body>
 </html>

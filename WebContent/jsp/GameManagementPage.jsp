@@ -398,7 +398,7 @@
 						<tr>
 							<!--第一个学校-->
 							<td class="td_waikuang" style="border-left: 1px solid #eee">
-								<span class="school_name" id="record_host_team_name"></span>
+								<!-- <span class="school_name" id="record_host_team_name"></span> -->
 								<div class="tab_xijie">
 									<span class="span_tab">进球得分</span> <span>红黄牌</span>
 								</div>
@@ -461,7 +461,7 @@
 							</td>
 							<!--第一个学校 END-->
 							<!--第二个学校-->
-							<td class="td_waikuang"><span class="school_name2" id="record_guest_team_name"></span>
+							<td class="td_waikuang"><!-- <span class="school_name2" id="record_guest_team_name"></span> -->
 								<div class="tab_xijie">
 									<span class="span_tab">进球得分</span><span>红黄牌</span>
 								</div>
@@ -1320,7 +1320,21 @@
 										+ "'>/<span id='pageCount'></span>页 <button id='page_ok' onclick='refresh_competitions()'>跳转</button>");
 				$("#pageCount").text(data.page.totalPage)
 		        $.each(data.games, function (i, item) {  
-		    		$("#inner_table").append("<tr id='gametr_" + item.gamesId + "'>" + 
+		        	if(data.isrecorder){
+		        		$("#inner_table").append("<tr id='gametr_" + item.gamesId + "'>" + 
+			    				"<td width='145px'>" + item.gameTime + "</td>" + 
+			    				"<td width='208px'>" + item.leagueName + "</td>" + 
+			    				"<td width='95px'>" + item.zoneName + "</td>" + 
+			    				"<td width='74px'>" + item.orderName + "</td>" + 
+			    				"<td width='190px'>" + item.hostSchoolName + "</td>" + 
+			    				"<td width='190px'>" + item.guestSchoolName + "</td>" + 
+			    				"<td><img class='record' src='${pageContext.request.contextPath}/images/edit_saishi_info.png' alt='记录' onmouseover='mouseover_obj(this)' onmouseout='mouseout_obj(this)'>" + 
+			    				"<img class='edit' src='${pageContext.request.contextPath}/images/list_modify_btn.png' alt='修改' onmouseover='mouseover_obj(this)' onmouseout='mouseout_obj(this)'></td>" + 
+			    				"</tr>"
+			    		);
+		        	}
+		        	else{
+		    			$("#inner_table").append("<tr id='gametr_" + item.gamesId + "'>" + 
 		    				"<td width='145px'>" + item.gameTime + "</td>" + 
 		    				"<td width='208px'>" + item.leagueName + "</td>" + 
 		    				"<td width='95px'>" + item.zoneName + "</td>" + 
@@ -1331,7 +1345,8 @@
 		    				"<img class='edit' src='${pageContext.request.contextPath}/images/list_modify_btn.png' alt='修改' onmouseover='mouseover_obj(this)' onmouseout='mouseout_obj(this)'>" + 
 		    				"<img class='delete' src='${pageContext.request.contextPath}/images/list_delete_btn.png' alt='删除' onmouseover='mouseover_obj(this)' onmouseout='mouseout_obj(this)'></td>" + 
 		    				"</tr>"
-		    		);
+		    			);
+		        	}
 		    	});
 				cancel_loading();
 				$('.record').click(function(){

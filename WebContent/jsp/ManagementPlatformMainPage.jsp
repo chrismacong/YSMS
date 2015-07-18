@@ -459,26 +459,28 @@
 
 			<!--main_content-->
 			<div class="main_content">
-				<div class="list">
+				<div class="list" style="visibility:hidden;">
 					<div class="neirong">
 						<div class="close"></div>
 						<h1>Welcome to using Nanjing YouthFootball Management
 							Platform</h1>
 						<div>欢迎南京市青少年足球管理平台</div>
-						<h1>VERSION 0.8.1.9</h1>
+						<h1>VERSION 0.8.2.4</h1>
 						<div>版本更新说明</div>
 						<br />
-						<h2>0.8.1.8 (2015-07-06 17:32)</h2>
-						<div>修复了微信查看最近比赛时出现的bug</div>
+						<h2>0.8.2.3 (2015-07-15 10:22)</h2>
+						<div>去掉了记录界面球队名称显示</div>
+						<div>增加了封面图片大小限制，必须小于65535B</div>
+						<div>默认隐藏公告栏</div>
 						<br/>
-						<h2>0.8.1.9 (2015-07-07 09:44)</h2>
-						<div>群发消息时添加了确认对话框</div>
+						<h2>0.8.2.4 (2015-07-17 22:11)</h2>
+						<div>修复了微信获取最新赛况值显示第一场比赛的BUG</div>
 						<br/>
-						<h1>相关文件下载</h1>
+						<!-- <h1>相关文件下载</h1> -->
 						<!-- <a href="${pageContext.request.contextPath}/YSMSRepo/file/league_regulation.doc">联赛规程（Word）</a> -->
-						<a href="${pageContext.request.contextPath}/YSMSRepo/file/league_regulation.pdf">南京市创建校园足球特色学校名单</a><br/>
-						<a href="${pageContext.request.contextPath}/YSMSRepo/file/competition_schedule.doc">联赛日程表</a><br/>
-						<a href="${pageContext.request.contextPath}/YSMSRepo/file/meeting_0706.doc">7月6日会议通知</a><br/>
+						<!-- <a href="${pageContext.request.contextPath}/YSMSRepo/file/league_regulation.pdf">南京市创建校园足球特色学校名单</a><br/> -->
+						<!-- <a href="${pageContext.request.contextPath}/YSMSRepo/file/competition_schedule.doc">联赛日程表</a><br/> -->
+						<!-- <a href="${pageContext.request.contextPath}/YSMSRepo/file/meeting_0706.doc">7月6日会议通知</a><br/> -->
 					</div>
 				</div>
 				<iframe class="main_content" id="main_content" frameborder="0"
