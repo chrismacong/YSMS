@@ -33,6 +33,7 @@
 <script src="${pageContext.request.contextPath}/js/ds.dialog.js"></script>
 <script type="text/javascript">
 	$(function() {
+		$('.list').hide();
 		path = "${pageContext.request.contextPath}";
 		load();
 		$(".sea_l").click(function() {
@@ -459,7 +460,7 @@
 
 			<!--main_content-->
 			<div class="main_content">
-				<div class="list" style="visibility:hidden;">
+				<div class="list">
 					<div class="neirong">
 						<div class="close"></div>
 						<h1>Welcome to using Nanjing YouthFootball Management
