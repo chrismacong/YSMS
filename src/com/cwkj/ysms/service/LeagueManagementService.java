@@ -194,4 +194,26 @@ public interface LeagueManagementService {
 	
 	
 	public List<Map<String,Object>> getNotSelectedTeams(int zoneId,List<Integer> teamIds);
+	
+	/**
+	 * 获取小组中的组别列表
+	 * @param zoneId
+	 * @return
+	 */
+	public List<String> getDistinctGroupsOfZone(int zoneId);
+	
+	/**
+	 * 获取小组排名规则
+	 * @param zoneId
+	 * @return
+	 */
+	public String getListRuleOrder(int zoneId);
+	
+	/**
+	 * 设置小组排名规则
+	 * @param zoneId
+	 * @param ruleOrder
+	 * @return
+	 */
+	public boolean setListRuleOrder(int zoneId, String ruleOrder);
 }

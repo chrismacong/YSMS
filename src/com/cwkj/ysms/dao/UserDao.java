@@ -90,6 +90,6 @@ public interface UserDao extends GenericDao {
 	
 	public YsmsUser findById(int userId);
 	
-  
+	public List<YsmsUser> findByGroupId(int groupId);
 	 
 }

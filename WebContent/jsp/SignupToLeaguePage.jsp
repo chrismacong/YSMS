@@ -9,9 +9,6 @@
 <link rel="stylesheet" type="text/css"
 	href="${pageContext.request.contextPath}/css/dialog.css">
 <link type="text/css"
-	rel="stylesheet" />
-	href="${pageContext.request.contextPath}/css/jquery-ui-1.8.16.custom.css"
-<link type="text/css"
 	href="${pageContext.request.contextPath}/css/style.css"
 	rel="stylesheet" />
 <link rel="stylesheet" type="text/css"

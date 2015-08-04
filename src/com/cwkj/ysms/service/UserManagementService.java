@@ -3,7 +3,11 @@ package com.cwkj.ysms.service;
 import java.util.List;
 import java.util.Map;
 
+import com.cwkj.ysms.model.YsmsFunction;
+import com.cwkj.ysms.model.YsmsGroup;
+import com.cwkj.ysms.model.YsmsGroupFunction;
 import com.cwkj.ysms.model.YsmsUser;
+import com.cwkj.ysms.model.view.UserGroupView;
 
 /**
  * 
@@ -137,4 +141,53 @@ public interface UserManagementService {
 	 * @return 用户id，若不存在返回0
 	 */
 	public int checkSchoolUsername(String userName);
+	
+	/**
+	 * 获取所有的用户组
+	 * @return
+	 */
+	public List<UserGroupView> getAllGroups();
+	
+	/**
+	 * 根据Id删除用户组
+	 * @param groupId
+	 * @return
+	 */
+	public boolean deleteGroup(int groupId);
+	
+	/**
+	 * 添加用户组
+	 * @param groupName
+	 * @return
+	 */
+	public boolean addGroup(String groupName);
+	
+	/**
+	 * 修改组别名称
+	 * @param groupName
+	 * @param groupId
+	 * @return
+	 */
+	public boolean modifyGroup(String groupName, int groupId);
+	/**
+	 * 向用户组添加一个功能
+	 * @param groupId
+	 * @param functionId
+	 * @return
+	 */
+	public boolean addFunctionToGroup(int groupId, int functionId);
+	
+	/**
+	 * 从用户组移除一个功能
+	 * @param groupId
+	 * @param functionId
+	 * @return
+	 */
+	public boolean deleteFunctionToGroup(int groupId, int functionId);
+	
+	/**
+	 * 获取素有权限
+	 * @return
+	 */
+	public List<YsmsFunction> getAllFunction();
 }

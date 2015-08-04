@@ -232,6 +232,15 @@
 											"${pageContext.request.contextPath}/newsmanagement/newslistforverify.html");
 							$("#main_content").css("background", "#FFFFFF");
 						});
+		$("#authoritymatrix_left_menu")
+				.click(
+						function() {
+							$('.list').hide();
+							$("#main_content")
+									.attr("src",
+											"${pageContext.request.contextPath}/authoritymatrix.html");
+							$("#main_content").css("background", "#FFFFFF");
+						});
 	}
 </script>
 </head>
@@ -256,6 +265,33 @@
 			</div>
 			<div class="nav">
 				<ul>
+					<%
+						if (list.contains(3)) {
+					%>
+					<li id="user_left_menu">
+						<div class="fous"></div>
+						<div class="icon">
+							<img src="${pageContext.request.contextPath}/images/user_m.png">
+						</div>
+						<div class='miaoshu'>用户管理</div>
+					</li>
+					<%
+						}
+					%>
+					<%
+						if (list.contains(13)) {
+					%>
+					<li id="authoritymatrix_left_menu">
+						<div class="fous"></div>
+						<div class="icon">
+							<img
+								src="${pageContext.request.contextPath}/images/signup_m.png">
+						</div>
+						<div class='miaoshu'>权限矩阵</div>
+					</li>
+					<%
+						}
+					%>
 					<%
 						if (list.contains(1)) {
 					%>
@@ -302,19 +338,6 @@
 					<li><div class="nav_click_red"></div>
 						<div class="icon_nav">训</div>培训管理</li>
 						 -->
-					<%
-						if (list.contains(3)) {
-					%>
-					<li id="user_left_menu">
-						<div class="fous"></div>
-						<div class="icon">
-							<img src="${pageContext.request.contextPath}/images/user_m.png">
-						</div>
-						<div class='miaoshu'>用户管理</div>
-					</li>
-					<%
-						}
-					%>
 					<!-- 为方便开发暂时注释掉的菜单 -->
 					<!-- 
 					<li><div class="nav_click_red"></div>

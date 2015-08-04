@@ -100,4 +100,12 @@ public class LeagueServiceTest {
 			System.out.println(matchList.get(i).getYsmsTeamByHostTeamid().getTeamName()+" VS "+matchList.get(i).getYsmsTeamByGuestTeamid().getTeamName());
 		}
 	}
+	
+	@Test
+	public void testGetDistinctZoneGroup(){
+		List<String> results = leagueManagementService.getDistinctGroupsOfZone(19);
+		for(int i=0;i<results.size();i++){
+			System.out.println(results.get(i));
+		}
+	}
 }

@@ -684,7 +684,7 @@ window.console = window.console || (function() {
                 top: '40%',
                 icon: 'confirm.png',
                 title: '\u6d88\u606f\u786e\u8ba4',
-                content: '<p style="margin:0;padding:0 0 5px;">' + content + '</p><div><input type="text" style="color:#333;font-size:12px;padding:.42em .33em;width:18em;" /></div>',
+                content: '<p style="margin:0;padding:0 0 5px;">' + content + '</p><div><input id="input_in_dialog" type="text" style="color:#333;font-size:12px;padding:.42em .33em;width:18em;" /></div>',
                 onopen: function() {
                     var self = this,
                     input = this._input;

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.cwkj.ysms.model.YsmsGames;
 import com.cwkj.ysms.model.YsmsLeagueZone;
+import com.cwkj.ysms.model.view.MarkItemView;
 
 /**
  * 赛事统计Service接口
@@ -123,4 +124,12 @@ public interface GamesStatisticsService {
 	 * @return 结果[胜率，平率，负率]
 	 */
 	public double[] getTotalWinningPercentageBySchool(int schoolId);
+	
+	/***
+	 * 获取某个小组的积分榜
+	 * @param zoneId
+	 * @param groupName
+	 * @return
+	 */
+	public List<MarkItemView> getLeagueTable(int zoneId, String groupName);
 }

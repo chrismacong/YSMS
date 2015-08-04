@@ -99,3 +99,35 @@ html{
 	position:absolute;width:23px;height:23px;background:url(../images/grade_disclude_bg.png) no-repeat left center;color:#8B8A84;font-size:20px;
 	filter:alpha(opacity=20); -moz-opacity:0.2; opacity:0.2;
 }
+
+.rulesconfig {
+	position: absolute;
+	top: 70px;
+	left: 250px;
+	padding: 20px;
+	background: #fff;
+	border: 1px solid #0fd46c;
+	border-radius: 10px;
+}
+
+.sortable_item {
+	border:1px solid #DADADA;
+	background-color:#EFEFEF;
+	padding:3px 5px;
+	margin-bottom:3px;
+	margin-top:3px;
+	width:200px;
+	list-style-type:circle;
+	font-family:Arial, Helvetica, sans-serif;
+	color:#666666;
+	font-size:0.8em;
+}
+
+.sortable_item:hover {
+	background-color:#FFF;
+	cursor:move;
+}
+
+#configtitle{
+	margin-top:3px;
+}

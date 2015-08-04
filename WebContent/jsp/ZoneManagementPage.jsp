@@ -36,6 +36,10 @@
 	function ybmqd(){
 		 $("#zone_frame").attr("src","${pageContext.request.contextPath}/jsp/SignedTeamListPage.jsp");
 	}
+	
+	function jfpm(){
+		$("#zone_frame").attr("src","${pageContext.request.contextPath}/league/jfpm.html");
+	}
 </script>
 
 </head>
@@ -54,14 +58,14 @@
 					<img src="../images/a_groupmng.png" />
 				</div>
 				<p>联赛分组</p></li>
-			<!-- <li id="menubtn_delete"><div>
-					<img src="../images/a_schedule.png" />
+			<li id="menubtn_rank" onclick="jfpm()"><div>
+					<img src="../images/a_league.png" />
 				</div>
-				<p>赛程管理</p></li> -->
+				<p>积分排名</p></li>
 		</ul>
 	</div>
 	<div></div>
-	<iframe id="zone_frame" class="main_content"
+	<iframe id="zone_frame" class="main_content" style="height:575px;"
 		src="${pageContext.request.contextPath}/jsp/SignedTeamListPage.jsp">
 	</iframe>
 </body>

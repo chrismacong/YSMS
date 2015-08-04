@@ -560,4 +560,30 @@ public class LeagueManagementServiceImpl implements LeagueManagementService{
 		}
 		return list;
 	}
+
+	@Override
+	public List<String> getDistinctGroupsOfZone(int zoneId) {
+		List<String> zoneGroupList = new ArrayList<String>();
+		List<Object> objects = leagueDao.findByHQL("select distinct zoneGroup from  YsmsZoneTeam where ysmsLeagueZone.zoneId = " + zoneId + " and zoneGroup is not null and zoneGroup <> '0' order by zoneGroup asc");
+		for(int i=0;i<objects.size();i++){
+			zoneGroupList.add((String) objects.get(i));
+		}
+		return zoneGroupList;
+	}
+
+	@Override
+	public String getListRuleOrder(int zoneId) {
+		YsmsLeagueZone leagueZone = leagueZoneDao.findById(zoneId);
+		if(leagueZone == null)
+			return null;
+		return leagueZone.getRuleOrder();
+	}
+
+	@Override
+	public boolean setListRuleOrder(int zoneId, String ruleOrder) {
+		YsmsLeagueZone leagueZone = leagueZoneDao.findById(zoneId);
+		leagueZone.setRuleOrder(ruleOrder);
+		leagueZoneDao.save(leagueZone);
+		return true;
+	}
 }

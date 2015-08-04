@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,11 +21,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.cwkj.ysms.model.YsmsLeague;
-import com.cwkj.ysms.model.YsmsTeam;
-import com.cwkj.ysms.model.YsmsZoneTeam;
 import com.cwkj.ysms.model.view.LeagueView;
+import com.cwkj.ysms.model.view.MarkItemView;
 import com.cwkj.ysms.model.view.TeamView;
 import com.cwkj.ysms.model.view.ZoneView;
+import com.cwkj.ysms.service.GamesStatisticsService;
 import com.cwkj.ysms.service.LeagueManagementService;
 import com.cwkj.ysms.service.TeamManagementService;
 import com.cwkj.ysms.util.Page;
@@ -53,6 +52,16 @@ public class LeagueManagementControl {
 	}
 	public void setTeamManagementService(TeamManagementService teamManagementService) {
 		this.teamManagementService = teamManagementService;
+	}
+	
+	@Resource
+	private GamesStatisticsService gameStatisticsService;
+	public GamesStatisticsService getGameStatisticsService() {
+		return gameStatisticsService;
+	}
+	public void setGameStatisticsService(
+			GamesStatisticsService gameStatisticsService) {
+		this.gameStatisticsService = gameStatisticsService;
 	}
 	/**
 	 * 获取当前年份的联赛信息
@@ -525,6 +534,45 @@ public class LeagueManagementControl {
 	@RequestMapping(value = "lsfz", method = RequestMethod.GET)
 	public ModelAndView lsfz(){
 		return new ModelAndView("LeagueGroup");
+	}
+	
+	
+	@RequestMapping(value = "jfpm", method = RequestMethod.GET)
+	public ModelAndView jfpm(HttpServletRequest request,HttpSession session,HttpServletResponse response){
+		Map<String, Object> model = new HashMap<String, Object>();
+		int zoneId = (int) session.getAttribute("zoneId");
+		String ruleOrder = leagueManagementService.getListRuleOrder(zoneId);
+		model.put("rule_order", ruleOrder);
+		return new ModelAndView("RankPage", model);
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "rank", method = RequestMethod.POST)
+	public Map<String,Object> rank(HttpServletRequest request,HttpSession session,HttpServletResponse response){
+		Map<String, Object> model = new HashMap<String, Object>();
+		int zoneId = (int) session.getAttribute("zoneId");
+		List<List<MarkItemView>> markList = new ArrayList<List<MarkItemView>>();
+		List<String> groupList = leagueManagementService.getDistinctGroupsOfZone(zoneId);
+		if(groupList != null){
+			for(int i=0;i<groupList.size();i++){
+				List<MarkItemView> markForGroup = gameStatisticsService.getLeagueTable(zoneId, groupList.get(i));
+				markList.add(markForGroup);
+			}
+		}
+		model.put("groups", groupList);
+		model.put("marks", markList);
+		return model;
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "setrules", method = RequestMethod.POST)
+	public Map<String, Object> setRules(HttpServletRequest request,HttpSession session,HttpServletResponse response){
+		Map<String, Object> model = new HashMap<String, Object>();
+		int zoneId = (int) session.getAttribute("zoneId");
+		String rulesOrder = request.getParameter("rule_order");
+		boolean result = leagueManagementService.setListRuleOrder(zoneId, rulesOrder);
+		model.put("success", result);
+		return model;
 	}
 	
 	@ResponseBody

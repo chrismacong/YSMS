@@ -1,6 +1,7 @@
 package com.cwkj.ysms.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -8,11 +9,17 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.cwkj.ysms.dao.FunctionDao;
+import com.cwkj.ysms.dao.GroupDao;
+import com.cwkj.ysms.dao.GroupFunctionDao;
 import com.cwkj.ysms.dao.SchoolUserDao;
 import com.cwkj.ysms.dao.UserDao;
+import com.cwkj.ysms.model.YsmsFunction;
 import com.cwkj.ysms.model.YsmsGroup;
+import com.cwkj.ysms.model.YsmsGroupFunction;
 import com.cwkj.ysms.model.YsmsSchooluser;
 import com.cwkj.ysms.model.YsmsUser;
+import com.cwkj.ysms.model.view.UserGroupView;
 import com.cwkj.ysms.service.UserManagementService;
 import com.cwkj.ysms.util.ToolsUtil;
 
@@ -46,6 +53,40 @@ public class UserManagementServiceImpl implements UserManagementService {
 
 	public void setSchooluserDao(SchoolUserDao schooluserDao) {
 		this.schooluserDao = schooluserDao;
+	}
+	
+	@Resource
+	private GroupDao groupDao;
+
+	public GroupDao getGroupDao() {
+		return groupDao;
+	}
+
+	public void setGroupDao(GroupDao groupDao) {
+		this.groupDao = groupDao;
+	}
+	
+	@Resource
+	private GroupFunctionDao groupFunctionDao;
+
+	public GroupFunctionDao getGroupFunctionDao() {
+		return groupFunctionDao;
+	}
+
+	public void setGroupFunctionDao(GroupFunctionDao groupFunctionDao) {
+		this.groupFunctionDao = groupFunctionDao;
+	}
+	
+	@Resource
+	private FunctionDao functionDao;
+	
+
+	public FunctionDao getFunctionDao() {
+		return functionDao;
+	}
+
+	public void setFunctionDao(FunctionDao functionDao) {
+		this.functionDao = functionDao;
 	}
 
 	@Override
@@ -205,5 +246,90 @@ public class UserManagementServiceImpl implements UserManagementService {
 		}
 		else
 			return 0;
+	}
+
+	@Override
+	public List<UserGroupView> getAllGroups() {
+		List<UserGroupView> groupViewList = new ArrayList<UserGroupView>();
+		List<YsmsGroup> groupList = groupDao.findAll();
+		for(int i=0;i<groupList.size();i++){
+			YsmsGroup ysmsGroup = groupList.get(i);
+			UserGroupView ugv = new UserGroupView();
+			ugv.setGroupId(ysmsGroup.getGroupId());
+			ugv.setGroupName(ysmsGroup.getGroupName());
+			List<YsmsGroupFunction> groupFunctionList = groupFunctionDao.findByGroupId(ysmsGroup.getGroupId());
+			String functionStr = "";
+			if(groupFunctionList!=null){
+				for(int m=0;m<groupFunctionList.size();m++){
+					functionStr += groupFunctionList.get(m).getYsmsFunction().getFunctionId() + ",";
+				}
+			}
+			if(functionStr.lastIndexOf(",")>0){
+				functionStr = functionStr.substring(0, functionStr.lastIndexOf(","));
+			}
+			ugv.setFunctionStr(functionStr);
+			groupViewList.add(ugv);
+		}
+		return groupViewList;
+	}
+
+	@Override
+	public boolean deleteGroup(int groupId) {
+		//先删除所有相关的角色权限关系
+		List<YsmsGroupFunction> groupFunctionList = groupFunctionDao.findByGroupId(groupId);
+		for(int i=0;i<groupFunctionList.size();i++){
+			groupFunctionDao.delete(groupFunctionList.get(i));
+		}
+		//再删除所有该角色的用户，此处需注意提示.代码处可以设定某些重要的用户类型，比如学校用户和管理员用户，是不可以删除的
+		List<YsmsUser> userList = userDao.findByGroupId(groupId);
+		if(userList != null){
+			for(int i=0;i<userList.size();i++){
+				YsmsUser user = userList.get(i);
+				userDao.delete(user.getUserId());
+			}
+		}
+		//最后删除这个组
+		groupDao.delete(groupDao.findById(groupId));
+		return true;
+	}
+
+	@Override
+	public boolean addGroup(String groupName) {
+		YsmsGroup group = new YsmsGroup();
+		group.setGroupName(groupName);
+		groupDao.save(group);
+		return true;
+	}
+
+	@Override
+	public boolean addFunctionToGroup(int groupId, int functionId) {
+		YsmsGroupFunction groupFunction = new YsmsGroupFunction();
+		groupFunction.setYsmsFunction(functionDao.findById(functionId));
+		groupFunction.setYsmsGroup(groupDao.findById(groupId));
+		groupFunctionDao.save(groupFunction);
+		return true;
+	}
+
+	@Override
+	public boolean deleteFunctionToGroup(int groupId, int functionId) {
+		List<YsmsGroupFunction> groupFunctionList = groupFunctionDao.findByGroupIdandFunctionId(groupId, functionId);
+		for(int i=0;i<groupFunctionList.size();i++){
+			YsmsGroupFunction groupFunction = groupFunctionList.get(i);
+			groupFunctionDao.delete(groupFunction);
+		}
+		return true;
+	}
+
+	@Override
+	public boolean modifyGroup(String groupName, int groupId) {
+		YsmsGroup group = groupDao.findById(groupId);
+		group.setGroupName(groupName);
+		groupDao.save(group);
+		return true;
+	}
+
+	@Override
+	public List<YsmsFunction> getAllFunction() {
+		return functionDao.findAll();
 	}
 }

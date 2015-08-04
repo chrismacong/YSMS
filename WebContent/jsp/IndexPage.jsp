@@ -24,7 +24,8 @@
 	src="${pageContext.request.contextPath}/js/ds.dialog.js"></script>
 <script language="javascript" type="text/javascript"
 	src="${pageContext.request.contextPath}/js/Duang.js"></script>
-
+<script language="javascript" type="text/javascript"
+	src="${pageContext.request.contextPath}/js/jquery.cookie.js"></script>
 <link rel="stylesheet"
 	href="${pageContext.request.contextPath}/css/logincss.css">
 <link rel="stylesheet"

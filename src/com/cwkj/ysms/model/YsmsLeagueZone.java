@@ -32,6 +32,17 @@ public class YsmsLeagueZone implements java.io.Serializable {
 	private YsmsLeague ysmsLeague;
 	private String zoneName;
 	private Integer deleteflag;
+	private String ruleOrder;
+
+	@Column(name = "rule_order")
+	public String getRuleOrder() {
+		return ruleOrder;
+	}
+
+	public void setRuleOrder(String ruleOrder) {
+		this.ruleOrder = ruleOrder;
+	}
+
 	@Column(name = "deleteflag", nullable = false)
 	public Integer getDeleteflag() {
 		return deleteflag;
@@ -57,11 +68,12 @@ public class YsmsLeagueZone implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public YsmsLeagueZone(YsmsLeague ysmsLeague, String zoneName,
+	public YsmsLeagueZone(YsmsLeague ysmsLeague, String zoneName, String ruleOrder,
 			Set<YsmsZoneTeam> ysmsZoneTeams, Set<YsmsGames> ysmsGameses,
 			Set<YsmsZoneLevel> ysmsZoneLevels) {
 		this.ysmsLeague = ysmsLeague;
 		this.zoneName = zoneName;
+		this.ruleOrder = ruleOrder;
 		this.ysmsZoneTeams = ysmsZoneTeams;
 		this.ysmsGameses = ysmsGameses;
 		this.ysmsZoneLevels = ysmsZoneLevels;

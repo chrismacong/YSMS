@@ -126,7 +126,7 @@ public class TeamDaoImpl extends GenericDaoImpl implements TeamDao{
 			if(groupName!=null&&!"".equals(groupName)){
 				sql.append(" and yzt.zoneGroup='" + groupName + "'"); 
 			}
-			if(selectedTeamIds.length>0){
+			if(selectedTeamIds!=null&&selectedTeamIds.length>0){
 				String ids = "";
 				for(int i=0;i<selectedTeamIds.length;i++){
 					Integer selectedTeamId = selectedTeamIds[i];

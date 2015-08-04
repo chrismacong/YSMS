@@ -166,7 +166,6 @@
 		</table>
 	</div>
 	
-	
 		<div id="paging">
 				<!--   <div class="choose_kuai">
 					<p>

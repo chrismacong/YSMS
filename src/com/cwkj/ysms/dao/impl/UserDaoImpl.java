@@ -230,6 +230,23 @@ public class UserDaoImpl extends GenericDaoImpl implements UserDao {
 			throw re;
 		}
 	}
+
+	@Override
+	public List<YsmsUser> findByGroupId(int groupId) {
+		log.debug("finding YsmsUser instance by groupId");
+		String sql = " from YsmsUser where group_id = '"+groupId + "' and deleteflag = 0";
+		List<Object> objects= findByHQL(sql);
+		List<YsmsUser> results = new ArrayList<YsmsUser>();
+		for(int i=0;i<objects.size();i++){
+			results.add((YsmsUser)objects.get(i));
+		}
+		if(objects==null)
+			return null;
+		else if(objects.size()==0)
+			return null;
+		else
+			return results;
+	}
 	
 	
 }

