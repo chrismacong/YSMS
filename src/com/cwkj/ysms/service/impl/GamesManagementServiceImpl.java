@@ -468,6 +468,8 @@ public class GamesManagementServiceImpl implements GamesManagementService{
 		ysmsGames.setGamesTime(gamesTime);
 		ysmsGames.setGameLocation(gamesLocation);
 		ysmsGames.setYsmsLeagueZone(leagueZoneDao.findById(zoneId));
+		ysmsGames.setIsOvertimeFlag(0);
+		ysmsGames.setIsPenaltyFlag(0);
 		gamesDao.save(ysmsGames);
 		YsmsJudge chiefJudge = judgeDao.findById(chiefUmpireId);
 		YsmsJudge sideReferee1 = judgeDao.findById(sideRefereeId_1);
@@ -534,6 +536,8 @@ public class GamesManagementServiceImpl implements GamesManagementService{
 		ysmsGames.setGamesTime(gamesTime);
 		ysmsGames.setGameLocation(gamesLocation);
 		ysmsGames.setYsmsLeagueZone(leagueZoneDao.findById(zoneId));
+		ysmsGames.setIsOvertimeFlag(0);
+		ysmsGames.setIsPenaltyFlag(0);
 		gamesDao.save(ysmsGames);
 		return true;
 	}

@@ -44,7 +44,7 @@ public class LeagueManagementControl {
 			LeagueManagementService leagueManagementService) {
 		this.leagueManagementService = leagueManagementService;
 	}
-	
+
 	@Resource
 	private TeamManagementService teamManagementService;
 	public TeamManagementService getTeamManagementService() {
@@ -53,7 +53,7 @@ public class LeagueManagementControl {
 	public void setTeamManagementService(TeamManagementService teamManagementService) {
 		this.teamManagementService = teamManagementService;
 	}
-	
+
 	@Resource
 	private GamesStatisticsService gameStatisticsService;
 	public GamesStatisticsService getGameStatisticsService() {
@@ -169,6 +169,11 @@ public class LeagueManagementControl {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		leagueView.setRegisterStartDate(sdf.format(ysmsLeague.getRegisterBegintime()));
 		leagueView.setRegisterEndDate(sdf.format(ysmsLeague.getRegisterEndtime()));
+		if(ysmsLeague.getLeagueBegintime()!=null)
+			leagueView.setLeagueBeginTime(sdf.format(ysmsLeague.getLeagueBegintime()));
+		if(ysmsLeague.getLeagueEndtime()!=null)
+			leagueView.setLeagueEndTime(sdf.format(ysmsLeague.getLeagueEndtime()));
+		leagueView.setLeagueDescription(ysmsLeague.getLeagueDescription());
 		leagueView.setModifyAllowed(leagueManagementService.isModifyPermitted(ysmsLeague
 				.getLeagueId())?1:0);
 		leagueView.setRegisterEnd(leagueManagementService.isRegisterEnd(ysmsLeague
@@ -189,6 +194,29 @@ public class LeagueManagementControl {
 		model.put("zones", zoneList);
 		model.put("levels", leagueManagementService.getAllLevels());
 		return new ModelAndView("LeagueDetailPage", model);
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "getleagueinfo", method = RequestMethod.POST)
+	public Map<String, Object> getleagueinfo(HttpServletRequest request,HttpSession session, 
+			HttpServletResponse response){
+		Map<String, Object> model = new HashMap<String, Object>();
+		int leagueId = Integer.parseInt(request.getParameter("league_id"));
+		YsmsLeague ysmsLeague = leagueManagementService.getLeagueById(leagueId);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
+		String leagueDuringDate = "";
+		if(ysmsLeague.getLeagueBegintime()!=null&&ysmsLeague.getLeagueEndtime()!=null){
+			leagueDuringDate = sdf.format(ysmsLeague.getLeagueBegintime()) + "-" + 
+					sdf.format(ysmsLeague.getLeagueEndtime());
+		}
+		String leagueName = ysmsLeague.getLeagueName();
+		String leagueDescription = ysmsLeague.getLeagueDescription();
+		if(leagueDescription==null)
+			leagueDescription = "";
+		model.put("during_time", leagueDuringDate);
+		model.put("league_name", leagueName);
+		model.put("league_description", leagueDescription);
+		return model;
 	}
 
 	/**
@@ -265,8 +293,17 @@ public class LeagueManagementControl {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			Date registerStartDate = sdf.parse(request.getParameter("start_date"));
 			Date registerEndDate = sdf.parse(request.getParameter("end_date"));
+			Date leagueStartDate = null;
+			Date leagueEndDate = null;
+			if(request.getParameter("league_start_time")!=null&&!"".equals(request.getParameter("league_start_time"))){
+				leagueStartDate = sdf.parse(request.getParameter("league_start_time")); 
+			};
+			if(request.getParameter("league_end_time")!=null&&!"".equals(request.getParameter("league_end_time"))){
+				leagueEndDate = sdf.parse(request.getParameter("league_end_time")); 
+			};
+			String leagueDescription = request.getParameter("league_description");
 			boolean result = leagueManagementService.modifyLeague(leagueId, year, name, 
-					registerStartDate, registerEndDate);
+					registerStartDate, registerEndDate, leagueStartDate, leagueEndDate, leagueDescription);
 			if(result){
 				map.put("success", true);
 			}
@@ -316,7 +353,7 @@ public class LeagueManagementControl {
 		}
 		return map;
 	}
-	
+
 	/**
 	 * 联赛分组(选择球队)
 	 * @param request
@@ -342,7 +379,7 @@ public class LeagueManagementControl {
 				if(!ToolsUtil.isEmpty(teamGroupArray[i])){
 					groupA.add(Integer.parseInt(teamGroupArray[i]));
 				}
-				
+
 			}else if(i<=11){
 				if(!ToolsUtil.isEmpty(teamGroupArray[i])){
 					groupB.add(Integer.parseInt(teamGroupArray[i]));
@@ -362,12 +399,12 @@ public class LeagueManagementControl {
 		teamGroupedMap.put("B", groupB);
 		teamGroupedMap.put("C", groupC);
 		teamGroupedMap.put("D", groupD);
-		 
+
 		boolean result = leagueManagementService.groupTeamsForZone(zoneId, teamGroupedMap);
 		map.put("returnMessage", result);
 		return map;
 	}
-	
+
 	/**
 	 * 获取联赛报名球队列表
 	 * 参数：zone_id:联赛组Id
@@ -445,7 +482,7 @@ public class LeagueManagementControl {
 		map.put("team_list", team_list);
 		return map;
 	}
-	
+
 	@ResponseBody
 	@RequestMapping(value = "getzonesbyleagueid", method = RequestMethod.POST)
 	public Map<String, Object> getZoneByLeagueId(HttpServletRequest request,HttpSession session,HttpServletResponse response){
@@ -459,7 +496,7 @@ public class LeagueManagementControl {
 		map.put("zones", zones);
 		return map;
 	}
-	
+
 	@ResponseBody
 	@RequestMapping(value = "addzone", method = RequestMethod.POST)
 	public Map<String, Object> addZone(HttpServletRequest request,HttpSession session,HttpServletResponse response){
@@ -467,12 +504,13 @@ public class LeagueManagementControl {
 		int leagueId = Integer.parseInt(request.getParameter("league_id"));
 		String zoneName = request.getParameter("zone_name");
 		String levels = request.getParameter("levels");
+		int maxAthleteNum = Integer.parseInt(request.getParameter("max_athletenum"));
 		if(levels!=null&&levels.lastIndexOf(";")>-1){
 			levels = levels.substring(0,levels.lastIndexOf(";"));
 		}
 		if(levels!=null){
 			String[] level_array = levels.split(";");
-			boolean result = leagueManagementService.addZone(leagueId, zoneName, level_array);
+			boolean result = leagueManagementService.addZone(leagueId, zoneName, level_array, maxAthleteNum);
 			map.put("result", result);
 		}
 		else{
@@ -480,7 +518,7 @@ public class LeagueManagementControl {
 		}
 		return map;
 	}
-	
+
 	@ResponseBody
 	@RequestMapping(value = "modifyzone", method = RequestMethod.POST)
 	public Map<String, Object> modifyZone(HttpServletRequest request,HttpSession session,HttpServletResponse response){
@@ -501,7 +539,7 @@ public class LeagueManagementControl {
 		}
 		return map;
 	}
-	
+
 	@ResponseBody
 	@RequestMapping(value = "deletezone", method = RequestMethod.POST)
 	public Map<String, Object> deleteZone(HttpServletRequest request,HttpSession session,HttpServletResponse response){
@@ -511,7 +549,7 @@ public class LeagueManagementControl {
 		map.put("result", result);
 		return map;
 	}
-	
+
 	/**
 	 * 组别中管理
 	 * @param request
@@ -528,15 +566,15 @@ public class LeagueManagementControl {
 		session.setAttribute("zoneId", zoneId);
 		return new ModelAndView("ZoneManagementPage", model);
 	}
-	
-	
-	
+
+
+
 	@RequestMapping(value = "lsfz", method = RequestMethod.GET)
 	public ModelAndView lsfz(){
 		return new ModelAndView("LeagueGroup");
 	}
-	
-	
+
+
 	@RequestMapping(value = "jfpm", method = RequestMethod.GET)
 	public ModelAndView jfpm(HttpServletRequest request,HttpSession session,HttpServletResponse response){
 		Map<String, Object> model = new HashMap<String, Object>();
@@ -545,7 +583,7 @@ public class LeagueManagementControl {
 		model.put("rule_order", ruleOrder);
 		return new ModelAndView("RankPage", model);
 	}
-	
+
 	@ResponseBody
 	@RequestMapping(value = "rank", method = RequestMethod.POST)
 	public Map<String,Object> rank(HttpServletRequest request,HttpSession session,HttpServletResponse response){
@@ -574,7 +612,7 @@ public class LeagueManagementControl {
 		model.put("success", result);
 		return model;
 	}
-	
+
 	@ResponseBody
 	@RequestMapping(value = "getNotSelectedTeams", method = RequestMethod.POST)
 	public List<Map<String,Object>> getNotSelectedTeams(HttpServletRequest request){
@@ -583,7 +621,7 @@ public class LeagueManagementControl {
 			String zoneId=request.getParameter("zoneId");
 			String teamId=request.getParameter("teamId");
 			List<Integer> teamIds=new ArrayList<Integer>();
-			 
+
 			if(ToolsUtil.isEmpty(zoneId)){
 				return list;
 			}
@@ -592,7 +630,7 @@ public class LeagueManagementControl {
 				for(String id:ids){
 					teamIds.add(Integer.parseInt(id));
 				}
-				
+
 			} 
 			list=leagueManagementService.getNotSelectedTeams(Integer.parseInt(zoneId), teamIds);
 		}catch(Exception e){
@@ -600,5 +638,5 @@ public class LeagueManagementControl {
 		}
 		return list;
 	}
-	
+
 }

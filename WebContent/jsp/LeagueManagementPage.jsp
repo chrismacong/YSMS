@@ -51,6 +51,16 @@ html{
 	border-radius: 10px;
 }
 
+.liansai_info {
+	position: absolute;
+	top: 70px;
+	left: 250px;
+	padding: 20px;
+	background: #fff;
+	border: 1px solid #0fd46c;
+	border-radius: 10px;
+}
+
 </style>
 <script type="text/javascript">
 	var leagueList = null;
@@ -212,8 +222,8 @@ html{
 					$("#league_details").append(
 							"<tr id='league_" + league.leagueId + "'>"
 									+ "<td width='90px'>" + (i + 1) + "</td>"
-									+ "<td width='290px'>" + league.leagueName
-									+ "</td>"
+									+ "<td width='290px'><a href='javascript:void(0)' onclick='showinfo(this)'>" + league.leagueName
+									+ "</a></td>"
 									+ "<td width='120px' class='state'>"
 									+ league.leagueStatus + "</td>"
 									+ "<td width='220px'>"
@@ -227,6 +237,10 @@ html{
 				}
 			});
 		}
+	}
+
+	function infoClose(){
+		$('.liansai_info').hide();
 	}
 	function edit(obj) {
 		var leagueId = $(obj).parent().parent().attr("id").split("_")[1];
@@ -256,6 +270,31 @@ html{
 			text : text2
 		}).appendTo(slt);
 		slt.appendTo(obj)
+	}
+	function showinfo(obj){
+		var leagueId = $(obj).parent().parent().attr("id").split("_")[1];
+		$.ajax({
+			type : 'POST',
+			url : "${pageContext.request.contextPath}/league/getleagueinfo.html",
+			data : {
+				league_id : leagueId
+			},
+			dataType : "json",
+			success : function(data) {
+				if(data!=null){
+					$(".liansai_info").empty();
+					var html = "";
+					html += "<div class='neirong' id='info_neirong'><div class='close' onclick='infoClose()'></div>";
+					html += "<h1>" + data.league_name + "</h1><br/>";
+					html += "<div>" + data.during_time + "</div><br/>";
+					html += "<div>" + data.league_description + "</div></div>";
+					$(".liansai_info").append(html);
+					$(".liansai_info").show();
+				}
+			},
+			error : function() {
+			}
+		});
 	}
 </script>
 </head>
@@ -299,8 +338,8 @@ html{
 			</div>
 		<!--联赛查看-->
 
-
-
+		<div class="liansai_info" style="display: none">
+		</div>
 		<!--创建联赛-->
 		<div class="add_liansai" style="display: none">
 			<div class="neirong">

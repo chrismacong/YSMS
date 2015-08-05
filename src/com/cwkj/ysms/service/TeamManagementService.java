@@ -285,10 +285,10 @@ public interface TeamManagementService {
 	
 	/**
 	 * 根据学校编号获取学校一个球队最多报名人数限制
-	 * @param schoolId
+	 * @param zoneId
 	 * @return
 	 */
-	public int getSignUpAthletelimitCountBySchoolId(Integer schoolId);
+	public int getSignUpAthletelimitCountByZoneId(Integer zoneId);
 	
 	/**
 	 * 根据联赛组别获取联赛球队

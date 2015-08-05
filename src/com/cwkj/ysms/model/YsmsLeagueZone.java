@@ -33,6 +33,7 @@ public class YsmsLeagueZone implements java.io.Serializable {
 	private String zoneName;
 	private Integer deleteflag;
 	private String ruleOrder;
+	private Integer maxAthleteNum;
 
 	@Column(name = "rule_order")
 	public String getRuleOrder() {
@@ -68,12 +69,13 @@ public class YsmsLeagueZone implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public YsmsLeagueZone(YsmsLeague ysmsLeague, String zoneName, String ruleOrder,
+	public YsmsLeagueZone(YsmsLeague ysmsLeague, String zoneName, String ruleOrder, int maxAthleteNum,
 			Set<YsmsZoneTeam> ysmsZoneTeams, Set<YsmsGames> ysmsGameses,
 			Set<YsmsZoneLevel> ysmsZoneLevels) {
 		this.ysmsLeague = ysmsLeague;
 		this.zoneName = zoneName;
 		this.ruleOrder = ruleOrder;
+		this.maxAthleteNum = maxAthleteNum;
 		this.ysmsZoneTeams = ysmsZoneTeams;
 		this.ysmsGameses = ysmsGameses;
 		this.ysmsZoneLevels = ysmsZoneLevels;
@@ -109,6 +111,15 @@ public class YsmsLeagueZone implements java.io.Serializable {
 
 	public void setZoneName(String zoneName) {
 		this.zoneName = zoneName;
+	}
+	
+	@Column(name = "max_athlete_num", nullable = false)
+	public Integer getMaxAthleteNum() {
+		return maxAthleteNum;
+	}
+
+	public void setMaxAthleteNum(Integer maxAthleteNum) {
+		this.maxAthleteNum = maxAthleteNum;
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "ysmsLeagueZone")

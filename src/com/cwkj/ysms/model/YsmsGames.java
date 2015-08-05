@@ -42,6 +42,25 @@ public class YsmsGames implements java.io.Serializable {
 	private Integer gamesOrder;
 	private Integer hostUniform;
 	private Integer guestUniform;
+	private Integer hostGoalAttempt;
+	private Integer guestGoalAttempt;
+	private Integer hostTargetNumber;
+	private Integer guestTargetNumber;
+	private Integer hostCornerKick;
+	private Integer guestCornerKick;
+	private Integer hostFreeKick;
+	private Integer guestFreeKick;
+	private Integer hostFoul;
+	private Integer guestFoul;
+	private Integer hostOffside;
+	private Integer guestOffside;
+	private Integer isOvertimeFlag;
+
+	private Integer hostOvertimeScore;
+	private Integer guestOvertimeScore;
+	private Integer isPenaltyFlag;
+	private Integer hostPenaltyScore;
+	private Integer guestPenaltyScore;
 	private Set<YsmsFoul> ysmsFouls = new HashSet<YsmsFoul>(0);
 	private Set<YsmsGoal> ysmsGoals = new HashSet<YsmsGoal>(0);
 	private Set<YsmsGamesJudge> ysmsGamesJudges = new HashSet<YsmsGamesJudge>(0);
@@ -185,7 +204,168 @@ public class YsmsGames implements java.io.Serializable {
 	public void setGuestUniform(Integer guestUniform){
 		this.guestUniform = guestUniform;
 	}
+	
+	@Column(name = "host_goalattempt")
+	public Integer getHostGoalAttempt() {
+		return hostGoalAttempt;
+	}
 
+	public void setHostGoalAttempt(Integer hostGoalAttempt) {
+		this.hostGoalAttempt = hostGoalAttempt;
+	}
+	
+	@Column(name = "guest_goalattempt")
+	public Integer getGuestGoalAttempt() {
+		return guestGoalAttempt;
+	}
+
+	public void setGuestGoalAttempt(Integer guestGoalAttempt) {
+		this.guestGoalAttempt = guestGoalAttempt;
+	}
+
+	@Column(name = "host_targetnumber")
+	public Integer getHostTargetNumber() {
+		return hostTargetNumber;
+	}
+
+	public void setHostTargetNumber(Integer hostTargetNumber) {
+		this.hostTargetNumber = hostTargetNumber;
+	}
+
+	@Column(name = "guest_targetnumber")
+	public Integer getGuestTargetNumber() {
+		return guestTargetNumber;
+	}
+
+	public void setGuestTargetNumber(Integer guestTargetNumber) {
+		this.guestTargetNumber = guestTargetNumber;
+	}
+
+	@Column(name = "host_cornerkick")
+	public Integer getHostCornerKick() {
+		return hostCornerKick;
+	}
+
+	public void setHostCornerKick(Integer hostCornerKick) {
+		this.hostCornerKick = hostCornerKick;
+	}
+
+	@Column(name = "guest_cornerkick")
+	public Integer getGuestCornerKick() {
+		return guestCornerKick;
+	}
+
+	public void setGuestCornerKick(Integer guestCornerKick) {
+		this.guestCornerKick = guestCornerKick;
+	}
+
+	@Column(name = "host_freekick")
+	public Integer getHostFreeKick() {
+		return hostFreeKick;
+	}
+
+	public void setHostFreeKick(Integer hostFreeKick) {
+		this.hostFreeKick = hostFreeKick;
+	}
+
+	@Column(name = "guest_freekick")
+	public Integer getGuestFreeKick() {
+		return guestFreeKick;
+	}
+
+	public void setGuestFreeKick(Integer guestFreeKick) {
+		this.guestFreeKick = guestFreeKick;
+	}
+
+	@Column(name = "host_foul")
+	public Integer getHostFoul() {
+		return hostFoul;
+	}
+
+	public void setHostFoul(Integer hostFoul) {
+		this.hostFoul = hostFoul;
+	}
+
+	@Column(name = "guest_foul")
+	public Integer getGuestFoul() {
+		return guestFoul;
+	}
+
+	public void setGuestFoul(Integer guestFoul) {
+		this.guestFoul = guestFoul;
+	}
+
+	@Column(name = "host_offside")
+	public Integer getHostOffside() {
+		return hostOffside;
+	}
+
+	public void setHostOffside(Integer hostOffside) {
+		this.hostOffside = hostOffside;
+	}
+
+	@Column(name = "guest_offside")
+	public Integer getGuestOffside() {
+		return guestOffside;
+	}
+
+	public void setGuestOffside(Integer guestOffside) {
+		this.guestOffside = guestOffside;
+	}
+	
+	@Column(name = "is_overtime_flag", nullable = false)
+	public Integer getIsOvertimeFlag() {
+		return isOvertimeFlag;
+	}
+
+	public void setIsOvertimeFlag(Integer isOvertimeFlag) {
+		this.isOvertimeFlag = isOvertimeFlag;
+	}
+
+	@Column(name = "overtime_host_score")
+	public Integer getHostOvertimeScore() {
+		return hostOvertimeScore;
+	}
+
+	public void setHostOvertimeScore(Integer hostOvertimeScore) {
+		this.hostOvertimeScore = hostOvertimeScore;
+	}
+	
+	@Column(name = "overtime_guest_score")
+	public Integer getGuestOvertimeScore() {
+		return guestOvertimeScore;
+	}
+
+	public void setGuestOvertimeScore(Integer guestOvertimeScore) {
+		this.guestOvertimeScore = guestOvertimeScore;
+	}
+
+	@Column(name = "is_penalty_flag", nullable = false)
+	public Integer getIsPenaltyFlag() {
+		return isPenaltyFlag;
+	}
+
+	public void setIsPenaltyFlag(Integer isPenaltyFlag) {
+		this.isPenaltyFlag = isPenaltyFlag;
+	}
+
+	@Column(name = "penalty_host_score")
+	public Integer getHostPenaltyScore() {
+		return hostPenaltyScore;
+	}
+
+	public void setHostPenaltyScore(Integer hostPenaltyScore) {
+		this.hostPenaltyScore = hostPenaltyScore;
+	}
+
+	@Column(name = "penalty_guest_score")
+	public Integer getGuestPenaltyScore() {
+		return guestPenaltyScore;
+	}
+
+	public void setGuestPenaltyScore(Integer guestPenaltyScore) {
+		this.guestPenaltyScore = guestPenaltyScore;
+	}
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "ysmsGames")
 	@JsonIgnore
 	public Set<YsmsFoul> getYsmsFouls() {

@@ -80,6 +80,7 @@ public class TeamManagementControl {
 		int schoolId = Integer.parseInt(schoolIdInSession.toString());
 		Map<String, Object> model = new HashMap<String, Object>();
 		int zoneId = Integer.parseInt(request.getParameter("zone_id"));
+		session.setAttribute("zoneId", zoneId);
 		int teamId = 0;
 		YsmsTeam team = teamManagementService.getTeamForSchoolAndZone(schoolId, zoneId);
 		if(team != null){
@@ -657,7 +658,8 @@ public class TeamManagementControl {
 		else if(schoolCategory==3){
 			minusYears = 9;
 		}
-		int count = teamManagementService.getSignUpAthletelimitCountBySchoolId(schoolId);
+		int zoneId = Integer.parseInt(session.getAttribute("zoneId").toString());
+		int count = teamManagementService.getSignUpAthletelimitCountByZoneId(zoneId);
 
 		int teamId = Integer.parseInt(request.getParameter("team_id"));
 		YsmsLeagueZone leagueZone = teamManagementService.getZoneByTeam(teamId);

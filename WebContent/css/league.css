@@ -11,8 +11,10 @@
 
 	.neirong_wk{height:515px;margin-top: 30px;background: #fff;padding-top:50px;position: relative;}
 	.neirong{width:550px;height:auto;min-height:260px;margin:0 auto; position: relative;}
-	#league_add,.add_info {margin:0 auto;}
+	.neirong_l{height:auto;min-height:260px;margin:0 auto; position: relative;}
+	#league_add,.add_info, #league_detail_tb {margin:0 auto;}
 	#league_add td{height:70px;color: #251b3b;font-size: 1.1em}
+	#league_detail_tb td{color: #251b3b;font-size: 1.1em}
 	.add_info td{height:70px;color: #251b3b;font-size: 1.1em;}
 	.input_wk{height:40px;width:350px;margin:5px;}
 	.input_l{float:left;height:40px;width:19px;background: url(../images/input_l.png)}
@@ -23,6 +25,7 @@
     .select_icon{position: absolute;right:2px;top:8px;height:12px;width:16px; background: url(../images/select_icon.png);z-index: 2;}
 	#league_add select{line-height: 32px;height:32px;margin: -1px 0 0 -1px;width:120%;border: none;font-size: 1em;color:#251b3b;background: #fafafa;font-family:'Microsoft YaHei','SimHei','SimSun' }
 	.add_info select{line-height: 32px;height:32px;margin: -1px 0 0 -1px;width:120%;border: none;font-size: 1em;color:#251b3b;background: #none;font-family:'Microsoft YaHei','SimHei','SimSun' }
+	.input_textarea{line-height: 32px;font-size: 1em;color:#251b3b;font-family:'Microsoft YaHei','SimHei','SimSun' }
 	.danwei{float:left;height:100%;line-height:38px;}
 	.btn_wk{ height:50px;width:250px;margin:5px auto;cursor:pointer;}
 	.btn_l{float:left;height:50px;width:19px;}

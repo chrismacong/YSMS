@@ -280,6 +280,9 @@ public class GameManagementControl {
 		String guestGoalStr = request.getParameter("guest_goal");
 		String hostFoulStr = request.getParameter("host_foul");
 		String guestFoulStr = request.getParameter("guest_foul");
+		String isOvertimeFlag = request.getParameter("isovertime_flag");
+		String isPenaltyFlag = request.getParameter("ispenalty_flag");
+		String host_goal_attempt = request.getParameter("host_goal_attempt");
 		gameManagementService.replyGamesInfo(gamesId, hostScore, guestScore);
 		gameManagementService.deleteAllGoalsInGame(gamesId);//清空该场比赛所有进球
 		gameManagementService.deleteAllFoulsInGame(gamesId);//清空该场比赛所有红黄牌

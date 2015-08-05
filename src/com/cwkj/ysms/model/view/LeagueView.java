@@ -96,4 +96,26 @@ public class LeagueView {
 	public void setSignUpStatus(int signUpStatus) {
 		this.signUpStatus = signUpStatus;
 	}
+	public String leagueBeginTime;
+	
+	public String leagueEndTime;
+	public String getLeagueBeginTime() {
+		return leagueBeginTime;
+	}
+	public void setLeagueBeginTime(String leagueBeginTime) {
+		this.leagueBeginTime = leagueBeginTime;
+	}
+	public String getLeagueEndTime() {
+		return leagueEndTime;
+	}
+	public void setLeagueEndTime(String leagueEndTime) {
+		this.leagueEndTime = leagueEndTime;
+	}
+	public String leagueDescription;
+	public String getLeagueDescription() {
+		return leagueDescription;
+	}
+	public void setLeagueDescription(String leagueDescription) {
+		this.leagueDescription = leagueDescription;
+	}
 }

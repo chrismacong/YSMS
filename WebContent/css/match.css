@@ -123,7 +123,7 @@
 		}
 	 .tab_xijie{
 		  height: 40px;
-		  width: 300px;
+		  width: 400px;
 		  margin: 20px auto 0 auto;
 		  line-height: 40px;
 	}
@@ -141,8 +141,8 @@
 		font-weight: bold;
 		box-shadow: 0 0 10px #777;
 	}
-	.honghuangpai{display:none;}
-	.honghuangpai,.personscore{border:1px solid #a8a1b7;}
+	.honghuangpai,.otherrecord{display:none;}
+	.honghuangpai,.personscore,.otherrecord{border:1px solid #a8a1b7;}
 	.fenlai_2  a{
 		padding:3px 10px;
 		text-decoration: none;	

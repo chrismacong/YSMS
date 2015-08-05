@@ -62,7 +62,8 @@ public interface LeagueManagementService {
 	 * @return
 	 */
 	public boolean modifyLeague(int leagueId, int leagueYear, String leagueName, 
-			Date registerBeginTime, Date registerEndTime);
+			Date registerBeginTime, Date registerEndTime, Date leagueBeginTime, Date leagueEndTime,
+			String leagueDescription);
 	
 	
 	/**
@@ -165,7 +166,7 @@ public interface LeagueManagementService {
 	 * @param levelIndexes
 	 * @return
 	 */
-	public boolean addZone(int leagueId, String zoneName, String[] levelIndexes);
+	public boolean addZone(int leagueId, String zoneName, String[] levelIndexes, int maxAthleteNum);
 	
 	/**
 	 * 修改联赛组

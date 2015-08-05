@@ -745,24 +745,9 @@ public class TeamManagementServiceImpl implements TeamManagementService{
 	}
 	
 	@Override
-	public int getSignUpAthletelimitCountBySchoolId(Integer schoolId){
-		int count = 0;
-		YsmsSchool school = schoolDao.findById(schoolId);
-		if(school != null){
-			int type = school.getSchoolCategory();
-			switch(type){
-				case 1:
-					count = 15;
-					break;
-				case 2:
-					count = 18;
-					break;
-				case 3:
-					count = 22;
-					break;
-			}
-		}
-		return count;
+	public int getSignUpAthletelimitCountByZoneId(Integer zoneId){
+		YsmsLeagueZone zone = leagueZoneDao.findById(zoneId);
+		return zone.getMaxAthleteNum();
 	}
 
 	@Override

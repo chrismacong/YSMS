@@ -35,6 +35,10 @@ public class YsmsLeague implements java.io.Serializable {
 	private Date registerBegintime;
 	private Date registerEndtime;
 	private Integer deleteflag;
+	private Date leagueBegintime;
+	private Date leagueEndtime;
+	private String leagueDescription;
+	
 	private Set<YsmsLeagueZone> ysmsLeagueZones = new HashSet<YsmsLeagueZone>(0);
 
 	// Constructors
@@ -134,6 +138,33 @@ public class YsmsLeague implements java.io.Serializable {
 
 	public void setDeleteflag(Integer deleteflag) {
 		this.deleteflag = deleteflag;
+	}
+	
+	@Column(name = "league_begintime")
+	public Date getLeagueBegintime() {
+		return leagueBegintime;
+	}
+
+	public void setLeagueBegintime(Date leagueBegintime) {
+		this.leagueBegintime = leagueBegintime;
+	}
+
+	@Column(name = "league_endtime")
+	public Date getLeagueEndtime() {
+		return leagueEndtime;
+	}
+
+	public void setLeagueEndtime(Date leagueEndtime) {
+		this.leagueEndtime = leagueEndtime;
+	}
+
+	@Column(name = "league_description")
+	public String getLeagueDescription() {
+		return leagueDescription;
+	}
+
+	public void setLeagueDescription(String leagueDescription) {
+		this.leagueDescription = leagueDescription;
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "ysmsLeague")

@@ -79,7 +79,7 @@ public class LeagueServiceTest {
 		Date registerBeginTime = cal.getTime();
 		cal.set(Calendar.MONTH,4);
 		Date registerEndTime = cal.getTime();
-		Boolean result = leagueManagementService.modifyLeague(leagueId, leagueYear, leagueName, registerBeginTime, registerEndTime);
+		Boolean result = leagueManagementService.modifyLeague(leagueId, leagueYear, leagueName, registerBeginTime, registerEndTime,null,null,null);
 		System.out.println("ModifyLeague Result:"+result.toString());
 	}
 	

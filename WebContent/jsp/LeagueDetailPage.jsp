@@ -32,32 +32,38 @@
 	var is_register_end = "${league.isRegisterEnd()}";
 	var zoneList;
 	$(function() {
-		path="${pageContext.request.contextPath}";
-		$(":disabled").each(function(){
-			if($(this).parent().css('background-image').indexOf('input_m.png')>=0)
-				{
-				$(this).parent().prev().css('background-image','url('+path+'/images/input_l2.png)');
-				$(this).parent().css('background-image','url('+path+'/images/input_m2.png)');
-				$(this).parent().next().css('background-image','url('+path+'/images/input_r2.png)');
-				}
-			if($(this).parent().css('background-image').indexOf('input_m_thin.png')>=0)
-				{
-				$(this).parent().prev().css('background-image','url('+path+'/images/input_l_thin2.png)');
-				$(this).parent().css('background-image','url('+path+'/images/input_m_thin2.png)');
-				$(this).parent().next().css('background-image','url('+path+'/images/input_r_thin2.png)');
-				}
-		})
+		path = "${pageContext.request.contextPath}";
+		$(":disabled").each(
+				function() {
+					if ($(this).parent().css('background-image').indexOf(
+							'input_m.png') >= 0) {
+						$(this).parent().prev().css('background-image',
+								'url(' + path + '/images/input_l2.png)');
+						$(this).parent().css('background-image',
+								'url(' + path + '/images/input_m2.png)');
+						$(this).parent().next().css('background-image',
+								'url(' + path + '/images/input_r2.png)');
+					}
+					if ($(this).parent().css('background-image').indexOf(
+							'input_m_thin.png') >= 0) {
+						$(this).parent().prev().css('background-image',
+								'url(' + path + '/images/input_l_thin2.png)');
+						$(this).parent().css('background-image',
+								'url(' + path + '/images/input_m_thin2.png)');
+						$(this).parent().next().css('background-image',
+								'url(' + path + '/images/input_r_thin2.png)');
+					}
+				})
 		loadZoneList();
-	 	if (is_register_end == 1) {
+		if (is_register_end == 1) {
 			//$(".table_head_left_fat").css("display", "none");
 			$(".table_head_left_fat").text('组别列表');
-			$(".table_head_left_fat").unbind();		
-		}  
-	 	else{
-	 		$(".table_head_left_fat").click(function() {
+			$(".table_head_left_fat").unbind();
+		} else {
+			$(".table_head_left_fat").click(function() {
 				$(".zone_block").css("display", "block");
 			})
-	 	}
+		}
 		$("#menubtn_back")
 				.click(
 						function() {
@@ -76,7 +82,9 @@
 		});
 		$("#start_register_time").datepicker();
 		$("#end_register_time").datepicker();
-		
+		$("#league_start_time").datepicker();
+		$("#league_end_time").datepicker();
+
 		$(".close").click(function() {
 			$('input:checkbox[name=items]:checked').each(function(i) {
 				$(this).prop('checked', false);
@@ -89,7 +97,7 @@
 		$("#addzone_btn").click(function() {
 			var levels = "";
 			var zone_name = $("#zonename_input").val();
-			if(zone_name == ""){
+			if (zone_name == "") {
 				ds.dialog({
 					title : '消息提示',
 					content : "级别名称不得为空！",
@@ -101,7 +109,17 @@
 			$('input:checkbox[name=items]:checked').each(function(i) {
 				levels += $(this).val() + ";";
 			});
-			if(levels==""){
+			var max_athletenum = $("#zone_maxathlete").val();
+			if(max_athletenum == ""){
+				ds.dialog({
+					title : '消息提示',
+					content : "必须填写运动员报名上限！",
+					onyes : true,
+					icon : "../../images/info.png"
+				});
+				return;
+			}
+			if (levels == "") {
 				ds.dialog({
 					title : '消息提示',
 					content : "级别中至少应包含一个可报名年级！",
@@ -116,7 +134,8 @@
 				data : {
 					league_id : league_id,
 					zone_name : zone_name,
-					levels : levels
+					levels : levels,
+					max_athletenum : max_athletenum
 				},
 				dataType : "json",
 				success : function(data) {
@@ -171,12 +190,13 @@
 												// 加载联赛列表
 												loadZoneList();
 											} else {
-												ds.dialog({
-													title : '消息提示',
-													content : "修改联赛组失败！",
-													onyes : true,
-													icon : "../../images/info.png"
-												});
+												ds
+														.dialog({
+															title : '消息提示',
+															content : "修改联赛组失败！",
+															onyes : true,
+															icon : "../../images/info.png"
+														});
 											}
 											$('.zone_block').hide();
 											$(
@@ -202,56 +222,61 @@
 							$("#add_wk").css("display", "block");
 							$("#modify_wk").css("display", "none");
 						})
-		$("#menubtn_delete").click(function() {
-			$('#ui-datepicker-div').remove();
-			ds.dialog({
-				title : '消息提示',
-				content : "将丢失该联赛的全部信息，确定删除？",
-				yesText : "确定",
-				onyes : function() {
-					$.ajax({
-						type : 'POST',
-						url : "${pageContext.request.contextPath}/league/deleteleague.html",
-						data : {
-							league_id : league_id
-						},
-						dataType : "json",
-						success : function(
-								data) {
-							if (data.success) {
-								// 回到列表
-								$(
-										'#ui-datepicker-div')
-										.remove();
-								window.location.href = "${pageContext.request.contextPath}/league.html";
-							} else {
-								ds.dialog({
-									title : '消息提示',
-									content : '删除联赛失败！',
-									onyes : true,
-									icon : "../../images/info.png"
-								});
-							}
-						},
-						error : function() {
-							ds.dialog({
-								title : '消息提示',
-								content : '删除联赛失败！',
-								onyes : true,
-								icon : "../../images/info.png"
-							});
-						}
-					});
-				},
-				noText : "取消",
-				onno : function() {
-					this.close();
-				},
-				icon : "../../images/confirm.png"
-			});
-							
-		});
-		
+		$("#menubtn_delete")
+				.click(
+						function() {
+							$('#ui-datepicker-div').remove();
+							ds
+									.dialog({
+										title : '消息提示',
+										content : "将丢失该联赛的全部信息，确定删除？",
+										yesText : "确定",
+										onyes : function() {
+											$
+													.ajax({
+														type : 'POST',
+														url : "${pageContext.request.contextPath}/league/deleteleague.html",
+														data : {
+															league_id : league_id
+														},
+														dataType : "json",
+														success : function(data) {
+															if (data.success) {
+																// 回到列表
+																$(
+																		'#ui-datepicker-div')
+																		.remove();
+																window.location.href = "${pageContext.request.contextPath}/league.html";
+															} else {
+																ds
+																		.dialog({
+																			title : '消息提示',
+																			content : '删除联赛失败！',
+																			onyes : true,
+																			icon : "../../images/info.png"
+																		});
+															}
+														},
+														error : function() {
+															ds
+																	.dialog({
+																		title : '消息提示',
+																		content : '删除联赛失败！',
+																		onyes : true,
+																		icon : "../../images/info.png"
+																	});
+														}
+													});
+										},
+										noText : "取消",
+										onno : function() {
+											this.close();
+										},
+										icon : "../../images/confirm.png"
+									});
+
+						});
+
 		$("#modify_btn_liansai")
 				.click(
 						function() {
@@ -260,51 +285,67 @@
 									.val();
 							var register_end_time = $("#end_register_time")
 									.val();
-							if (register_start_time > register_end_time)
-							ds.dialog({
-								title : '消息提示',
-								content : "报名截止日期不得早于报名开始时间",
-								onyes : true,
-								icon : "../../images/info.png"
-							});
-							else {
-								$
-										.ajax({
-											type : 'POST',
-											url : "${pageContext.request.contextPath}/league/modifyleague.html",
-											data : {
-												league_id : league_id,
-												year : league_year,
-												name : league_name,
-												start_date : register_start_time,
-												end_date : register_end_time
-											},
-											dataType : "json",
-											success : function(data) {
-												if (data.success) {
-													// 加载联赛列表
-													$('#ui-datepicker-div')
-															.remove();
-													window.location.href = "${pageContext.request.contextPath}/league.html";
-												} else {
-													ds.dialog({
-														title : '消息提示',
-														content : "修改联赛失败",
-														onyes : true,
-														icon : "../../images/info.png"
-													});
-												}
-											},
-											error : function() {
-												ds.dialog({
-													title : '消息提示',
-													content : "修改联赛失败",
-													onyes : true,
-													icon : "../../images/info.png"
-												});
-											}
-										});
+							if (register_start_time > register_end_time) {
+								ds.dialog({
+									title : '消息提示',
+									content : "报名截止日期不得早于报名开始时间",
+									onyes : true,
+									icon : "../../images/info.png"
+								});
+								return;
 							}
+							var league_start_time = $("#league_start_time").val();
+							var league_end_time = $("#league_end_time").val();
+							var league_description = $("#league_description").val();
+							if(league_description.length>500){
+								ds.dialog({
+									title : '消息提示',
+									content : "联赛介绍不能多于500字!",
+									onyes : true,
+									icon : "../../images/info.png"
+								});
+								return;
+							}
+							$
+									.ajax({
+										type : 'POST',
+										url : "${pageContext.request.contextPath}/league/modifyleague.html",
+										data : {
+											league_id : league_id,
+											year : league_year,
+											name : league_name,
+											start_date : register_start_time,
+											end_date : register_end_time,
+											league_start_time : league_start_time,
+											league_end_time : league_end_time,
+											league_description : league_description
+										},
+										dataType : "json",
+										success : function(data) {
+											if (data.success) {
+												// 加载联赛列表
+												$('#ui-datepicker-div')
+														.remove();
+												window.location.href = "${pageContext.request.contextPath}/league.html";
+											} else {
+												ds
+														.dialog({
+															title : '消息提示',
+															content : "修改联赛失败",
+															onyes : true,
+															icon : "../../images/info.png"
+														});
+											}
+										},
+										error : function() {
+											ds.dialog({
+												title : '消息提示',
+												content : "修改联赛失败",
+												onyes : true,
+												icon : "../../images/info.png"
+											});
+										}
+									});
 						});
 	})
 	function loadZoneList() {
@@ -359,39 +400,107 @@
 															+ zone.zoneName
 															+ "</td>"
 															+ "<td style='position:relative' width='720px'>"
-															+ "<div style='display:none'>" + zone.levelStr + "</div>"
+															+ "<div style='display:none'>"
+															+ zone.levelStr
+															+ "</div>"
 															+ "<div style='position:absolute;left:2px;top:1px;width:718px;height:46px;'>"
 															+ "<div style='position:absolute;left:10px;top:0px;width:108px;height:46px;background:url(${pageContext.request.contextPath}/images/primary.png) no-repeat left center;'></div>"
 															+ "<div style='position:absolute;left:110px;top:0px;width:23px;height:23px;background:url(${pageContext.request.contextPath}/images/primary_male.png) no-repeat left center;'></div>"
-															+ "<div style='left:135px;top:0px;' class=" + (zone.levelArray[0] ? "'include_primary_grade'" : "'disclude_grade'") + ">2</div>"
-															+ "<div style='left:160px;top:0px;' class=" + (zone.levelArray[2] ? "'include_primary_grade'" : "'disclude_grade'") + ">3</div>"
-															+ "<div style='left:185px;top:0px;' class=" + (zone.levelArray[4] ? "'include_primary_grade'" : "'disclude_grade'") + ">4</div>"
-															+ "<div style='left:210px;top:0px;' class=" + (zone.levelArray[6] ? "'include_primary_grade'" : "'disclude_grade'") + ">5</div>"
-															+ "<div style='left:235px;top:0px;' class=" + (zone.levelArray[8] ? "'include_primary_grade'" : "'disclude_grade'") + ">6</div>"
+															+ "<div style='left:135px;top:0px;' class="
+															+ (zone.levelArray[0] ? "'include_primary_grade'"
+																	: "'disclude_grade'")
+															+ ">2</div>"
+															+ "<div style='left:160px;top:0px;' class="
+															+ (zone.levelArray[2] ? "'include_primary_grade'"
+																	: "'disclude_grade'")
+															+ ">3</div>"
+															+ "<div style='left:185px;top:0px;' class="
+															+ (zone.levelArray[4] ? "'include_primary_grade'"
+																	: "'disclude_grade'")
+															+ ">4</div>"
+															+ "<div style='left:210px;top:0px;' class="
+															+ (zone.levelArray[6] ? "'include_primary_grade'"
+																	: "'disclude_grade'")
+															+ ">5</div>"
+															+ "<div style='left:235px;top:0px;' class="
+															+ (zone.levelArray[8] ? "'include_primary_grade'"
+																	: "'disclude_grade'")
+															+ ">6</div>"
 															+ "<div style='position:absolute;left:100px;top:23px;width:23px;height:23px;background:url(${pageContext.request.contextPath}/images/primary_female.png) no-repeat left center;'></div>"
-															+ "<div style='left:125px;top:23px;' class=" + (zone.levelArray[1] ? "'include_primary_grade'" : "'disclude_grade'") + ">2</div>"
-															+ "<div style='left:150px;top:23px;' class=" + (zone.levelArray[3] ? "'include_primary_grade'" : "'disclude_grade'") + ">3</div>"
-															+ "<div style='left:175px;top:23px;' class=" + (zone.levelArray[5] ? "'include_primary_grade'" : "'disclude_grade'") + ">4</div>"
-															+ "<div style='left:200px;top:23px;' class=" + (zone.levelArray[7] ? "'include_primary_grade'" : "'disclude_grade'") + ">5</div>"
-															+ "<div style='left:225px;top:23px;' class=" + (zone.levelArray[9] ? "'include_primary_grade'" : "'disclude_grade'") + ">6</div>"
+															+ "<div style='left:125px;top:23px;' class="
+															+ (zone.levelArray[1] ? "'include_primary_grade'"
+																	: "'disclude_grade'")
+															+ ">2</div>"
+															+ "<div style='left:150px;top:23px;' class="
+															+ (zone.levelArray[3] ? "'include_primary_grade'"
+																	: "'disclude_grade'")
+															+ ">3</div>"
+															+ "<div style='left:175px;top:23px;' class="
+															+ (zone.levelArray[5] ? "'include_primary_grade'"
+																	: "'disclude_grade'")
+															+ ">4</div>"
+															+ "<div style='left:200px;top:23px;' class="
+															+ (zone.levelArray[7] ? "'include_primary_grade'"
+																	: "'disclude_grade'")
+															+ ">5</div>"
+															+ "<div style='left:225px;top:23px;' class="
+															+ (zone.levelArray[9] ? "'include_primary_grade'"
+																	: "'disclude_grade'")
+															+ ">6</div>"
 															+ "<div style='position:absolute;left:290px;top:0px;width:108px;height:46px;background:url(${pageContext.request.contextPath}/images/junior.png) no-repeat left center;'></div>"
 															+ "<div style='position:absolute;left:390px;top:0px;width:23px;height:23px;background:url(${pageContext.request.contextPath}/images/junior_male.png) no-repeat left center;'></div>"
-															+ "<div style='left:415px;top:0px;' class=" + (zone.levelArray[10] ? "'include_junior_grade'" : "'disclude_grade'") + ">7</div>"
-															+ "<div style='left:440px;top:0px;' class=" + (zone.levelArray[12] ? "'include_junior_grade'" : "'disclude_grade'") + ">8</div>"
-															+ "<div style='left:465px;top:0px;' class=" + (zone.levelArray[14] ? "'include_junior_grade'" : "'disclude_grade'") + ">9</div>"
+															+ "<div style='left:415px;top:0px;' class="
+															+ (zone.levelArray[10] ? "'include_junior_grade'"
+																	: "'disclude_grade'")
+															+ ">7</div>"
+															+ "<div style='left:440px;top:0px;' class="
+															+ (zone.levelArray[12] ? "'include_junior_grade'"
+																	: "'disclude_grade'")
+															+ ">8</div>"
+															+ "<div style='left:465px;top:0px;' class="
+															+ (zone.levelArray[14] ? "'include_junior_grade'"
+																	: "'disclude_grade'")
+															+ ">9</div>"
 															+ "<div style='position:absolute;left:380px;top:23px;width:23px;height:23px;background:url(${pageContext.request.contextPath}/images/junior_female.png) no-repeat left center;'></div>"
-															+ "<div style='left:405px;top:23px;' class=" + (zone.levelArray[11] ? "'include_junior_grade'" : "'disclude_grade'") + ">7</div>"
-															+ "<div style='left:430px;top:23px;' class=" + (zone.levelArray[13] ? "'include_junior_grade'" : "'disclude_grade'") + ">8</div>"
-															+ "<div style='left:455px;top:23px;' class=" + (zone.levelArray[15] ? "'include_junior_grade'" : "'disclude_grade'") + ">9</div>"
+															+ "<div style='left:405px;top:23px;' class="
+															+ (zone.levelArray[11] ? "'include_junior_grade'"
+																	: "'disclude_grade'")
+															+ ">7</div>"
+															+ "<div style='left:430px;top:23px;' class="
+															+ (zone.levelArray[13] ? "'include_junior_grade'"
+																	: "'disclude_grade'")
+															+ ">8</div>"
+															+ "<div style='left:455px;top:23px;' class="
+															+ (zone.levelArray[15] ? "'include_junior_grade'"
+																	: "'disclude_grade'")
+															+ ">9</div>"
 															+ "<div style='position:absolute;left:520px;top:0px;width:108px;height:46px;background:url(${pageContext.request.contextPath}/images/senior.png) no-repeat left center;'></div>"
 															+ "<div style='position:absolute;left:620px;top:0px;width:23px;height:23px;background:url(${pageContext.request.contextPath}/images/senior_male.png) no-repeat left center;'></div>"
-															+ "<div style='left:645px;top:0px;' class=" + (zone.levelArray[16] ? "'include_senior_grade'" : "'disclude_grade'") + ">1</div>"
-															+ "<div style='left:670px;top:0px;' class=" + (zone.levelArray[18] ? "'include_senior_grade'" : "'disclude_grade'") + ">2</div>"
-															+ "<div style='left:695px;top:0px;' class=" + (zone.levelArray[20] ? "'include_senior_grade'" : "'disclude_grade'") + ">3</div>"
+															+ "<div style='left:645px;top:0px;' class="
+															+ (zone.levelArray[16] ? "'include_senior_grade'"
+																	: "'disclude_grade'")
+															+ ">1</div>"
+															+ "<div style='left:670px;top:0px;' class="
+															+ (zone.levelArray[18] ? "'include_senior_grade'"
+																	: "'disclude_grade'")
+															+ ">2</div>"
+															+ "<div style='left:695px;top:0px;' class="
+															+ (zone.levelArray[20] ? "'include_senior_grade'"
+																	: "'disclude_grade'")
+															+ ">3</div>"
 															+ "<div style='position:absolute;left:610px;top:23px;width:23px;height:23px;background:url(${pageContext.request.contextPath}/images/senior_female.png) no-repeat left center;'></div>"
-															+ "<div style='left:635px;top:23px;' class=" + (zone.levelArray[17] ? "'include_senior_grade'" : "'disclude_grade'") + ">1</div>"
-															+ "<div style='left:660px;top:23px;' class=" + (zone.levelArray[19] ? "'include_senior_grade'" : "'disclude_grade'") + ">2</div>"
-															+ "<div style='left:685px;top:23px;' class=" + (zone.levelArray[21] ? "'include_senior_grade'" : "'disclude_grade'") + ">3</div>"
+															+ "<div style='left:635px;top:23px;' class="
+															+ (zone.levelArray[17] ? "'include_senior_grade'"
+																	: "'disclude_grade'")
+															+ ">1</div>"
+															+ "<div style='left:660px;top:23px;' class="
+															+ (zone.levelArray[19] ? "'include_senior_grade'"
+																	: "'disclude_grade'")
+															+ ">2</div>"
+															+ "<div style='left:685px;top:23px;' class="
+															+ (zone.levelArray[21] ? "'include_senior_grade'"
+																	: "'disclude_grade'")
+															+ ">3</div>"
 															+ "</div>"
 															+ "</td>"
 															+ "<td width='18px'></td>"
@@ -417,55 +526,57 @@
 	}
 	function deletezone(obj) {
 		var zone_id = $(obj).parent().parent().attr("id").substring(5);
-		ds.dialog({
-			title : '消息提示',
-			content : "将丢失该组别的全部信息，确定删除？",
-			yesText : "确定",
-			onyes : function() {
-				$.ajax({
-					type : 'POST',
-					url : "${pageContext.request.contextPath}/league/deletezone.html",
-					data : {
-						zone_id : zone_id
+		ds
+				.dialog({
+					title : '消息提示',
+					content : "将丢失该组别的全部信息，确定删除？",
+					yesText : "确定",
+					onyes : function() {
+						$
+								.ajax({
+									type : 'POST',
+									url : "${pageContext.request.contextPath}/league/deletezone.html",
+									data : {
+										zone_id : zone_id
+									},
+									dataType : "json",
+									success : function(data) {
+										if (data.result) {
+											// 加载联赛列表
+											loadZoneList();
+										} else {
+											ds.dialog({
+												title : '消息提示',
+												content : "删除联赛组信息失败",
+												onyes : true,
+												icon : "../../images/info.png"
+											});
+										}
+									},
+									error : function() {
+										ds.dialog({
+											title : '消息提示',
+											content : "删除联赛组信息失败",
+											onyes : true,
+											icon : "../../images/info.png"
+										});
+									}
+								});
 					},
-					dataType : "json",
-					success : function(data) {
-						if (data.result) {
-							// 加载联赛列表
-							loadZoneList();
-						} else {
-							ds.dialog({
-								title : '消息提示',
-								content : "删除联赛组信息失败",
-								onyes : true,
-								icon : "../../images/info.png"
-							});
-						}
+					noText : "取消",
+					onno : function() {
+						this.close();
 					},
-					error : function() {
-						ds.dialog({
-							title : '消息提示',
-							content : "删除联赛组信息失败",
-							onyes : true,
-							icon : "../../images/info.png"
-						});
-					}
+					icon : "../../images/confirm.png"
 				});
-			},
-			noText : "取消",
-			onno : function() {
-				this.close();
-			},
-			icon : "../../images/confirm.png"
-		});
-		
+
 	}
 
 	function modifyzone(obj) {
 		var zone_id = $(obj).parent().parent().attr("id").substring(5);
 		var zone_name = $(obj).parent().parent().find("td:eq(0)").html();
-		var zone_levels = $(obj).parent().parent().find("td:eq(1)").find("div:eq(0)").html()
-				.split(",");
+		var zone_levels = $(obj).parent().parent().find("td:eq(1)").find(
+				"div:eq(0)").html().split(",");
 		for (var i = 0; i < zone_levels.length; i++) {
 			var level_name = zone_levels[i];
 			$('.levellb').each(
@@ -512,14 +623,14 @@
 				<p>删除联赛</p></li>
 		</ul>
 	</div>
-	<div class="neirong_wk" style="margin-top: 10px; padding-top: 0px;">
+	<div style="margin-top: 10px; padding-top: 0px;">
 		<!--基本信息-->
-		<div id="league_detail" class="neirong" style="margin-top: 70px;">
-			<table id="league_add" cellpadding="0" cellspacing="0">
+		<div id="league_detail" class="neirong_l" style="margin-top: 70px;">
+			<table id="league_detail_tb" cellpadding="0" cellspacing="0">
 				<tbody>
 					<tr>
 						<td>联赛名称：</td>
-						<td>
+						<td colspan="3">
 							<div class="input_wk">
 								<div class="input_l"></div>
 								<div class="input_m">
@@ -543,8 +654,6 @@
 								<div class="input_r"></div>
 							</div>
 						</td>
-					</tr>
-					<tr>
 						<td>截止报名时间：</td>
 						<td>
 							<div class="input_wk">
@@ -559,7 +668,40 @@
 						</td>
 					</tr>
 					<tr>
-						<td colspan="2">
+						<td>联赛开始时间：</td>
+						<td>
+							<div class="input_wk">
+								<div class="input_l"></div>
+								<div class="input_m">
+									<input class="input_text" type="text" id="league_start_time"
+										readonly="readonly" value="${league.leagueBeginTime}">
+								</div>
+								<div class="input_r"></div>
+							</div>
+						</td>
+						<td>联赛结束时间：</td>
+						<td>
+							<div class="input_wk">
+								<div class="input_l"></div>
+								<div class="input_m">
+									<input class="input_text" type="text" id="league_end_time"
+										readonly="readonly" value="${league.leagueEndTime}">
+								</div>
+								<div class="input_r"></div>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td><br />
+						<td>
+					</tr>
+					<tr>
+						<td>联赛介绍：</td>
+						<td colspan="3"><textarea class="input_textarea" id="league_description" rows="6"
+								cols="90">${league.leagueDescription}</textarea></td>
+					</tr>
+					<tr>
+						<td colspan="4">
 							<div class="btn_wk">
 								<div class="btn_l btn_l_a_green"></div>
 								<div class="btn_m btn_m_a_green">
@@ -597,8 +739,8 @@
 				</thead>
 				<tbody>
 					<tr>
-						<td colspan="10" style="border-bottom-width:0px;">
-							<div class="tbody_sroll" style="height:537px">
+						<td colspan="10" style="border-bottom-width: 0px;">
+							<div class="tbody_sroll" style="height: 537px">
 								<table id="list_zones" cellpadding="0" cellspacing="0"
 									width='100%'>
 								</table>
@@ -636,7 +778,6 @@
 						<tr>
 							<td colspan="4">可报名年级：</td>
 						</tr>
-						<tr />
 						<tr>
 							<c:set var="count_level" value="0"></c:set>
 							<c:forEach items="${levels}" var="xx" varStatus="loop">
@@ -652,12 +793,24 @@
 							</c:forEach>
 						</tr>
 						<tr>
+							<td>可报名运动员上限：</td>
+							<td colspan="3">
+								<div class="input_wk">
+									<div class="input_l"></div>
+									<div class="input_m">
+										<input id="zone_maxathlete" type="text" class="input_text">
+									</div>
+									<div class="input_r"></div>
+								</div>
+							</td>
+						</tr>
+						<tr>
 							<td colspan="4">
 								<div id="add_wk" class="btn_wk">
 									<div class="btn_l btn_l_a_green"></div>
 									<div class="btn_m btn_m_a_green">
 										<input type="button" class="input_btn" id="addzone_btn"
-											style="background:none" value="确定添加">
+											style="background: none" value="确定添加">
 									</div>
 									<div class="btn_r btn_r_a_green"></div>
 								</div>
@@ -665,7 +818,7 @@
 									<div class="btn_l btn_l_a_green"></div>
 									<div class="btn_m btn_m_a_green">
 										<input type="button" class="input_btn" id="modifyzone_btn"
-											style="background:none" value="确定修改">
+											style="background: none" value="确定修改">
 									</div>
 									<div class="btn_r btn_r_a_green"></div>
 								</div>
@@ -673,7 +826,7 @@
 						</tr>
 					</tbody>
 				</table>
-
+				<br/>
 			</div>
 		</div>
 

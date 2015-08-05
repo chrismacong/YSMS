@@ -185,7 +185,8 @@ public class LeagueManagementServiceImpl implements LeagueManagementService{
 
 	@Override
 	public boolean modifyLeague(int leagueId, int leagueYear, String leagueName,
-			Date registerBeginTime, Date registerEndTime) {
+			Date registerBeginTime, Date registerEndTime, Date leagueBeginTime, Date leagueEndTime,
+			String leagueDescription) {
 		YsmsLeague ysmsLeague = new YsmsLeague();
 		ysmsLeague.setLeagueId(leagueId);
 		Calendar cal = Calendar.getInstance();
@@ -194,10 +195,11 @@ public class LeagueManagementServiceImpl implements LeagueManagementService{
 		ysmsLeague.setLeagueYear(date);
 		ysmsLeague.setRegisterBegintime(registerBeginTime);
 		ysmsLeague.setLeagueName(leagueName);
-		Calendar endCalendar = Calendar.getInstance();
-		endCalendar.setTime(registerEndTime);
-//		endCalendar.add(Calendar.DATE, 1);
-		ysmsLeague.setRegisterEndtime(endCalendar.getTime());
+		ysmsLeague.setRegisterEndtime(registerEndTime);
+		ysmsLeague.setLeagueBegintime(leagueBeginTime);
+		ysmsLeague.setLeagueEndtime(leagueEndTime);
+		ysmsLeague.setLeagueDescription(leagueDescription);
+		
 		//修改
 		//		List<YsmsLeagueTeam> teams = leagueTeamDao.getParticipatedTeam(leagueId);
 		//		int leagueTotal = calulatorLeagueTotal(teams.size());
@@ -409,11 +411,12 @@ public class LeagueManagementServiceImpl implements LeagueManagementService{
 	}
 
 	@Override
-	public boolean addZone(int leagueId, String zoneName, String[] levelIndexes) {
+	public boolean addZone(int leagueId, String zoneName, String[] levelIndexes, int maxAthleteNum) {
 		YsmsLeagueZone ysmsLeagueZone = new YsmsLeagueZone();
 		ysmsLeagueZone.setYsmsLeague(leagueDao.findById(leagueId));
 		ysmsLeagueZone.setZoneName(zoneName);
 		ysmsLeagueZone.setDeleteflag(0);
+		ysmsLeagueZone.setMaxAthleteNum(maxAthleteNum);
 		leagueZoneDao.save(ysmsLeagueZone);
 
 		for(int i=0;i<levelIndexes.length;i++){
