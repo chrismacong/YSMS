@@ -3,7 +3,7 @@
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
 <%
@@ -30,7 +30,6 @@
 <script language="javascript" type="text/javascript"
 	src="${pageContext.request.contextPath}/js/jquery.ui.datepicker-zh-CN.js"></script>
 <script type="text/javascript" src="js/md5.js"></script>
-<script src="${pageContext.request.contextPath}/js/ds.dialog.js"></script>
 <script type="text/javascript">
 	$(function() {
 		$('.list').hide();
@@ -284,8 +283,7 @@
 					<li id="authoritymatrix_left_menu">
 						<div class="fous"></div>
 						<div class="icon">
-							<img
-								src="${pageContext.request.contextPath}/images/signup_m.png">
+							<img src="${pageContext.request.contextPath}/images/signup_m.png">
 						</div>
 						<div class='miaoshu'>权限矩阵</div>
 					</li>
@@ -416,8 +414,7 @@
 					<li id="admin_coach_left_menu">
 						<div class="fous"></div>
 						<div class="icon">
-							<img
-								src="${pageContext.request.contextPath}/images/coach_m.png">
+							<img src="${pageContext.request.contextPath}/images/coach_m.png">
 						</div>
 						<div class='miaoshu'>教练员管理</div>
 					</li>
@@ -430,8 +427,7 @@
 					<li id="news_left_menu">
 						<div class="fous"></div>
 						<div class="icon">
-							<img
-								src="${pageContext.request.contextPath}/images/signup_m.png">
+							<img src="${pageContext.request.contextPath}/images/signup_m.png">
 						</div>
 						<div class='miaoshu'>新闻管理</div>
 					</li>
@@ -444,8 +440,7 @@
 					<li id="newsverify_left_menu">
 						<div class="fous"></div>
 						<div class="icon">
-							<img
-								src="${pageContext.request.contextPath}/images/signup_m.png">
+							<img src="${pageContext.request.contextPath}/images/signup_m.png">
 						</div>
 						<div class='miaoshu'>新闻审核</div>
 					</li>
@@ -496,10 +491,10 @@
 						<div>去掉了记录界面球队名称显示</div>
 						<div>增加了封面图片大小限制，必须小于65535B</div>
 						<div>默认隐藏公告栏</div>
-						<br/>
+						<br />
 						<h2>0.8.2.4 (2015-07-17 22:11)</h2>
 						<div>修复了微信获取最新赛况值显示第一场比赛的BUG</div>
-						<br/>
+						<br />
 						<!-- <h1>相关文件下载</h1> -->
 						<!-- <a href="${pageContext.request.contextPath}/YSMSRepo/file/league_regulation.doc">联赛规程（Word）</a> -->
 						<!-- <a href="${pageContext.request.contextPath}/YSMSRepo/file/league_regulation.pdf">南京市创建校园足球特色学校名单</a><br/> -->
@@ -508,8 +503,7 @@
 					</div>
 				</div>
 				<iframe class="main_content" id="main_content" frameborder="0"
-					scrolling="no"
-					style="width: 1080px;background: url(${pageContext.request.contextPath}/images/main_center_bg.jpg);background-size:100% 100%;">
+					scrolling="no" src="${pageContext.request.contextPath}/management/calendar.html">
 				</iframe>
 			</div>
 			<!--main_content END-->

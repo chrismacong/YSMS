@@ -19,7 +19,7 @@ import com.cwkj.ysms.util.Page;
 @Repository
 public class GamesDaoImpl extends GenericDaoImpl implements GamesDao {
 	private static final Log log = LogFactory.getLog(GamesDaoImpl.class);
-	
+
 	@Override
 	public List<YsmsGames> getGamesByTeamId(int teamId) {
 		// TODO Auto-generated method stub
@@ -147,21 +147,21 @@ public class GamesDaoImpl extends GenericDaoImpl implements GamesDao {
 	public List<YsmsGames> getGamesByZoneIdBetweenDate(int zoneId,
 			Date beginDate, Date endDate) {
 		// TODO Auto-generated method stub
-				log.debug("finding YsmsGames instance by zoneId and period");
-				try {
-					String sql = " from YsmsGames g where g.ysmsLeagueZone.zoneId = " + zoneId 
-							+ " and g.gamesTime between ? and ?";
-					Query query = getSession().createQuery(sql);
-					query.setDate(0, beginDate);
-					query.setDate(1,endDate);
-					List<YsmsGames> results = query.list();
-					log.debug("find by leagueId and period successful, result size: "
+		log.debug("finding YsmsGames instance by zoneId and period");
+		try {
+			String sql = " from YsmsGames g where g.ysmsLeagueZone.zoneId = " + zoneId 
+					+ " and g.gamesTime between ? and ?";
+			Query query = getSession().createQuery(sql);
+			query.setDate(0, beginDate);
+			query.setDate(1,endDate);
+			List<YsmsGames> results = query.list();
+			log.debug("find by leagueId and period successful, result size: "
 					+ results.size());
-					return results;
-				} catch (RuntimeException re) {
-					log.error("find by leagueId and period failed", re);
-					throw re;
-				}
+			return results;
+		} catch (RuntimeException re) {
+			log.error("find by leagueId and period failed", re);
+			throw re;
+		}
 	}
 
 	@Override
@@ -178,13 +178,53 @@ public class GamesDaoImpl extends GenericDaoImpl implements GamesDao {
 			List<YsmsGames> results = query.list();
 			log.debug("find by teamId and period successful, result size: "
 					+ results.size());
-					return results;
+			return results;
 		} catch (RuntimeException re) {
 			log.error("find by teamId and period failed", re);
 			throw re;
 		}
 	}
-
+	
+	@Override
+	public List<YsmsGames> getGamesBySchoolIdBetweenDate(int schoolId,
+			Date beginDate, Date endDate) {
+		// TODO Auto-generated method stub
+		log.debug("find YsmsGames instance by teamId and period");
+		try {
+			String sql = " from YsmsGames g where (g.ysmsTeamByHostTeamid.ysmsSchool.schoolId = "+schoolId 
+					+ " or g.ysmsTeamByGuestTeamid.ysmsSchool.schoolId = "+schoolId +") and g.gamesTime between ? and ?";
+			Query query = getSession().createQuery(sql);
+			query.setDate(0,beginDate);
+			query.setDate(1, endDate);
+			List<YsmsGames> results = query.list();
+			log.debug("find by teamId and period successful, result size: "
+					+ results.size());
+			return results;
+		} catch (RuntimeException re) {
+			log.error("find by teamId and period failed", re);
+			throw re;
+		}
+	}
+	
+	@Override
+	public List<YsmsGames> getGamesBetweenDate(Date beginDate, Date endDate) {
+		// TODO Auto-generated method stub
+		log.debug("find YsmsGames instance by teamId and period");
+		try {
+			String sql = " from YsmsGames g where g.gamesTime between ? and ? order by g.gamesTime asc";
+			Query query = getSession().createQuery(sql);
+			query.setDate(0,beginDate);
+			query.setDate(1, endDate);
+			List<YsmsGames> results = query.list();
+			log.debug("find by teamId and period successful, result size: "
+					+ results.size());
+			return results;
+		} catch (RuntimeException re) {
+			log.error("find by teamId and period failed", re);
+			throw re;
+		}
+	}
+	
 	@Override
 	public YsmsGames getNextGameByTeamId(int teamId) {
 		// TODO Auto-generated method stub
@@ -214,28 +254,28 @@ public class GamesDaoImpl extends GenericDaoImpl implements GamesDao {
 	@Override
 	public YsmsGames getLastGameByTeamId(int teamId) {
 		// TODO Auto-generated method stub
-				log.debug("finding YsmsGames instance by teamId before date");
-				try {
-					Calendar cal = Calendar.getInstance();
-					Date date = cal.getTime();
-					String sql = " select g from YsmsGames g" + 
-							" where g.ysmsTeamByHostTeamid.teamId = " + teamId + 
-							" or g.ysmsTeamByGuestTeamid.teamId = " + teamId + 
-							" and g.gamesTime < ? order by g.gamesTime desc";
-					Query query = getSession().createQuery(sql);
-					query.setDate(0,date);
-					List<YsmsGames> objects = query.list();
-					if (objects.size() < 1) {
-						return null;
-					}
-					YsmsGames result = objects.get(objects.size() - 1);
-					log.debug("find by teamId before date successful, gamesId: " 
-							+ result.getGamesId());
-					return result;
-				} catch (RuntimeException re) {
-					log.error("find by teamId before date failed", re);
-					throw re;
-				}
+		log.debug("finding YsmsGames instance by teamId before date");
+		try {
+			Calendar cal = Calendar.getInstance();
+			Date date = cal.getTime();
+			String sql = " select g from YsmsGames g" + 
+					" where g.ysmsTeamByHostTeamid.teamId = " + teamId + 
+					" or g.ysmsTeamByGuestTeamid.teamId = " + teamId + 
+					" and g.gamesTime < ? order by g.gamesTime desc";
+			Query query = getSession().createQuery(sql);
+			query.setDate(0,date);
+			List<YsmsGames> objects = query.list();
+			if (objects.size() < 1) {
+				return null;
+			}
+			YsmsGames result = objects.get(objects.size() - 1);
+			log.debug("find by teamId before date successful, gamesId: " 
+					+ result.getGamesId());
+			return result;
+		} catch (RuntimeException re) {
+			log.error("find by teamId before date failed", re);
+			throw re;
+		}
 	}
 
 	@Override
@@ -348,6 +388,19 @@ public class GamesDaoImpl extends GenericDaoImpl implements GamesDao {
 			return result;
 		} catch (RuntimeException re) {
 			log.error("find by teamId after date failed", re);
+			throw re;
+		}
+	}
+
+	@Override
+	public List<YsmsGames> findAll() {
+		log.debug("finding all YsmsGames instances");
+		try {
+			String queryString = "from YsmsGames where 0=0 order by gameTime asc";
+			Query queryObject = getSession().createQuery(queryString);
+			return queryObject.list();
+		} catch (RuntimeException re) {
+			log.error("find all failed", re);
 			throw re;
 		}
 	}

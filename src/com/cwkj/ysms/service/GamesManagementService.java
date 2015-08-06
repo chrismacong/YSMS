@@ -2,6 +2,7 @@ package com.cwkj.ysms.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.cwkj.ysms.model.YsmsGames;
 import com.cwkj.ysms.model.view.FoulView;
@@ -86,8 +87,34 @@ public interface GamesManagementService {
 	 * @param hostTeamGoals 主队进球数
 	 * @param guestTeamGoals 客队进球数
 	 * @return 是否成功，true表示成功
+	 * @param isOvertimeFlag 是否加时赛
+	 * @param isPenaltyFlag 是否点球大战
+	 * @param hostGoalAttempt 主队射门
+	 * @param hostTargetNumber 主队射正
+	 * @param hostCornerKick 主队角球
+	 * @param hostFreeKick 主队任意球
+	 * @param hostFoul 主队犯规
+	 * @param hostOffside 主队越位
+	 * @param hostOvertimeScore 主队加时赛得分
+	 * @param hostPenaltyScore 主队点球大战得分
+	 * @param guestGoalAttempt 客队射门
+	 * @param guestTargetNumber 客队射正
+	 * @param guestCornerKick 客队角球
+	 * @param guestFreeKick 客队任意球
+	 * @param guestFoul 客队犯规
+	 * @param guestOffside 客队越位
+	 * @param guestOvertimeScore 客队加时赛进球
+	 * @param guestPenaltyScore 客队点球大战进球
+	 * @return
 	 */
-	public boolean replyGamesInfo(int gamesId, int hostTeamGoals, int guestTeamGoals);
+	public boolean replyGamesInfo(int gamesId, int hostTeamGoals, int guestTeamGoals, 
+			int isOvertimeFlag, int isPenaltyFlag,
+			String hostGoalAttempt, String hostTargetNumber, String hostCornerKick,
+			String hostFreeKick, String hostFoul, String hostOffside, 
+			String hostOvertimeScore, String hostPenaltyScore,
+			String guestGoalAttempt, String guestTargetNumber, String guestCornerKick,
+			String guestFreeKick, String guestFoul, String guestOffside, 
+			String guestOvertimeScore, String guestPenaltyScore);
 	
 	/**
 	 * 添加进球记录
@@ -163,6 +190,14 @@ public interface GamesManagementService {
 	public List<YsmsGames> getGamesThisMonthByTeam(int teamId);
 	
 	/**
+	 * 根据月份获取学校的比赛
+	 * @param teamId
+	 * @param date
+	 * @return
+	 */
+	public List<GameView> getGamesByMonthAndSchool(int schoolId, Date date);
+	
+	/**
 	 * 获取球队的下一场比赛
 	 * @param teamId 球队Id
 	 * @return 比赛信息
@@ -196,6 +231,19 @@ public interface GamesManagementService {
 	 * @return 比赛列表
 	 */
 	public List<YsmsGames> getGamesByDate(Date date);
+	
+	
+	/**
+	 * 按日期所在月获取全部比赛
+	 * @param date
+	 * @return
+	 */
+	public List<GameView> getAllGamesByMonth(Date date);
+	/**
+	 * 获取全部比赛
+	 * @return
+	 */
+	public List<GameView> getAllGames();
 	
 	/**
 	 * 获取联赛的全部赛程
@@ -249,4 +297,18 @@ public interface GamesManagementService {
 	public boolean deleteAllGoalsInGame(int gamesId);
 	
 	public boolean deleteAllFoulsInGame(int gamesId);
+	
+	/**
+	 * 获取用于日历显示的比赛信息哈希表
+	 * @param games
+	 * @return
+	 */
+	public Map<String, String>getMapForCalendar(List<GameView> games);
+	
+	/**
+	 * 设置或取消完赛
+	 * @param isOver
+	 * @return
+	 */
+	public boolean setGameOver(int gamesId, boolean isOver);
 }

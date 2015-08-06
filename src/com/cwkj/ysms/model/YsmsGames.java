@@ -61,6 +61,7 @@ public class YsmsGames implements java.io.Serializable {
 	private Integer isPenaltyFlag;
 	private Integer hostPenaltyScore;
 	private Integer guestPenaltyScore;
+	private Integer isGameOver;
 	private Set<YsmsFoul> ysmsFouls = new HashSet<YsmsFoul>(0);
 	private Set<YsmsGoal> ysmsGoals = new HashSet<YsmsGoal>(0);
 	private Set<YsmsGamesJudge> ysmsGamesJudges = new HashSet<YsmsGamesJudge>(0);
@@ -366,6 +367,16 @@ public class YsmsGames implements java.io.Serializable {
 	public void setGuestPenaltyScore(Integer guestPenaltyScore) {
 		this.guestPenaltyScore = guestPenaltyScore;
 	}
+	
+	@Column(name = "is_game_over", nullable = false)
+	public Integer getIsGameOver() {
+		return isGameOver;
+	}
+
+	public void setIsGameOver(Integer isGameOver) {
+		this.isGameOver = isGameOver;
+	}
+
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "ysmsGames")
 	@JsonIgnore
 	public Set<YsmsFoul> getYsmsFouls() {

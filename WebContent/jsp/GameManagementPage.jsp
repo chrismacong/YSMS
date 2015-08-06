@@ -684,7 +684,11 @@
 							<!--第二个学校 END-->
 						</tr>
 						<tr>
-							<td colspan="7"><a id="save_record"
+							<td colspan="7"><a id="gamestatus0" onclick="setGameOver()"
+								href="javascript:void(0)" style="display:inline;">设置完赛 </a>
+								<a id="gamestatus1" onclick="cancelGameOver()"
+								href="javascript:void(0)" style="display:none;">取消完赛 </a>
+								<a id="save_record"
 								href="javascript:void(0)">保 &nbsp; &nbsp;存 </a> <a
 								id="cancel_record" href="javascript:void(0)">取 &nbsp; &nbsp;
 									消</a></td>

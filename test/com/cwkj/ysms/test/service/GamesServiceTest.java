@@ -53,7 +53,7 @@ public class GamesServiceTest {
 		int hostScore = 2;
 		int guestScore = 3;
 
-		System.out.println(gamesManagementService.replyGamesInfo(614, hostScore, guestScore));
+		System.out.println(gamesManagementService.replyGamesInfo(614, hostScore, guestScore, 0, 0, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null));
 	}
 	@Test
 	public void testaddGoalInfo(){

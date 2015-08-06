@@ -280,10 +280,29 @@ public class GameManagementControl {
 		String guestGoalStr = request.getParameter("guest_goal");
 		String hostFoulStr = request.getParameter("host_foul");
 		String guestFoulStr = request.getParameter("guest_foul");
-		String isOvertimeFlag = request.getParameter("isovertime_flag");
-		String isPenaltyFlag = request.getParameter("ispenalty_flag");
-		String host_goal_attempt = request.getParameter("host_goal_attempt");
-		gameManagementService.replyGamesInfo(gamesId, hostScore, guestScore);
+		int isOvertimeFlag = Integer.parseInt(request.getParameter("isovertime_flag"));
+		int isPenaltyFlag = Integer.parseInt(request.getParameter("ispenalty_flag"));
+		String hostGoalAttempt = request.getParameter("host_goal_attempt");
+		String hostTargetNumber = request.getParameter("host_target_number");
+		String hostCornerKick = request.getParameter("host_corner_kick");
+		String hostFreeKick = request.getParameter("host_free_kick");
+		String hostFoul = request.getParameter("host_foul_number");
+		String hostOffside = request.getParameter("host_offside");
+		String hostOvertimeScore = request.getParameter("host_overtime_score");
+		String hostPenaltyScore = request.getParameter("host_penalty_score");
+		String guestGoalAttempt = request.getParameter("guest_goal_attempt");
+		String guestTargetNumber = request.getParameter("guest_target_number");
+		String guestCornerKick = request.getParameter("guest_corner_kick");
+		String guestFreeKick = request.getParameter("guest_free_kick");
+		String guestFoul = request.getParameter("guest_foul_number");
+		String guestOffside = request.getParameter("guest_offside");
+		String guestOvertimeScore = request.getParameter("guest_overtime_score");
+		String guestPenaltyScore = request.getParameter("guest_penalty_score");
+		gameManagementService.replyGamesInfo(gamesId, hostScore, guestScore, isOvertimeFlag, 
+				isPenaltyFlag, hostGoalAttempt, hostTargetNumber, hostCornerKick, hostFreeKick, 
+				hostFoul, hostOffside, hostOvertimeScore, hostPenaltyScore, guestGoalAttempt, 
+				guestTargetNumber, guestCornerKick, guestFreeKick, guestFoul, guestOffside, 
+				guestOvertimeScore, guestPenaltyScore);
 		gameManagementService.deleteAllGoalsInGame(gamesId);//清空该场比赛所有进球
 		gameManagementService.deleteAllFoulsInGame(gamesId);//清空该场比赛所有红黄牌
 		String[] hostGoals = hostGoalStr.split(";");
@@ -330,5 +349,25 @@ public class GameManagementControl {
 		}
 		model.put("success", true);
 		return model;
+	}
+	
+
+	
+	@ResponseBody
+	@RequestMapping(value = "/setgameover", method = RequestMethod.POST)
+	public boolean setGameOver(HttpServletRequest request,
+			HttpSession session,HttpServletResponse response){
+		int gamesId = Integer.parseInt(request.getParameter("game_id"));
+		boolean result = gameManagementService.setGameOver(gamesId, true);
+		return result;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/cancelgameover", method = RequestMethod.POST)
+	public boolean cancelGameOver(HttpServletRequest request,
+			HttpSession session,HttpServletResponse response){
+		int gamesId = Integer.parseInt(request.getParameter("game_id"));
+		boolean result = gameManagementService.setGameOver(gamesId, false);
+		return result;
 	}
 }

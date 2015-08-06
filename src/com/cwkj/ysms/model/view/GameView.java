@@ -2,11 +2,11 @@ package com.cwkj.ysms.model.view;
 
 
 public class GameView {
-	private int gamesId;
-	public int getGamesId() {
+	private Integer gamesId;
+	public Integer getGamesId() {
 		return gamesId;
 	}
-	public void setGamesId(int gamesId) {
+	public void setGamesId(Integer gamesId) {
 		this.gamesId = gamesId;
 	}
 	public String gameTime;
@@ -19,18 +19,158 @@ public class GameView {
 	public String guestTeamName;
 	public Integer hostScore;
 	public Integer guestScore;
-	public int hostTeamId;
-	public int guestTeamId;
-	public int getHostTeamId() {
+	public Integer hostTeamId;
+	public Integer guestTeamId;
+	public Integer isGameOver;
+	public Integer getGamesOrder() {
+		return gamesOrder;
+	}
+	public Integer getIsGameOver() {
+		return isGameOver;
+	}
+	public void setIsGameOver(Integer isGameOver) {
+		this.isGameOver = isGameOver;
+	}
+	public void setGamesOrder(Integer gamesOrder) {
+		this.gamesOrder = gamesOrder;
+	}
+	public Integer getHostGoalAttempt() {
+		return hostGoalAttempt;
+	}
+	public void setHostGoalAttempt(Integer hostGoalAttempt) {
+		this.hostGoalAttempt = hostGoalAttempt;
+	}
+	public Integer getGuestGoalAttempt() {
+		return guestGoalAttempt;
+	}
+	public void setGuestGoalAttempt(Integer guestGoalAttempt) {
+		this.guestGoalAttempt = guestGoalAttempt;
+	}
+	public Integer getHostTargetNumber() {
+		return hostTargetNumber;
+	}
+	public void setHostTargetNumber(Integer hostTargetNumber) {
+		this.hostTargetNumber = hostTargetNumber;
+	}
+	public Integer getGuestTargetNumber() {
+		return guestTargetNumber;
+	}
+	public void setGuestTargetNumber(Integer guestTargetNumber) {
+		this.guestTargetNumber = guestTargetNumber;
+	}
+	public Integer getHostCornerKick() {
+		return hostCornerKick;
+	}
+	public void setHostCornerKick(Integer hostCornerKick) {
+		this.hostCornerKick = hostCornerKick;
+	}
+	public Integer getGuestCornerKick() {
+		return guestCornerKick;
+	}
+	public void setGuestCornerKick(Integer guestCornerKick) {
+		this.guestCornerKick = guestCornerKick;
+	}
+	public Integer getHostFreeKick() {
+		return hostFreeKick;
+	}
+	public void setHostFreeKick(Integer hostFreeKick) {
+		this.hostFreeKick = hostFreeKick;
+	}
+	public Integer getGuestFreeKick() {
+		return guestFreeKick;
+	}
+	public void setGuestFreeKick(Integer guestFreeKick) {
+		this.guestFreeKick = guestFreeKick;
+	}
+	public Integer getHostFoul() {
+		return hostFoul;
+	}
+	public void setHostFoul(Integer hostFoul) {
+		this.hostFoul = hostFoul;
+	}
+	public Integer getGuestFoul() {
+		return guestFoul;
+	}
+	public void setGuestFoul(Integer guestFoul) {
+		this.guestFoul = guestFoul;
+	}
+	public Integer getHostOffside() {
+		return hostOffside;
+	}
+	public void setHostOffside(Integer hostOffside) {
+		this.hostOffside = hostOffside;
+	}
+	public Integer getGuestOffside() {
+		return guestOffside;
+	}
+	public void setGuestOffside(Integer guestOffside) {
+		this.guestOffside = guestOffside;
+	}
+	public Integer getIsOvertimeFlag() {
+		return isOvertimeFlag;
+	}
+	public void setIsOvertimeFlag(Integer isOvertimeFlag) {
+		this.isOvertimeFlag = isOvertimeFlag;
+	}
+	public Integer getHostOvertimeScore() {
+		return hostOvertimeScore;
+	}
+	public void setHostOvertimeScore(Integer hostOvertimeScore) {
+		this.hostOvertimeScore = hostOvertimeScore;
+	}
+	public Integer getGuestOvertimeScore() {
+		return guestOvertimeScore;
+	}
+	public void setGuestOvertimeScore(Integer guestOvertimeScore) {
+		this.guestOvertimeScore = guestOvertimeScore;
+	}
+	public Integer getIsPenaltyFlag() {
+		return isPenaltyFlag;
+	}
+	public void setIsPenaltyFlag(Integer isPenaltyFlag) {
+		this.isPenaltyFlag = isPenaltyFlag;
+	}
+	public Integer getHostPenaltyScore() {
+		return hostPenaltyScore;
+	}
+	public void setHostPenaltyScore(Integer hostPenaltyScore) {
+		this.hostPenaltyScore = hostPenaltyScore;
+	}
+	public Integer getGuestPenaltyScore() {
+		return guestPenaltyScore;
+	}
+	public void setGuestPenaltyScore(Integer guestPenaltyScore) {
+		this.guestPenaltyScore = guestPenaltyScore;
+	}
+	public Integer gamesOrder;
+	public Integer hostGoalAttempt;
+	public Integer guestGoalAttempt;
+	public Integer hostTargetNumber;
+	public Integer guestTargetNumber;
+	public Integer hostCornerKick;
+	public Integer guestCornerKick;
+	public Integer hostFreeKick;
+	public Integer guestFreeKick;
+	public Integer hostFoul;
+	public Integer guestFoul;
+	public Integer hostOffside;
+	public Integer guestOffside;
+	public Integer isOvertimeFlag;
+	public Integer hostOvertimeScore;
+	public Integer guestOvertimeScore;
+	public Integer isPenaltyFlag;
+	public Integer hostPenaltyScore;
+	public Integer guestPenaltyScore;
+	public Integer getHostTeamId() {
 		return hostTeamId;
 	}
-	public void setHostTeamId(int hostTeamId) {
+	public void setHostTeamId(Integer hostTeamId) {
 		this.hostTeamId = hostTeamId;
 	}
-	public int getGuestTeamId() {
+	public Integer getGuestTeamId() {
 		return guestTeamId;
 	}
-	public void setGuestTeamId(int guestTeamId) {
+	public void setGuestTeamId(Integer guestTeamId) {
 		this.guestTeamId = guestTeamId;
 	}
 	public Integer getHostScore() {
@@ -57,17 +197,17 @@ public class GameView {
 	public void setGuestTeamName(String guestTeamName) {
 		this.guestTeamName = guestTeamName;
 	}
-	public int hostUniform;
-	public int getHostUniform() {
+	public Integer hostUniform;
+	public Integer getHostUniform() {
 		return hostUniform;
 	}
-	public void setHostUniform(int hostUniform) {
+	public void setHostUniform(Integer hostUniform) {
 		this.hostUniform = hostUniform;
 	}
-	public int getGuestUniform() {
+	public Integer getGuestUniform() {
 		return guestUniform;
 	}
-	public void setGuestUniform(int guestUniform) {
+	public void setGuestUniform(Integer guestUniform) {
 		this.guestUniform = guestUniform;
 	}
 	public String getGameLocation() {
@@ -76,7 +216,7 @@ public class GameView {
 	public void setGameLocation(String gameLocation) {
 		this.gameLocation = gameLocation;
 	}
-	public int guestUniform;
+	public Integer guestUniform;
 	public String gameLocation;
 	public String getGameTime() {
 		return gameTime;
@@ -113,6 +253,14 @@ public class GameView {
 	}
 	public void setGuestSchoolName(String guestSchoolName) {
 		this.guestSchoolName = guestSchoolName;
+	}
+	
+	public String gameTimeForCalendar;//用于日历json的时间格式
+	public String getGameTimeForCalendar() {
+		return gameTimeForCalendar;
+	}
+	public void setGameTimeForCalendar(String gameTimeForCalendar) {
+		this.gameTimeForCalendar = gameTimeForCalendar;
 	}
 	
 }

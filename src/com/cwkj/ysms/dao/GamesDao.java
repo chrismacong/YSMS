@@ -124,4 +124,15 @@ public interface GamesDao extends GenericDao  {
 	 * @return
 	 */
 	public int getGamesCount(Integer leagueId, Integer zoneId, Date date);
+
+	/**
+	 * 获取全部比赛
+	 * @return
+	 */
+	public List<YsmsGames> findAll();
+
+	List<YsmsGames> getGamesBetweenDate(Date beginDate, Date endDate);
+
+	List<YsmsGames> getGamesBySchoolIdBetweenDate(int schoolId, Date beginDate,
+			Date endDate);
 }
