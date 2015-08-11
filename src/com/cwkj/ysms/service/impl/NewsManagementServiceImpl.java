@@ -128,7 +128,7 @@ public class NewsManagementServiceImpl implements NewsManagementService{
 
 	@Override
 	public boolean saveNews(String newsTitle, String newsAuthor, boolean isTop,
-			String content, String coverImagePath, int userId) {
+			String content, String coverImagePath, int userId, int forServiceFlag) {
 		YsmsWechatnews ysmsWechatnews = new YsmsWechatnews();
 		Calendar calendar = Calendar.getInstance();
 		Date date = calendar.getTime();
@@ -149,6 +149,7 @@ public class NewsManagementServiceImpl implements NewsManagementService{
 		ysmsWechatnews.setTitle(newsTitle);
 		ysmsWechatnews.setYsmsUser(userDao.findById(userId));
 		ysmsWechatnews.setVerified(0);
+		ysmsWechatnews.setForServiceFlag(forServiceFlag);
 		wechatNewsDao.save(ysmsWechatnews);
 		int newsId = ysmsWechatnews.getNid();
 		ysmsWechatnews.setUrl("/newsmanagement/news.html?nid=" + newsId);
@@ -176,8 +177,11 @@ public class NewsManagementServiceImpl implements NewsManagementService{
 	}
 
 	@Override
-	public List<YsmsWechatnews> getNewsByDate(Date date) {
-		return wechatNewsDao.findByDate(date);
+	public List<YsmsWechatnews> getNewsByDate(Date date, int forServiceFlag) {
+		if(forServiceFlag == 0)
+			return wechatNewsDao.findByDate(date);
+		else
+			return wechatNewsDao.findServiceNewsByDate(date);
 	}
 
 	@Override
@@ -217,8 +221,11 @@ public class NewsManagementServiceImpl implements NewsManagementService{
 	}
 
 	@Override
-	public List<YsmsWechatnews> getNewsByDateLimit10(Date date) {
-		return wechatNewsDao.findByDateLimit10(date);
+	public List<YsmsWechatnews> getNewsByDateLimit10(Date date, int forServiceFlag) {
+		if(forServiceFlag == 0)
+			return wechatNewsDao.findByDateLimit10(date);
+		else
+			return wechatNewsDao.findServiceNewsByDateLimit10(date);
 	}
 
 	@Override
@@ -255,8 +262,11 @@ public class NewsManagementServiceImpl implements NewsManagementService{
 	}
 
 	@Override
-	public List<YsmsWechatnews> getVoteByDate(Date date) {
-		return wechatNewsDao.findVoteByDate(date);
+	public List<YsmsWechatnews> getVoteByDate(Date date, int forServiceFlag) {
+		if(forServiceFlag == 0)
+			return wechatNewsDao.findVoteByDate(date);
+		else
+			return wechatNewsDao.findServiceVoteByDate(date);
 	}
 
 	@Override
@@ -277,8 +287,11 @@ public class NewsManagementServiceImpl implements NewsManagementService{
 	}
 
 	@Override
-	public List<YsmsWechatnews> getNewsByDateForVerify(Date date) {
-		return wechatNewsDao.findByDateOrderbyVerified(date);
+	public List<YsmsWechatnews> getNewsByDateForVerify(Date date, int forServiceFlag) {
+		if(forServiceFlag == 0)
+			return wechatNewsDao.findByDateOrderbyVerified(date);
+		else
+			return wechatNewsDao.findServiceNewsByDateOrderbyVerified(date);
 	}
 
 	@Override

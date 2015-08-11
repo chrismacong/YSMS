@@ -422,6 +422,10 @@ public class TeamManagementServiceImpl implements TeamManagementService{
 	public boolean changeAthleteNum(int teamMemberId, int athleteNum) {
 		// TODO Auto-generated method stub
 		YsmsTeammember ysmsTeammember = teammemberDao.findById(teamMemberId);
+		int teamId = ysmsTeammember.getYsmsTeam().getTeamId();
+		List<YsmsTeammember> ysmsTeammemberSameNumList = teammemberDao.findbyTeamIdAndAthleteNum(teamId, athleteNum);
+		if(ysmsTeammemberSameNumList.size()>0)
+			return false;
 		ysmsTeammember.setAthleteNum(athleteNum);
 		teammemberDao.save(ysmsTeammember);
 		return true;

@@ -35,7 +35,7 @@
 	.btn_l_a_red{background: url(../images/btn_l_a_red.png)}
 	.btn_m_a_red{background: url(../images/btn_m_a_red.png)}
 	.btn_r_a_red{background: url(../images/btn_r_a_red.png)}
-	.input_btn{text-align: center;line-height: 40px;height:40px;margin-top: 5px;width:100%;border: none;font-size: 1.1em;color:#fff;font-family:'Microsoft YaHei','SimHei','SimSun'}
+	.input_btn{text-align: center;line-height: 40px;height:40px;margin-top: 5px;width:100%;border: none;font-size: 1.1em;color:#fff;font-family:'Microsoft YaHei','SimHei','SimSun';cursor:pointer;}
 
 
 	/*查看列表*/
@@ -118,5 +118,8 @@
 		  height: 550px;
 	}	
 	#top_table{
+		margin:0 auto;
+	}
+	#operation_tb{
 		margin:0 auto;
 	}

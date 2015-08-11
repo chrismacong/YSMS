@@ -65,4 +65,38 @@ public interface WechatnewsDao {
 	 * @return
 	 */
 	public List<YsmsWechatnews> findByDateOrderbyVerified(Date date);
+	/**
+	 * 根据日期获取服务号新闻
+	 * @param date
+	 * @return
+	 */
+	public List<YsmsWechatnews> findServiceNewsByDate(Date date);
+	
+	/**
+	 * 根据日期获取服务号投票
+	 * @param date
+	 * @return
+	 */
+	public List<YsmsWechatnews> findServiceVoteByDate(Date date);
+	
+	/**
+	 * 根据日期获取10条服务号新闻，用于微信
+	 * @param date
+	 * @return
+	 */
+	public List<YsmsWechatnews> findServiceNewsByDateLimit10(Date date);
+	
+	/**
+	 * 根据日期获取最大服务号新闻nindex
+	 * @param date
+	 * @return
+	 */
+	public int getServiceNewsMaxNindex(Date date);
+	
+	/**
+	 * 根据日期获取服务号新闻，审核状态排序
+	 * @param date
+	 * @return
+	 */
+	public List<YsmsWechatnews> findServiceNewsByDateOrderbyVerified(Date date);
 }

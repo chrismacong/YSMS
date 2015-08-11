@@ -88,7 +88,7 @@
 				date : date
 			},
 			dataType : "json",
-			url : "${pageContext.request.contextPath}/newsmanagement/getnewsforverify.html",
+			url : "${pageContext.request.contextPath}/newsmanagement/getservicenewsforverify.html",
 			//请求的action路径
 			error : function() { //请求失败处理函数
 				ds.dialog({

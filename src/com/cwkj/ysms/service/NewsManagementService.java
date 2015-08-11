@@ -27,27 +27,30 @@ public interface NewsManagementService {
 	 * @param content
 	 * @param coverImagePath
 	 * @param userId
+	 * @param forServiceFlag
 	 * @return
 	 */
-	public boolean saveNews(String newsTitle, String newsAuthor, boolean isTop, String content, String coverImagePath, int userId);
+	public boolean saveNews(String newsTitle, String newsAuthor, boolean isTop, String content, String coverImagePath, int userId, int forServiceFlag);
 	/**
 	 * 获取某一天的所有新闻，按index排序
 	 * @param date
+	 * @param forServiceFlag
 	 * @return
 	 */
-	public List<YsmsWechatnews> getNewsByDate(Date date);
+	public List<YsmsWechatnews> getNewsByDate(Date date, int forServiceFlag);
 	/**
 	 * 获取某一天的所有新闻，为审核用，按审核状态排序
 	 * @param date
+	 * @param forServiceFlag
 	 * @return
 	 */
-	public List<YsmsWechatnews> getNewsByDateForVerify(Date date);	
+	public List<YsmsWechatnews> getNewsByDateForVerify(Date date, int forServiceFlag);	
 	/**
 	 * 获取某一天的前10条新闻，按index排序
 	 * @param date
 	 * @return
 	 */
-	public List<YsmsWechatnews> getNewsByDateLimit10(Date date);
+	public List<YsmsWechatnews> getNewsByDateLimit10(Date date, int forServiceFlag);
 	/**
 	 * 交换两条新闻顺序
 	 * @param news_id_down2up
@@ -99,7 +102,7 @@ public interface NewsManagementService {
 	 * @param date
 	 * @return
 	 */
-	public List<YsmsWechatnews> getVoteByDate(Date date);
+	public List<YsmsWechatnews> getVoteByDate(Date date, int forServiceFlag);
 	/**
 	 * 获取投票结果
 	 * @param newsId

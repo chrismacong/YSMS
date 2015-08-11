@@ -35,6 +35,7 @@ public class YsmsWechatnews implements java.io.Serializable {
 	private String url;
 	private Integer nindex;
 	private Integer verified;
+	private Integer forServiceFlag;
 
 	private Set<YsmsWechatnewsAttr> ysmsWechatnewsAttrs = new HashSet<YsmsWechatnewsAttr>(
 			0);
@@ -167,6 +168,15 @@ public class YsmsWechatnews implements java.io.Serializable {
 
 	public void setVerified(Integer verified) {
 		this.verified = verified;
+	}
+	
+	@Column(name = "forserviceflag", nullable = false)
+	public Integer getForServiceFlag() {
+		return forServiceFlag;
+	}
+
+	public void setForServiceFlag(Integer forServiceFlag) {
+		this.forServiceFlag = forServiceFlag;
 	}
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "ysmsWechatnews")

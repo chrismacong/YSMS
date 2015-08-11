@@ -6,7 +6,7 @@
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>新闻审核列表</title>
+<title>投票结果</title>
 <link type="text/css"
 	href="${pageContext.request.contextPath}/css/style.css"
 	rel="stylesheet" />
@@ -28,7 +28,6 @@
     <script language="javascript" type="text/javascript"
 	src="${pageContext.request.contextPath}/js/ds.dialog.js"></script>
 <script type="text/javascript">
-	var selected_news;
 	$(function() {
 		// 时间设置
 		$("#time").datepicker();
@@ -51,33 +50,7 @@
 			loadNews();
 		})
 	});
-	function changeVerifySta(obj){
-		var newsId = $(obj).parent().parent().attr("id").substring(5);
-		var verified = $(obj).val() - 1;
-		$.ajax({
-			type : 'POST',
-			data : {
-				newsId : newsId,
-				verified : verified
-			},
-			dataType : "json",
-			url : "${pageContext.request.contextPath}/newsmanagement/verify.html",
-			//请求的action路径
-			error : function() { //请求失败处理函数
-				ds.dialog({
-					title : '消息提示',
-					content : "提交审核结果失败，请联系管理员！",
-					onyes : true,
-					icon : "../../images/info.png"
-				});
-				cancel_loading();
-			},
-			success : function(data) { //请求成功后处理函数。 
-				loadNews();
-				cancel_loading();
-			}
-		})
-	}
+
 	function loadNews(){
 		$("#news_table").empty();
 		var date = $("#time").val();
@@ -88,7 +61,7 @@
 				date : date
 			},
 			dataType : "json",
-			url : "${pageContext.request.contextPath}/newsmanagement/getnewsforverify.html",
+			url : "${pageContext.request.contextPath}/newsmanagement/getservicevote.html",
 			//请求的action路径
 			error : function() { //请求失败处理函数
 				ds.dialog({
@@ -103,21 +76,17 @@
 				if (data != null) {
 					for (var i = 0; i < data.news.length; i++) {
 						var index = i+1;
-						var verified="<select onchange='changeVerifySta(this)'><option value='1' selected = 'selected'>审核</option><option value='2'>通过</option><option value='3'>拒绝</option></select>";
-						if(data.news[i].verified == 1)
-							verified="<select onchange='changeVerifySta(this)'><option value='1'>审核</option><option value='2' selected = 'selected'>通过</option><option value='3'>拒绝</option></select>";
-						else if(data.news[i].verified == 2)
-							verified="<select onchange='changeVerifySta(this)'><option value='1'>审核</option><option value='2'>通过</option><option value='3' selected = 'selected'>拒绝</option></select>";
+						if(index>10)
+							index = "#";
 						$("#news_table").append(
 										"<tr id='news_" + data.news[i].nid + "'>"
 												+ "<td width='60px'>" + index + "</td>"
 												+ "<td><p class='title_wenzi'>" + data.news[i].title + "</p></td>"
 												+ "<td width='130px' class='suluetu'><img src='${pageContext.request.contextPath}/YSMSRepo/news/cover/" + data.news[i].picurl + "'></td>"
-												+ "<td width='100px'>" + verified +  "</td>"
-												+ "<td width='100px' class='look_newinfo'><img src='../images/see_info.png' /></td>"
-								+ "</tr>");
+												+ "<td width='130px' class='look_voteresult'><img src='../images/see_info.png' /></td>"
+												+ "<td width='130px' class='look_newinfo'><img src='../images/see_info.png' /></td>"
+												+ "</tr>");
 						}
-						
 				
 					}
 
@@ -125,57 +94,77 @@
 				$('.look_newinfo').click(function() {
 					var this_new = $(this).parent();
 					var news = this_new.attr("id").substring(5);
-					selected_news = news;
 					$('.new_page').show();
-					$('.new_page_neirong').load("${pageContext.request.contextPath}/newsmanagement/newsformodify.html?nid=" + news);
+					$('.new_page_neirong').load("${pageContext.request.contextPath}/newsmanagement/news.html?nid=" + news);
+				})
+				$('.look_voteresult').click(function() {
+					var this_new = $(this).parent();
+					var news = this_new.attr("id").substring(5);
+					$('.new_page').show();
+					$('.new_page_neirong').load("${pageContext.request.contextPath}/newsmanagement/voteresult.html?nid=" + news);
 				})
 				$('.close').click(function() {
 					$('.new_page').hide();
 				})
-				$('.saveok').click(function() {
-					var content = $('#modify_news_content').html();
-					$.ajax({
-						type : 'POST',
-						data : {
-							news_id : selected_news,
-							content : content
-						},
-						dataType : "json",
-						url : "${pageContext.request.contextPath}/newsmanagement/newsmodify.html",
-						//请求的action路径
-						error : function() { //请求失败处理函数
-							ds.dialog({
-								title : '消息提示',
-								content : "修改新闻失败!",
-								onyes : true,
-								icon : "../../images/info.png"
+				$('.deletd_new').click(function() {
+					var this_new = $(this).parent();
+					var news = this_new.attr("id").substring(5);
+					ds.dialog({
+						title : '消息提示',
+						content : "确认删除新闻？",
+						yesText : "确认",
+						onyes : function() {
+							loading_juggle_empty();
+							$.ajax({
+								type : 'POST',
+								url : "${pageContext.request.contextPath}/newsmanagement/deletenews.html",
+								data : {
+									news : news,
+								},
+								dataType : "json",
+								success : function(data) {
+									if (data.success) {
+										loadNews();
+									} else {
+										ds.dialog({
+											title : '消息提示',
+											content : "删除失败！",
+											onyes : true,
+											icon : "../../images/info.png"
+										});
+									}
+								},
+								error : function() {
+									ds.dialog({
+										title : '消息提示',
+										content : "删除失败！",
+										onyes : true,
+										icon : "../../images/info.png"
+									});
+								}
 							});
 							cancel_loading();
 						},
-						success : function(data) { //请求成功后处理函数。 
-							if(data.success){
-								ds.dialog({
-									title : '消息提示',
-									content : "修改新闻成功!",
-									onyes : true,
-									icon : "../../images/socceralert.png"
-								});
-							}
-							else{
-								ds.dialog({
-									title : '消息提示',
-									content : "修改新闻失败!",
-									onyes : true,
-									icon : "../../images/info.png"
-								});
-							}
-							cancel_loading();
-						}
-					})
+						noText : "取消",
+						onno : function() {
+						},
+						icon : "../../images/info.png"
+					});
 				})
 
 				//一个小样式
 				$('.list_info tr').find('td:first-child').css('border-right', 'none');
+
+				$('.up').hover(function() {
+					$(this).css('background-image', 'url(../images/upup2.png)')
+				}, function() {
+					$(this).css('background-image', 'url(../images/upup.png)')
+				})
+				$('.down').hover(function() {
+					$(this).css('background-image', 'url(../images/downdown2.png)')
+				}, function() {
+					$(this).css('background-image', 'url(../images/downdown.png)')
+				})
 				}
 		})
 	}
@@ -195,7 +184,7 @@
 					</div>
 				</td>
 				<td>
-				<input type="button" id="button_filter" style="width: 150px; height:37px;border-width: 0px; cursor:pointer;background: url(http://localhost:8080/YSMS/images/btn_filter.png);">
+				<input type="button" id="button_filter" style="width: 150px; height:37px;border-width: 0px; cursor:pointer;background-image: url(http://localhost:8080/YSMS/images/btn_filter.png);">
 				</td>
 			</tr>
 		</table>
@@ -207,8 +196,8 @@
 					<td width='60px'><div class="table_head_left green">编号</div></td>
 					<td colspan="">标题</td>
 					<td width='130px'>缩略封面图</td>
-					<td width='100px'>审核</td>
-					<td width='100px'>查看</td>
+					<td width='130px'>投票结果</td>
+					<td width='130px'>查看页面</td>
 				</tr>
 			</thead>
 			<tbody>
@@ -225,10 +214,9 @@
 		<!--新闻查看 END-->
 
 		<!--新闻查看详细 -->
-		<div class="new_page" style="display: none">
+		<div class="new_page" style="display: none; height:740px;">
 			<div class="new_page_neirong"></div>
 			<div class="close"></div>
-			<div class="saveok"></div>
 		</div>
 		<!--新闻查看详细 END-->
 	</div>

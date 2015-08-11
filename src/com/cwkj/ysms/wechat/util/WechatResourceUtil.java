@@ -83,7 +83,7 @@ public class WechatResourceUtil {
 	 * @throws
 	 */
 	public static String createMenu() {
-		String menu = "{\"button\":[{\"type\":\"click\",\"name\":\"校足资讯\",\"key\":\"10_NEWS\"}" + 
+		String menu = "{\"button\":[{\"type\":\"click\",\"name\":\"公告\",\"key\":\"10_NOTICE\"}" + 
 				",{\"name\":\"我的联赛\",\"sub_button\":[" + 
 				"{\"type\":\"click\",\"name\":\"联赛信息\",\"key\":\"21_LEAGUE\"}" + 
 				",{\"type\":\"click\",\"name\":\"最近比赛\",\"key\":\"22_GAME\"}" + 
@@ -419,7 +419,7 @@ public class WechatResourceUtil {
 	public static void main(String[] args) {
 		System.out.println("------------");
 		System.out.println(createMenu());
-		String token = WechatResourceUtil.getAccess_token();
+//		String token = WechatResourceUtil.getAccess_token();
 //		File file = new File("C:\\Users\\Administrator\\Downloads\\qrcode_for_gh_6c2810204baa_1280.jpg");
 //		String media_id = WechatResourceUtil.uploadImage(file);
 //		System.out.println(media_id);

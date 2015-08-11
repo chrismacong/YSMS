@@ -171,6 +171,23 @@
 								$("#teamname_div").html("队伍未命名");
 							$("#teamname_div").css("visibility", "visible");
 						})
+		$("#edit_shirt_num").click(function(){
+			ds.dialog.prompt("请输入1~2位球衣号码",function(){
+				var num = $("#input_in_dialog").val();
+				var reg = /^[0-9]{1,2}$/;
+				if(reg.exec(num)==null){
+					ds.dialog({
+						title : '消息提示',
+						content : "请输入正确格式的球衣号码！",
+						onyes : true,
+						icon : "../../images/info.png"
+					});
+					return;
+				}
+				$("#edit_shirt_num").prev().text(num);
+				$("#edit_shirt_num").prev().attr("class", "cloth_div");
+			},"");
+		})
 	});
 	function open_window(url) {    
 	    new_window.location.href = url;    
@@ -183,6 +200,10 @@
 		for (var i = 0; i < obj.length; i++) {
 			var num = obj[i].innerText;
 			if (num != "Nil") {
+				if(parseInt(num)>=24){
+					$("div[id='cloth']").eq(23).text(num);
+					num="24";
+				}
 				var div = nums[parseInt(num) - 1];
 				div.setAttribute("class", "cloth_div_disabled");
 			}
@@ -214,7 +235,7 @@
 					} else {
 						ds.dialog({
 							title : '消息提示',
-							content : "修改球衣号失败！",
+							content : "修改球衣号失败！该球衣号可能已经被选择!",
 							onyes : true,
 							icon : "../../images/info.png"
 						});
@@ -454,7 +475,7 @@
 				<tr>
 					<td>
 						<div id="cloth" class="cloth_div"
-							onclick="javascript:selectnum(this)">19</div>
+							on	lick="javascript:selectnum(this)">19</div>
 					</td>
 					<td>
 						<div id="cloth" class="cloth_div"
@@ -475,6 +496,7 @@
 					<td>
 						<div id="cloth" class="cloth_div"
 							onclick="javascript:selectnum(this)">24</div>
+							<a id="edit_shirt_num"></a>
 					</td>
 				</tr>
 			</table>

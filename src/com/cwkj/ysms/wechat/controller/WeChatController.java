@@ -161,13 +161,53 @@ public class WeChatController implements WechatControllerService{
 			Calendar calendar = Calendar.getInstance();
 			Date date = calendar.getTime();
 			NewsManagementService newsManagementService = ThtApplicationContext.getBean(NewsManagementService.class);
-			List<YsmsWechatnews> newList = newsManagementService.getNewsByDateLimit10(date);
+			List<YsmsWechatnews> newList = newsManagementService.getNewsByDateLimit10(date,0);
 			int day = calendar.get(Calendar.DATE);
 			calendar.set(Calendar.DATE, day-1);
 			Date yesterday = calendar.getTime();
 			
 			if(newList.size()==0){
-				newList = newsManagementService.getNewsByDateLimit10(yesterday); //今天没有用昨天的 避免新闻员来不及写
+				newList = newsManagementService.getNewsByDateLimit10(yesterday,0); //今天没有用昨天的 避免新闻员来不及写
+				if(newList.size()==0){
+					//昨天再没有就不是劳资的问题了
+					String tlResult="暂无最新新闻。";
+					xmlResult = FormatXmlResult.getXmlResult(rxe, tlResult);
+				}
+				else{
+					for(int i=0;i<newList.size();i++){
+						YsmsWechatnews wechatNews = newList.get(i);
+						wechatNews.setPicurl(URL_HEAD + "/YSMSRepo/news/cover/" + wechatNews.getPicurl());
+						wechatNews.setUrl(URL_HEAD + wechatNews.getUrl() + "&open_id=" + userOpenId);
+						wechatNews.setDigest("点击下方打开网页查看");
+						newsList.add(wechatNews);
+					}
+					xmlResult = FormatPicWordXmlResult.getNewsResult(rxe, newsList);
+				}
+			}
+			else{
+				for(int i=0;i<newList.size();i++){
+					YsmsWechatnews wechatNews = newList.get(i);
+					wechatNews.setPicurl(URL_HEAD + "/YSMSRepo/news/cover/" + wechatNews.getPicurl());
+					wechatNews.setUrl(URL_HEAD + wechatNews.getUrl() + "&open_id=" + userOpenId);
+					wechatNews.setDigest("点击下方打开网页查看");
+					newsList.add(wechatNews);
+				}
+				xmlResult = FormatPicWordXmlResult.getNewsResult(rxe, newsList);
+			}
+			return xmlResult;
+		}
+		else if("公告".equals(realContent)||"10_NOTICE".equals(eventKey)){
+			List<YsmsWechatnews> newsList = new ArrayList<YsmsWechatnews>();
+			Calendar calendar = Calendar.getInstance();
+			Date date = calendar.getTime();
+			NewsManagementService newsManagementService = ThtApplicationContext.getBean(NewsManagementService.class);
+			List<YsmsWechatnews> newList = newsManagementService.getNewsByDateLimit10(date,1);
+			int day = calendar.get(Calendar.DATE);
+			calendar.set(Calendar.DATE, day-1);
+			Date yesterday = calendar.getTime();
+			
+			if(newList.size()==0){
+				newList = newsManagementService.getNewsByDateLimit10(yesterday,1); //今天没有用昨天的 避免新闻员来不及写
 				if(newList.size()==0){
 					//昨天再没有就不是劳资的问题了
 					String tlResult="暂无最新新闻。";

@@ -198,4 +198,24 @@ public class TeammemberDaoImpl extends GenericDaoImpl implements TeammemberDao{
 		}
 	}
 
+	@Override
+	public List<YsmsTeammember> findbyTeamIdAndAthleteNum(int teamId, int athleteNum) {
+		log.debug("finding YsmsTeammember instance by teamId and athleteNum");
+		try {
+			String sql = " from YsmsTeammember as yt where yt.athleteNum = "+ athleteNum + 
+					" and yt.ysmsTeam.teamId = " + teamId;
+			List<Object> objects= findByHQL(sql);
+			List<YsmsTeammember> results = new ArrayList<YsmsTeammember>();
+			for(int i=0;i<objects.size();i++){
+				YsmsTeammember teammember = (YsmsTeammember)objects.get(i);
+				results.add(teammember);
+			}
+			log.debug("find by athleteId successful, result size: " + results.size());
+			return results;
+		} catch (RuntimeException re) {
+			log.error("find by athleteId failed", re);
+			throw re;
+		}
+	}
+
 }

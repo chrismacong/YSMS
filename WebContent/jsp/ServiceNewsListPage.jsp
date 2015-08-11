@@ -61,7 +61,7 @@
 				date : date
 			},
 			dataType : "json",
-			url : "${pageContext.request.contextPath}/newsmanagement/getnews.html",
+			url : "${pageContext.request.contextPath}/newsmanagement/getservicenews.html",
 			//请求的action路径
 			error : function() { //请求失败处理函数
 				ds.dialog({
@@ -187,71 +187,6 @@
 				})
 				$('.close').click(function() {
 					$('.new_page').hide();
-				})
-				$('#new_creat').click(function(){
-					loading_juggle_empty();	
-					$('#new_creat').disabled = true;
-					$('#new_creat').css({'opacity':'0.4'});
-					var checked = "";
-					$(":checkbox").each(function(){
-						if($(this)[0].checked) {
-							var id = $(this).parent().parent().attr("id").substring(5);
-							checked = checked + id + ",";
-						}
-					});
-					loading_juggle_empty();	
-					ds.dialog({
-						title : '消息提示',
-						content : "每天只能推送至多一条订阅号新闻，确认推送？",
-						yesText : "确认",
-						onyes : function() {
-							loading_juggle_empty();
-							$.ajax({
-								type : 'POST',
-								url : "${pageContext.request.contextPath}/newsmanagement/broadcast.html",
-								data : {
-									checked : checked
-								},
-								dataType : "json",
-								success : function(data) {
-									if (data.success) {
-										ds.dialog({
-											title : '消息提示',
-											content : "群发成功！",
-											onyes : true,
-											icon : "../../images/info.png"
-										});
-										loadNews();
-									} else {
-										ds.dialog({
-											title : '消息提示',
-											content : "群发失败！",
-											onyes : true,
-											icon : "../../images/info.png"
-										});
-									}
-								},
-								error : function() {
-									ds.dialog({
-										title : '消息提示',
-										content : "群发失败！",
-										onyes : true,
-										icon : "../../images/info.png"
-									});
-								}
-							});
-							cancel_loading();
-							$('#new_creat_service').disabled = false;
-							$('#new_creat_service').css({'opacity':'1.0'});
-						},
-						noText : "取消",
-						onno : function() {
-							cancel_loading();
-							$('#new_creat_service').disabled = false;
-							$('#new_creat_service').css({'opacity':'1.0'});
-						},
-						icon : "../../images/socceralert.png"
-					});
 				})
 				$('#new_creat_service').click(function(){
 					loading_juggle_empty();	
@@ -432,19 +367,11 @@
 					<td>
 						<div class="btn_l btn_l_a_green"></div>
 						<div class="btn_m btn_m_a_green">
-							<input type="button" class="input_btn" id="new_creat"
-							style="background: none" value="订阅号新闻">
-						</div>
-						<div class="btn_r btn_r_a_green"></div>
-					</td>
-					<!-- <td>
-						<div class="btn_l btn_l_a_green"></div>
-						<div class="btn_m btn_m_a_green">
 							<input type="button" class="input_btn" id="new_creat_service"
 							style="background: none" value="服务号新闻">
 						</div>
 						<div class="btn_r btn_r_a_green"></div>
-					</td> -->
+					</td>
 				</tr>
 			</table>
 		</div>

@@ -51,11 +51,23 @@ public class NewsManagementControl {
 			HttpSession session, HttpServletResponse response) {
 		return new ModelAndView("NewsManagementPage");
 	}
+	
+	@RequestMapping(value = "servicenews", method = RequestMethod.GET)
+	public ModelAndView serviceNews(HttpServletRequest request,
+			HttpSession session, HttpServletResponse response) {
+		return new ModelAndView("ServiceNewsManagementPage");
+	}
 
 	@RequestMapping(value = "newslist", method = RequestMethod.GET)
 	public ModelAndView listNews(HttpServletRequest request,
 			HttpSession session, HttpServletResponse response) {
 		return new ModelAndView("NewsListPage");
+	}
+	
+	@RequestMapping(value = "servicenewslist", method = RequestMethod.GET)
+	public ModelAndView listServiceNews(HttpServletRequest request,
+			HttpSession session, HttpServletResponse response) {
+		return new ModelAndView("ServiceNewsListPage");
 	}
 
 	@RequestMapping(value = "newslistforverify", method = RequestMethod.GET)
@@ -63,17 +75,41 @@ public class NewsManagementControl {
 			HttpSession session, HttpServletResponse response) {
 		return new ModelAndView("NewsVerifyPage");
 	}
+	
+	@RequestMapping(value = "verifymanagement", method = RequestMethod.GET)
+	public ModelAndView verifyManagement(HttpServletRequest request,
+			HttpSession session, HttpServletResponse response) {
+		return new ModelAndView("NewsVerifyManagementPage");
+	}
+	
+	@RequestMapping(value = "servicenewslistforverify", method = RequestMethod.GET)
+	public ModelAndView listServiceNewsForVerify(HttpServletRequest request,
+			HttpSession session, HttpServletResponse response) {
+		return new ModelAndView("ServiceNewsVerifyPage");
+	}
 
 	@RequestMapping(value = "votelist", method = RequestMethod.GET)
 	public ModelAndView listVote(HttpServletRequest request,
 			HttpSession session, HttpServletResponse response) {
 		return new ModelAndView("VoteListPage");
 	}
+	
+	@RequestMapping(value = "servicevotelist", method = RequestMethod.GET)
+	public ModelAndView listServiceVote(HttpServletRequest request,
+			HttpSession session, HttpServletResponse response) {
+		return new ModelAndView("ServiceVoteListPage");
+	}
 
 	@RequestMapping(value = "editnews", method = RequestMethod.GET)
 	public ModelAndView editNews(HttpServletRequest request,
 			HttpSession session, HttpServletResponse response) {
 		return new ModelAndView("NewsEditPage");
+	}
+	
+	@RequestMapping(value = "editservicenews", method = RequestMethod.GET)
+	public ModelAndView editServiceNews(HttpServletRequest request,
+			HttpSession session, HttpServletResponse response) {
+		return new ModelAndView("ServiceNewsEditPage");
 	}
 
 	@RequestMapping(value = "news", method = RequestMethod.GET)
@@ -103,7 +139,7 @@ public class NewsManagementControl {
 		model.put("openid", openId);
 		if(newsManagementService.isVoted(newsId, openId))
 			return new ModelAndView("redirect:/newsmanagement/voteresult.html?nid=" + newsId);
-		return new ModelAndView("NewsPage", model);
+		return new ModelAndView("NewsModifyPage", model);
 	}
 
 	@RequestMapping(value = "voteresult", method = RequestMethod.GET)
@@ -125,7 +161,25 @@ public class NewsManagementControl {
 			String dateStr = request.getParameter("date");
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
 			Date date = sdf.parse(dateStr);
-			List<YsmsWechatnews> newsList = newsManagementService.getNewsByDate(date);
+			List<YsmsWechatnews> newsList = newsManagementService.getNewsByDate(date,0);
+			model.put("news", newsList);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return model;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "getservicenews", method = RequestMethod.POST)
+	public Map<String, Object> getServiceNews(HttpServletRequest request,
+			HttpSession session, HttpServletResponse response) {
+		Map<String, Object> model = new HashMap<String, Object>();
+		try {
+			String dateStr = request.getParameter("date");
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
+			Date date = sdf.parse(dateStr);
+			List<YsmsWechatnews> newsList = newsManagementService.getNewsByDate(date,1);
 			model.put("news", newsList);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
@@ -143,7 +197,25 @@ public class NewsManagementControl {
 			String dateStr = request.getParameter("date");
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
 			Date date = sdf.parse(dateStr);
-			List<YsmsWechatnews> newsList = newsManagementService.getNewsByDateForVerify(date);
+			List<YsmsWechatnews> newsList = newsManagementService.getNewsByDateForVerify(date,0);
+			model.put("news", newsList);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return model;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "getservicenewsforverify", method = RequestMethod.POST)
+	public Map<String, Object> getServiceNewsForVerify(HttpServletRequest request,
+			HttpSession session, HttpServletResponse response) {
+		Map<String, Object> model = new HashMap<String, Object>();
+		try {
+			String dateStr = request.getParameter("date");
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
+			Date date = sdf.parse(dateStr);
+			List<YsmsWechatnews> newsList = newsManagementService.getNewsByDateForVerify(date,1);
 			model.put("news", newsList);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
@@ -161,7 +233,25 @@ public class NewsManagementControl {
 			String dateStr = request.getParameter("date");
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
 			Date date = sdf.parse(dateStr);
-			List<YsmsWechatnews> newsList = newsManagementService.getVoteByDate(date);
+			List<YsmsWechatnews> newsList = newsManagementService.getVoteByDate(date,0);
+			model.put("news", newsList);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return model;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "getservicevote", method = RequestMethod.POST)
+	public Map<String, Object> getServiceVote(HttpServletRequest request,
+			HttpSession session, HttpServletResponse response) {
+		Map<String, Object> model = new HashMap<String, Object>();
+		try {
+			String dateStr = request.getParameter("date");
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
+			Date date = sdf.parse(dateStr);
+			List<YsmsWechatnews> newsList = newsManagementService.getVoteByDate(date,1);
 			model.put("news", newsList);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
@@ -362,7 +452,117 @@ public class NewsManagementControl {
 						isTop = true;
 					}
 
-					boolean result = newsManagementService.saveNews(newsTitle, newsAuthor, isTop, content, resultPath, userId);
+					boolean result = newsManagementService.saveNews(newsTitle, newsAuthor, isTop, content, resultPath, userId,0);
+					if(result){
+						map.put("success", true);
+					}
+					else{
+						map.put("success", false);
+						map.put("mesg", "新闻发布失败！");
+					}
+				}
+			} else {
+				map.put("success", false);
+				map.put("mesg", "新闻发布失败！");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			map.put("success", false);
+		}
+		return map;
+	}
+	
+	/**
+	 * @param request
+	 * @param session
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value="uploadservicenews", method = RequestMethod.POST)
+	public Map<String, Object> uploadServiceNews(HttpServletRequest request,
+			HttpSession session, HttpServletResponse response) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+			Object userIdInSession = session.getAttribute("userId");
+			if (userIdInSession == null) {
+				map.put("success", false);
+				map.put("mesg", "网络会话失效，请重新登陆！");
+				return map;
+			}
+			String newsTitle = "";
+			String newsAuthor = "";
+			String content = "";
+			String isOn = "";
+			String resultPath = "";
+			if (request instanceof DefaultMultipartHttpServletRequest) {
+				DefaultMultipartHttpServletRequest rq = (DefaultMultipartHttpServletRequest) request;
+				if (rq != null) {
+					Map<String, String[]> params_list = rq.getParameterMap();
+					if (params_list != null && params_list.size() > 0) {
+						//新闻标题
+						if (params_list.containsKey("news_title")) {
+							String[] titles = params_list.get("news_title");
+							if (titles != null && titles.length == 1) {
+								newsTitle = titles[0];
+							}
+						}
+						else{
+							map.put("success", false);
+							map.put("mesg", "上传图片失败！");
+						}
+						//新闻作者
+						if (params_list.containsKey("news_author")) {
+							String[] authors = params_list.get("news_author");
+							if (authors != null && authors.length == 1) {
+								newsAuthor = authors[0];
+							}
+						}
+						else{
+							map.put("success", false);
+							map.put("mesg", "上传图片失败！");
+						}
+						//新闻内容
+						if (params_list.containsKey("news_html")) {
+							String[] contents = params_list.get("news_html");
+							if (contents != null && contents.length == 1) {
+								content = contents[0];
+							}
+						}
+						else{
+							map.put("success", false);
+							map.put("mesg", "上传图片失败！");
+						}
+						//是否置顶
+						if (params_list.containsKey("zhiding")) {
+							String[] checks = params_list.get("zhiding");
+							if (checks != null && checks.length == 1) {
+								isOn = checks[0];
+							}
+						}
+						else{
+							map.put("success", false);
+							map.put("mesg", "上传图片失败！");
+						}
+					}
+					int userId = Integer.parseInt(userIdInSession
+							.toString());
+					Map<String, MultipartFile> file_list = rq.getFileMap();
+					if (file_list != null && file_list.size() > 0) {
+						if (file_list.containsKey("coverimg")) {
+							String forwardDir = request.getSession().getServletContext()
+									.getRealPath("../") + File.separator +"YSMSRepo" + File.separator + "news" + File.separator + "cover";//路径dir
+							MultipartFile file = file_list
+									.get("coverimg");
+							resultPath = newsManagementService.saveImageFile(file, userId, forwardDir);
+						}
+					}
+					boolean isTop = false;
+					if("on".equals(isOn)){
+						isTop = true;
+					}
+					
+					boolean result = newsManagementService.saveNews(newsTitle, newsAuthor, isTop, content, resultPath, userId,1);
 					if(result){
 						map.put("success", true);
 					}

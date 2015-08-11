@@ -222,13 +222,22 @@
 											"${pageContext.request.contextPath}/newsmanagement.html");
 							$("#main_content").css("background", "#FFFFFF");
 						});
+		$("#service_news_left_menu")
+				.click(
+						function() {
+							$('.list').hide();
+							$("#main_content")
+									.attr("src",
+											"${pageContext.request.contextPath}/newsmanagement/servicenews.html");
+							$("#main_content").css("background", "#FFFFFF");
+						});
 		$("#newsverify_left_menu")
 				.click(
 						function() {
 							$('.list').hide();
 							$("#main_content")
 									.attr("src",
-											"${pageContext.request.contextPath}/newsmanagement/newslistforverify.html");
+											"${pageContext.request.contextPath}/newsmanagement/verifymanagement.html");
 							$("#main_content").css("background", "#FFFFFF");
 						});
 		$("#authoritymatrix_left_menu")
@@ -429,13 +438,26 @@
 						<div class="icon">
 							<img src="${pageContext.request.contextPath}/images/signup_m.png">
 						</div>
-						<div class='miaoshu'>新闻管理</div>
+						<div class='miaoshu'>订阅号新闻</div>
 					</li>
 					<%
 						}
 					%>
 					<%
 						if (list.contains(12)) {
+					%>
+					<li id="service_news_left_menu">
+						<div class="fous"></div>
+						<div class="icon">
+							<img src="${pageContext.request.contextPath}/images/signup_m.png">
+						</div>
+						<div class='miaoshu'>服务号新闻</div>
+					</li>
+					<%
+						}
+					%>
+					<%
+						if (list.contains(13)) {
 					%>
 					<li id="newsverify_left_menu">
 						<div class="fous"></div>
@@ -484,16 +506,19 @@
 						<h1>Welcome to using Nanjing YouthFootball Management
 							Platform</h1>
 						<div>欢迎南京市青少年足球管理平台</div>
-						<h1>VERSION 0.8.2.4</h1>
+						<h1>VERSION 0.8.3.1</h1>
 						<div>版本更新说明</div>
 						<br />
-						<h2>0.8.2.3 (2015-07-15 10:22)</h2>
-						<div>去掉了记录界面球队名称显示</div>
-						<div>增加了封面图片大小限制，必须小于65535B</div>
-						<div>默认隐藏公告栏</div>
+						<h2>0.8.3.0 (2015-08-11 14:44)</h2>
+						<div>增加了联赛日历功能</div>
+						<div>增加了可更改排序规则的积分榜</div>
+						<div>订阅号和服务号新闻现在是分开处理的</div>
+						<div>添加了更多可供选择的比赛记录信息</div>
+						<div>增添了权限矩阵</div>
+						<div>修改了几个小BUG，并进行了些许细节改动</div>
 						<br />
-						<h2>0.8.2.4 (2015-07-17 22:11)</h2>
-						<div>修复了微信获取最新赛况值显示第一场比赛的BUG</div>
+						<h2>0.8.3.1 (2015-08-11 15:40)</h2>
+						<div>支持新闻审核员修改新闻图片</div>
 						<br />
 						<!-- <h1>相关文件下载</h1> -->
 						<!-- <a href="${pageContext.request.contextPath}/YSMSRepo/file/league_regulation.doc">联赛规程（Word）</a> -->

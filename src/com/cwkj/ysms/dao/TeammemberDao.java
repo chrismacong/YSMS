@@ -74,4 +74,12 @@ public interface TeammemberDao extends GenericDao{
 	 * @return
 	 */
 	public List<YsmsTeammember> findByAthleteIdAndTeamId(Integer athleteId, int teamId);
+
+	/**
+	 * 根据球员球衣号和球队查看是否有该球员
+	 * @param teamId
+	 * @param athleteNum
+	 * @return
+	 */
+	public List<YsmsTeammember> findbyTeamIdAndAthleteNum(int teamId, int athleteNum);
 }

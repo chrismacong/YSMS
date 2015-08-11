@@ -17,7 +17,11 @@ $(function(){
 			$('.upload_out').show();
 			selected_obj = $(this);
 		});
-
+		
+		$('#modify_news_content').on("click",".upload",function(){
+			$('.upload_out').show();
+			selected_obj = $(this);
+		});
 
 
 		$('.color-swatch').click(function(){

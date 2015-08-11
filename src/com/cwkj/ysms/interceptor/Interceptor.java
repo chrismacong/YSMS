@@ -63,7 +63,7 @@ public class Interceptor extends HandlerInterceptorAdapter implements Initializi
 			}
 			else if(userName==null||userName.equals("")){
 				 PrintWriter pw=response.getWriter();
-				 pw.print("<script>window.parent.location.href='"+request.getContextPath() + "/login.html'"+";</script>");
+				 pw.print("<script>window.top.location.href='"+request.getContextPath() + "/login.html'"+";</script>");
 				 //response.sendRedirect(request.getContextPath()+"/login.html");
 				 return false;
 			}

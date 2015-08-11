@@ -66,7 +66,7 @@ public class WechatServiceTest {
 	public void testGetLatest10(){
 		Calendar calendar = Calendar.getInstance();
 		Date date = calendar.getTime();
-		List<YsmsWechatnews> newList = newsManagementService.getNewsByDateLimit10(date);
+		List<YsmsWechatnews> newList = newsManagementService.getNewsByDateLimit10(date,0);
 		System.out.println(newList.size());
 	}
 	

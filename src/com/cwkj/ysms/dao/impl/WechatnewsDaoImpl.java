@@ -73,7 +73,7 @@ public class WechatnewsDaoImpl extends GenericDaoImpl implements WechatnewsDao{
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			String dateStr = sdf.format(date);
-			String queryString = "from YsmsWechatnews where date_format(date,'%Y-%m-%d') = '" + dateStr + "' order by nindex asc";
+			String queryString = "from YsmsWechatnews where date_format(date,'%Y-%m-%d') = '" + dateStr + "' and forServiceFlag = 0 order by nindex asc";
 			Query queryObject = getSession().createQuery(queryString);
 			return queryObject.list();
 		} catch (RuntimeException re) {
@@ -86,7 +86,7 @@ public class WechatnewsDaoImpl extends GenericDaoImpl implements WechatnewsDao{
 	public int getMaxNindex(Date date) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		String dateStr = sdf.format(date);
-		String queryString = "select max(nindex) maxid from ysms_wechatnews where date_format(date,'%Y-%m-%d') = '" + dateStr + "'";
+		String queryString = "select max(nindex) maxid from ysms_wechatnews where date_format(date,'%Y-%m-%d') = '" + dateStr + "' and forServiceFlag = 0";
 		Integer maxId = (Integer)(getSession().createSQLQuery(queryString).addScalar("maxId", Hibernate.INTEGER) ).uniqueResult();
 		if(maxId==null)
 			maxId = 0;
@@ -99,7 +99,7 @@ public class WechatnewsDaoImpl extends GenericDaoImpl implements WechatnewsDao{
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			String dateStr = sdf.format(date);
-			String queryString = "from YsmsWechatnews where date_format(date,'%Y-%m-%d') = '" + dateStr + "' and verified = 1 order by nindex asc";
+			String queryString = "from YsmsWechatnews where date_format(date,'%Y-%m-%d') = '" + dateStr + "' and verified = 1 and forServiceFlag = 0 order by nindex asc";
 			Query queryObject = getSession().createQuery(queryString).setMaxResults(10);
 			return queryObject.list();
 		} catch (RuntimeException re) {
@@ -114,7 +114,7 @@ public class WechatnewsDaoImpl extends GenericDaoImpl implements WechatnewsDao{
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			String dateStr = sdf.format(date);
-			String queryString = "select distinct ywn from YsmsWechatnews as ywn, YsmsVote as yv where ywn.nid = yv.ysmsWechatnews.nid and date_format(date,'%Y-%m-%d') = '" + dateStr + "' order by nindex asc";
+			String queryString = "select distinct ywn from YsmsWechatnews as ywn, YsmsVote as yv where ywn.nid = yv.ysmsWechatnews.nid and date_format(date,'%Y-%m-%d') = '" + dateStr + "' and ywn.forServiceFlag = 0 order by nindex asc";
 			Query queryObject = getSession().createQuery(queryString);
 			return queryObject.list();
 		} catch (RuntimeException re) {
@@ -129,7 +129,78 @@ public class WechatnewsDaoImpl extends GenericDaoImpl implements WechatnewsDao{
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			String dateStr = sdf.format(date);
-			String queryString = "from YsmsWechatnews where date_format(date,'%Y-%m-%d') = '" + dateStr + "' order by verified asc";
+			String queryString = "from YsmsWechatnews where date_format(date,'%Y-%m-%d') = '" + dateStr + "' and forServiceFlag = 0 order by verified asc";
+			Query queryObject = getSession().createQuery(queryString);
+			return queryObject.list();
+		} catch (RuntimeException re) {
+			log.error("find all failed", re);
+			throw re;
+		}	
+	}
+
+	@Override
+	public List<YsmsWechatnews> findServiceNewsByDate(Date date) {
+		log.debug("finding all YsmsWechatnews instances");
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			String dateStr = sdf.format(date);
+			String queryString = "from YsmsWechatnews where date_format(date,'%Y-%m-%d') = '" + dateStr + "' and forServiceFlag = 1 order by nindex asc";
+			Query queryObject = getSession().createQuery(queryString);
+			return queryObject.list();
+		} catch (RuntimeException re) {
+			log.error("find all failed", re);
+			throw re;
+		}	
+	}
+
+	@Override
+	public List<YsmsWechatnews> findServiceVoteByDate(Date date) {
+		log.debug("finding all YsmsWechatnews instances");
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			String dateStr = sdf.format(date);
+			String queryString = "select distinct ywn from YsmsWechatnews as ywn, YsmsVote as yv where ywn.nid = yv.ysmsWechatnews.nid and date_format(date,'%Y-%m-%d') = '" + dateStr + "' and ywn.forServiceFlag = 1 order by nindex asc";
+			Query queryObject = getSession().createQuery(queryString);
+			return queryObject.list();
+		} catch (RuntimeException re) {
+			log.error("find all failed", re);
+			throw re;
+		}	
+	}
+
+	@Override
+	public List<YsmsWechatnews> findServiceNewsByDateLimit10(Date date) {
+		log.debug("finding all YsmsWechatnews instances");
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			String dateStr = sdf.format(date);
+			String queryString = "from YsmsWechatnews where date_format(date,'%Y-%m-%d') = '" + dateStr + "' and verified = 1 and forServiceFlag = 1 order by nindex asc";
+			Query queryObject = getSession().createQuery(queryString).setMaxResults(10);
+			return queryObject.list();
+		} catch (RuntimeException re) {
+			log.error("find all failed", re);
+			throw re;
+		}	
+	}
+
+	@Override
+	public int getServiceNewsMaxNindex(Date date) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String dateStr = sdf.format(date);
+		String queryString = "select max(nindex) maxid from ysms_wechatnews where date_format(date,'%Y-%m-%d') = '" + dateStr + "' and forServiceFlag = 1";
+		Integer maxId = (Integer)(getSession().createSQLQuery(queryString).addScalar("maxId", Hibernate.INTEGER) ).uniqueResult();
+		if(maxId==null)
+			maxId = 0;
+		return maxId;
+	}
+
+	@Override
+	public List<YsmsWechatnews> findServiceNewsByDateOrderbyVerified(Date date) {
+		log.debug("finding all YsmsWechatnews instances");
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			String dateStr = sdf.format(date);
+			String queryString = "from YsmsWechatnews where date_format(date,'%Y-%m-%d') = '" + dateStr + "' and forServiceFlag = 1 order by verified asc";
 			Query queryObject = getSession().createQuery(queryString);
 			return queryObject.list();
 		} catch (RuntimeException re) {
