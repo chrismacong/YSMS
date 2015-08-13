@@ -452,10 +452,17 @@ $(function() {
 																	$("#modifymatch_btn")
 																	.click(
 																			function() {
-																				var host_uniform = $("#host_uniform_modify")
-																				.get(0).selectedIndex;
-																				var guest_uniform = $("#guest_uniform_modify")
-																				.get(0).selectedIndex;
+																				var host_uniform = $("#host_uniform_modify").val();
+																				var guest_uniform = $("#guest_uniform_modify").val();
+																				if (host_uniform.length>5||guest_uniform.length>5) {
+																					ds.dialog({
+																						title : '消息提示',
+																						content : "球衣颜色文字长度不能大于5位！",
+																						onyes : true,
+																						icon : "../images/info.png"
+																					});
+																					return;
+																				}
 																				var game_time = $("#time1").val();
 																				var game_location = $("#address_modify").val();
 
@@ -535,11 +542,12 @@ $(function() {
 																							});
 																							return;
 																						}
-																						if ($("#host_uniform_select").get(0).selectedIndex == 0
-																								|| $("#guest_uniform_select").get(0).selectedIndex == 0) {
+																						var host_uniform = $("#host_uniform_input").val();
+																						var guest_uniform = $("#guest_uniform_input").val();
+																						if (host_uniform.length>5||guest_uniform.length>5) {
 																							ds.dialog({
 																								title : '消息提示',
-																								content : "请选择联赛双方球衣！",
+																								content : "球衣颜色文字长度不能大于5位！",
 																								onyes : true,
 																								icon : "../images/info.png"
 																							});
@@ -562,11 +570,6 @@ $(function() {
 																						var guest_team_id = $("#guest_team_select")
 																						.find("option:selected").attr("id")
 																						.substr(19);
-																						var host_uniform = $("#host_uniform_select")
-																						.get(0).selectedIndex - 1;
-																						var guest_uniform = $("#guest_uniform_select")
-																						.get(0).selectedIndex - 1;
-
 																						$
 																						.ajax({
 																							type : 'POST',
@@ -598,12 +601,10 @@ $(function() {
 																									.get(0).selectedIndex = 0;
 																									$("#host_team_select").get(
 																											0).selectedIndex = 0;
-																									$("#host_uniform_select")
-																									.get(0).selectedIndex = 0;
 																									$("#guest_team_select")
 																									.get(0).selectedIndex = 0;
-																									$("#guest_uniform_select")
-																									.get(0).selectedIndex = 0;
+																									$("#host_uniform_input").val("")
+																									$("#guest_uniform_input").val("");
 																									$("#time2").val("");
 																									$("#address").val("");
 																									$('#competition_apply')
@@ -1396,26 +1397,8 @@ function refresh_competitions() {
 										data.game.gameLocation);
 								var host_uniform = data.game.hostUniform;
 								var guest_uniform = data.game.guestUniform;
-								if (host_uniform == 0) {
-									$(
-									"#host_uniform_modify")
-									.get(
-											0).selectedIndex = 0;
-								} else
-									$(
-									"#host_uniform_modify")
-									.get(
-											0).selectedIndex = 1;
-								if (guest_uniform == 0) {
-									$(
-									"#guest_uniform_modify")
-									.get(
-											0).selectedIndex = 0;
-								} else
-									$(
-									"#guest_uniform_modify")
-									.get(
-											0).selectedIndex = 1;
+								$("#host_uniform_modify").val(host_uniform);
+								$("#guest_uniform_modify").val(guest_uniform);
 							},
 							error : function() {
 								ds

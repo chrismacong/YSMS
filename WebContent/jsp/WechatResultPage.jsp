@@ -24,10 +24,10 @@ function getData() {
 	$.ajax({
 		"type" : "GET",
 		"contentType" : "application/json",
-		"url" : "${pageContext.request.contextPath}/wechat/getlatestresult.html",
+		"url" : "${pageContext.request.contextPath}/wechat/getgame.html",
 		"dataType" : "json",
 		"data" : {
-			athlete_id : "${athlete_id}"
+			games_id : "${games_id}"
 		}, //以json格式传递   
 		"success" : function(data) {
 			if(data.game!=null){
@@ -46,8 +46,8 @@ function getData() {
 				$(".guestschoolname").text(data.game.guestSchoolName);
 				$("#hostteamname").text(data.game.hostTeamName);
 				$("#guestteamname").text(data.game.guestTeamName);
-				$(".hostname").text(data.game.hostSchoolName);
-				$(".guestname").text(data.game.guestSchoolName);
+				$(".hostname").text(data.game.hostSchoolName + "(" + data.game.hostUniform + ")");
+				$(".guestname").text(data.game.guestSchoolName + "(" + data.game.guestUniform + ")");
 				var hostgoals = data.host_goals;
 				var hostGoalPlayer = new Array();
 				var hostGoalPlayerName = new Array();

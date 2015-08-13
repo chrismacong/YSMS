@@ -34,10 +34,10 @@ public class Interceptor extends HandlerInterceptorAdapter implements Initializi
 			else if("wechat".equals(methodNameResolver.getHandlerMethodName(request))){
 				return true;
 			}
-			else if("result".equals(methodNameResolver.getHandlerMethodName(request))&&(url.contains("wechat"))){
+			else if("resultlist".equals(methodNameResolver.getHandlerMethodName(request))&&(url.contains("wechat"))){
 				return true;
 			}
-			else if("game".equals(methodNameResolver.getHandlerMethodName(request))&&(url.contains("wechat"))){
+			else if("gamelist".equals(methodNameResolver.getHandlerMethodName(request))&&(url.contains("wechat"))){
 				return true;
 			}
 			else if("bind".equals(methodNameResolver.getHandlerMethodName(request))&&(url.contains("wechat"))){

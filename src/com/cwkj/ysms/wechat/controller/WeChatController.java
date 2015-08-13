@@ -110,7 +110,7 @@ public class WeChatController implements WechatControllerService{
 					gameView.getHostScore() + ":" + gameView.getGuestScore() +  " " +
 					gameView.getGuestSchoolName() + gameView.getGuestTeamName();
 			String description = "点击查看具体比赛数据";
-			String url = URL_HEAD + "/wechat/result.html?athlete_id=" + ysmsAthlete.getAthleteId();
+			String url = URL_HEAD + "/wechat/resultlist.html?athlete_id=" + ysmsAthlete.getAthleteId();
 			xmlResult = FormatPicWordXmlResult.getXmlResult(rxe, title, description, URL_HEAD + "/images/1.jpg", url);
 		}
 		else if("最近比赛".equals(realContent)||"22_GAME".equals(eventKey)){
@@ -143,7 +143,7 @@ public class WeChatController implements WechatControllerService{
 						gameView.getGuestSchoolName() + gameView.getGuestTeamName();
 			}
 			String description = "点击查看具体比赛数据";
-			String url = URL_HEAD + "/wechat/game.html?athlete_id=" + ysmsAthlete.getAthleteId();
+			String url = URL_HEAD + "/wechat/gamelist.html?athlete_id=" + ysmsAthlete.getAthleteId();
 			xmlResult = FormatPicWordXmlResult.getXmlResult(rxe, title, description, URL_HEAD + "/images/2.jpg", url);
 		}
 		else if("完善资料".equals(realContent)||"32_INFO".equals(eventKey)){

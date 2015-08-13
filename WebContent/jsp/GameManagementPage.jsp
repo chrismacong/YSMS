@@ -190,7 +190,7 @@
 								</div>
 								<div class="input_r"></div>
 							</div></td>
-						<td>主 &nbsp; &nbsp; &nbsp; 裁：</td>
+						<td>裁判员：</td>
 						<td><div class="input_wk">
 								<div class="input_l"></div>
 								<div class="input_m">
@@ -214,7 +214,7 @@
 								</div>
 								<div class="input_r"></div>
 							</div></td>
-						<td>第一边裁：</td>
+						<td>第一助理裁判：</td>
 						<td><div class="input_wk">
 								<div class="input_l"></div>
 								<div class="input_m">
@@ -238,7 +238,7 @@
 								</div>
 								<div class="input_r"></div>
 							</div></td>
-						<td>第二边裁：</td>
+						<td>第二助理裁判：</td>
 						<td><div class="input_wk">
 								<div class="input_l"></div>
 								<div class="input_m">
@@ -262,7 +262,7 @@
 								</div>
 								<div class="input_r"></div>
 							</div></td>
-						<td>统&nbsp; &nbsp; &nbsp;计：</td>
+						<td>第四官员：</td>
 						<td><div class="input_wk">
 								<div class="input_l"></div>
 								<div class="input_m">
@@ -280,16 +280,12 @@
 								<div class="input_l"></div>
 								<div class="input_m">
 									<div class="select_wk">
-										<select id="host_uniform_modify">
-											<option value="1">深</option>
-											<option value="2">浅</option>
-										</select>
-										<div class="select_icon"></div>
+										<input id="host_uniform_modify" type="text">
 									</div>
 								</div>
 								<div class="input_r"></div>
 							</div></td>
-						<td>统&nbsp; &nbsp; &nbsp;计：</td>
+						<td>裁判监督：</td>
 						<td><div class="input_wk">
 								<div class="input_l"></div>
 								<div class="input_m">
@@ -313,7 +309,7 @@
 								</div>
 								<div class="input_r"></div>
 							</div></td>
-						<td>第四官员：</td>
+						<td>比赛监督：</td>
 						<td><div class="input_wk">
 								<div class="input_l"></div>
 								<div class="input_m">
@@ -331,16 +327,12 @@
 								<div class="input_l"></div>
 								<div class="input_m">
 									<div class="select_wk">
-										<select id="guest_uniform_modify">
-											<option value="1">深</option>
-											<option value="2">浅</option>
-										</select>
-										<div class="select_icon"></div>
+										<input id="guest_uniform_modify" type="text">
 									</div>
 								</div>
 								<div class="input_r"></div>
 							</div></td>
-						<td>现场官员：</td>
+						<td>统&nbsp;&nbsp;&nbsp;计：</td>
 						<td><div class="input_wk">
 								<div class="input_l"></div>
 								<div class="input_m">
@@ -364,7 +356,7 @@
 								</div>
 								<div class="input_r"></div>
 							</div></td>
-						<td>现场官员：</td>
+						<td>统&nbsp;&nbsp;&nbsp;计：</td>
 						<td><div class="input_wk">
 								<div class="input_l"></div>
 								<div class="input_m">
@@ -543,8 +535,8 @@
 														<tr>
 															<td colspan="2"><input type="checkbox"
 																class="penalty_checkbox" style='vertical-align: middle;'
-																id="host_ispenalty_flag" onchange="penalty_checkbox_change(this)"><a>是否点球大战</a></td>
-															<td>点球大战得分：</td>
+																id="host_ispenalty_flag" onchange="penalty_checkbox_change(this)"><a>是否点球决胜</a></td>
+															<td>球点球得分：</td>
 															<td><input id="host_penalty_score"
 																disabled="disabled"></td>
 														</tr>
@@ -822,13 +814,8 @@
 					<td><div class="input_wk">
 							<div class="input_l"></div>
 							<div class="input_m">
-								<div class="select_wk">
-									<select id="host_uniform_select">
-										<option value="0">--请选择--</option>
-										<option value="1">深</option>
-										<option value="2">浅</option>
-									</select>
-									<div class="select_icon"></div>
+								 <div class="select_wk">
+									<input id="host_uniform_input" type="text">
 								</div>
 							</div>
 							<div class="input_r"></div>
@@ -878,12 +865,7 @@
 							<div class="input_l"></div>
 							<div class="input_m">
 								<div class="select_wk">
-									<select id="guest_uniform_select">
-										<option value="0">--请选择--</option>
-										<option value="1">深</option>
-										<option value="2">浅</option>
-									</select>
-									<div class="select_icon"></div>
+									<input id="guest_uniform_input" type="text">
 								</div>
 							</div>
 							<div class="input_r"></div>

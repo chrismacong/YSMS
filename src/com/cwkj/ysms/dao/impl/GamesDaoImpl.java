@@ -253,7 +253,6 @@ public class GamesDaoImpl extends GenericDaoImpl implements GamesDao {
 
 	@Override
 	public YsmsGames getLastGameByTeamId(int teamId) {
-		// TODO Auto-generated method stub
 		log.debug("finding YsmsGames instance by teamId before date");
 		try {
 			Calendar cal = Calendar.getInstance();
@@ -334,7 +333,6 @@ public class GamesDaoImpl extends GenericDaoImpl implements GamesDao {
 
 	@Override
 	public YsmsGames getNextGameByAthleteId(int athleteId) {
-		// TODO Auto-generated method stub
 		log.debug("finding YsmsGames instance by teamId after date");
 		try {
 			Calendar cal = Calendar.getInstance();
@@ -364,7 +362,6 @@ public class GamesDaoImpl extends GenericDaoImpl implements GamesDao {
 
 	@Override
 	public YsmsGames getLastGameByAthleteId(int athleteId) {
-		// TODO Auto-generated method stub
 		log.debug("finding YsmsGames instance by teamId after date");
 		try {
 			Calendar cal = Calendar.getInstance();
@@ -401,6 +398,94 @@ public class GamesDaoImpl extends GenericDaoImpl implements GamesDao {
 			return queryObject.list();
 		} catch (RuntimeException re) {
 			log.error("find all failed", re);
+			throw re;
+		}
+	}
+
+	@Override
+	public List<YsmsGames> getNextGamesByTeamId(int teamId) {
+		log.debug("finding YsmsGames instance by teamId after date");
+		try {
+			Calendar cal = Calendar.getInstance();
+			Date date = cal.getTime();
+			String sql = " select g from YsmsGames g" + 
+					" where g.ysmsTeamByHostTeamid.teamId = " + teamId + 
+					" or g.ysmsTeamByGuestTeamid.teamId = " + teamId + 
+					" and g.gamesTime > ? order by g.gamesTime asc";
+			Query query = getSession().createQuery(sql);
+			query.setDate(0,date);
+			List<YsmsGames> objects = query.list();
+			return objects;
+		} catch (RuntimeException re) {
+			log.error("find by teamId after date failed", re);
+			throw re;
+		}
+	}
+
+	@Override
+	public List<YsmsGames> getLastGamesByTeamId(int teamId) {
+		log.debug("finding YsmsGames instance by teamId before date");
+		try {
+			Calendar cal = Calendar.getInstance();
+			Date date = cal.getTime();
+			String sql = " select g from YsmsGames g" + 
+					" where g.ysmsTeamByHostTeamid.teamId = " + teamId + 
+					" or g.ysmsTeamByGuestTeamid.teamId = " + teamId + 
+					" and g.gamesTime < ? order by g.gamesTime desc";
+			Query query = getSession().createQuery(sql);
+			query.setDate(0,date);
+			List<YsmsGames> objects = query.list();
+			return objects;
+		} catch (RuntimeException re) {
+			log.error("find by teamId before date failed", re);
+			throw re;
+		}
+	}
+
+	@Override
+	public List<YsmsGames> getNextGamesByAthleteId(int athleteId) {
+		log.debug("finding YsmsGames instance by teamId after date");
+		try {
+			Calendar cal = Calendar.getInstance();
+			Date date = cal.getTime();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String dateStr = sdf.format(date);
+			String sql = " select g from YsmsGames g, YsmsTeam t, YsmsTeammember tm" + 
+					" where (g.ysmsTeamByHostTeamid.teamId = t.teamId" + 
+					" or g.ysmsTeamByGuestTeamid.teamId = t.teamId)" + 
+					" and t.teamId = tm.ysmsTeam.teamId" + 
+					" and tm.ysmsAthlete.athleteId = " + athleteId + 
+					" and g.gamesTime > ? order by g.gamesTime asc";
+			Query query = getSession().createQuery(sql).setMaxResults(10);
+			query.setString(0, dateStr);
+			List<YsmsGames> objects = query.list();
+			return objects;
+		} catch (RuntimeException re) {
+			log.error("find by teamId after date failed", re);
+			throw re;
+		}
+	}
+
+	@Override
+	public List<YsmsGames> getLastGamesByAthleteId(int athleteId) {
+		log.debug("finding YsmsGames instance by teamId after date");
+		try {
+			Calendar cal = Calendar.getInstance();
+			Date date = cal.getTime();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String dateStr = sdf.format(date);
+			String sql = " select g from YsmsGames g, YsmsTeam t, YsmsTeammember tm" + 
+					" where (g.ysmsTeamByHostTeamid.teamId = t.teamId" + 
+					" or g.ysmsTeamByGuestTeamid.teamId = t.teamId)" + 
+					" and t.teamId = tm.ysmsTeam.teamId" + 
+					" and tm.ysmsAthlete.athleteId = " + athleteId + 
+					" and g.gamesTime < ? order by g.gamesTime desc";
+			Query query = getSession().createQuery(sql).setMaxResults(10);
+			query.setString(0, dateStr);
+			List<YsmsGames> objects = query.list();
+			return objects;
+		} catch (RuntimeException re) {
+			log.error("find by teamId after date failed", re);
 			throw re;
 		}
 	}

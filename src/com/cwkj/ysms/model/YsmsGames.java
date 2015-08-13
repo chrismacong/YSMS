@@ -40,8 +40,8 @@ public class YsmsGames implements java.io.Serializable {
 	private Integer hostScore;
 	private Integer guestScore;
 	private Integer gamesOrder;
-	private Integer hostUniform;
-	private Integer guestUniform;
+	private String hostUniform;
+	private String guestUniform;
 	private Integer hostGoalAttempt;
 	private Integer guestGoalAttempt;
 	private Integer hostTargetNumber;
@@ -81,8 +81,8 @@ public class YsmsGames implements java.io.Serializable {
 	public YsmsGames(YsmsTeam ysmsTeamByHostTeamid,
 			YsmsLeagueZone ysmsLeagueZone, YsmsTeam ysmsTeamByGuestTeamid,
 			Date gamesTime, String gameLocation, Integer hostScore,
-			Integer guestScore, Integer gamesOrder, Integer hostUniform, 
-			Integer guestUniform, Set<YsmsFoul> ysmsFouls,
+			Integer guestScore, Integer gamesOrder, String hostUniform, 
+			String guestUniform, Set<YsmsFoul> ysmsFouls,
 			Set<YsmsGoal> ysmsGoals, Set<YsmsGamesJudge> ysmsGamesJudges) {
 		this.ysmsTeamByHostTeamid = ysmsTeamByHostTeamid;
 		this.ysmsLeagueZone = ysmsLeagueZone;
@@ -191,18 +191,18 @@ public class YsmsGames implements java.io.Serializable {
 	}
 	
 	@Column(name = "host_uniform", nullable = false)
-	public Integer getHostUniform(){
+	public String getHostUniform(){
 		return this.hostUniform;
 	}
-	public void setHostUniform(Integer hostUniform){
+	public void setHostUniform(String hostUniform){
 		this.hostUniform = hostUniform;
 	}
 	
 	@Column(name = "guest_uniform", nullable = false)
-	public Integer getGuestUniform(){
+	public String getGuestUniform(){
 		return this.guestUniform;
 	}
-	public void setGuestUniform(Integer guestUniform){
+	public void setGuestUniform(String guestUniform){
 		this.guestUniform = guestUniform;
 	}
 	

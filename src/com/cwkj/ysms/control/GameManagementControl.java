@@ -132,8 +132,8 @@ public class GameManagementControl {
 		String gameTimeStr = request.getParameter("game_time");
 		String gameLocation = request.getParameter("game_location");
 		int gameOrder = Integer.parseInt(request.getParameter("game_order"));
-		int hostUniform = Integer.parseInt(request.getParameter("host_uniform"));
-		int guestUniform = Integer.parseInt(request.getParameter("guest_uniform"));
+		String hostUniform = request.getParameter("host_uniform");
+		String guestUniform = request.getParameter("guest_uniform");
 		Date gamesTime = null;
 		if(!"".equals(gameTimeStr)){
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -159,8 +159,8 @@ public class GameManagementControl {
 		int gameId = Integer.parseInt(request.getParameter("game_id"));
 		String gameTimeStr = request.getParameter("game_time");
 		String gamesLocation = request.getParameter("game_location");
-		int hostUniform = Integer.parseInt(request.getParameter("host_uniform"));
-		int guestUniform = Integer.parseInt(request.getParameter("guest_uniform"));
+		String hostUniform = request.getParameter("host_uniform");
+		String guestUniform = request.getParameter("guest_uniform");
 		Date gamesTime = null;
 		if(!"".equals(gameTimeStr)){
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");

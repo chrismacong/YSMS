@@ -25,10 +25,10 @@
 		$.ajax({
 			"type" : "GET",
 			"contentType" : "application/json",
-			"url" : "${pageContext.request.contextPath}/wechat/getnextgame.html",
+			"url" : "${pageContext.request.contextPath}/wechat/getgame.html",
 			"dataType" : "json",
 			"data" : {
-				athlete_id : "${athlete_id}"
+				games_id : "${games_id}"
 			}, //以json格式传递   
 			"success" : function(data) {
 				if(data.game!=null){
@@ -45,8 +45,8 @@
 					$(".guestscore").text(guestScore);
 					$(".hostschoolname").text(data.game.hostSchoolName);
 					$(".guestschoolname").text(data.game.guestSchoolName);
-					$("#hostteamname").text(data.game.hostTeamName);
-					$("#guestteamname").text(data.game.guestTeamName);
+					$("#hostteamname").text(data.game.hostTeamName + "(" + data.game.hostUniform + ")");
+					$("#guestteamname").text(data.game.guestTeamName + "(" + data.game.guestUniform + ")");
 					document.title="比赛预告：" + data.game.gameTime + " "+ data.game.hostSchoolName + " VS " + data.game.guestSchoolName;
 				}
 				cancel_loading();

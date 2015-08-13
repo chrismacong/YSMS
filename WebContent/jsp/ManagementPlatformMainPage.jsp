@@ -506,19 +506,15 @@
 						<h1>Welcome to using Nanjing YouthFootball Management
 							Platform</h1>
 						<div>欢迎南京市青少年足球管理平台</div>
-						<h1>VERSION 0.8.3.1</h1>
+						<h1>VERSION 0.8.3.2</h1>
 						<div>版本更新说明</div>
-						<br />
-						<h2>0.8.3.0 (2015-08-11 14:44)</h2>
-						<div>增加了联赛日历功能</div>
-						<div>增加了可更改排序规则的积分榜</div>
-						<div>订阅号和服务号新闻现在是分开处理的</div>
-						<div>添加了更多可供选择的比赛记录信息</div>
-						<div>增添了权限矩阵</div>
-						<div>修改了几个小BUG，并进行了些许细节改动</div>
 						<br />
 						<h2>0.8.3.1 (2015-08-11 15:40)</h2>
 						<div>支持新闻审核员修改新闻图片</div>
+						<br />
+						<h2>0.8.3.2 (2015-08-13 10:34)</h2>
+						<div>修改微信获取的最新赛况和最近比赛为多场，最多10场</div>
+						<div>修改球衣颜色深浅为任意填写的代表颜色的字符，不多于5个汉字字符</div>
 						<br />
 						<!-- <h1>相关文件下载</h1> -->
 						<!-- <a href="${pageContext.request.contextPath}/YSMSRepo/file/league_regulation.doc">联赛规程（Word）</a> -->

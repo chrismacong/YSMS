@@ -38,8 +38,8 @@ public interface GamesManagementService {
 	 * @param recorder_2
 	 * @return
 	 */
-	public boolean addGamesInfo(int zoneId, int gamesOrder, int hostTeamId, int hostUniform, 
-			int guestTeamId, int guestUniform, Date gamesTime,
+	public boolean addGamesInfo(int zoneId, int gamesOrder, int hostTeamId, String hostUniform, 
+			int guestTeamId, String guestUniform, Date gamesTime,
 			String gamesLocation, int chiefUmpireId, int sideRefereeId_1,
 			int sideRefereeId_2, int forth_Officer, int officer_1, int officer_2, int recorder_1, int recorder_2);
 	
@@ -55,8 +55,8 @@ public interface GamesManagementService {
 	 * @param gamesLocation
 	 * @return
 	 */
-	public boolean addGamesInfo(int zoneId, int gamesOrder, int hostTeamId, int hostUniform, 
-			int guestTeamId, int guestUniform, Date gamesTime,
+	public boolean addGamesInfo(int zoneId, int gamesOrder, int hostTeamId, String hostUniform, 
+			int guestTeamId, String guestUniform, Date gamesTime,
 			String gamesLocation);
 	/**
 	 * 更新比赛时间、地点和裁判信息
@@ -292,7 +292,7 @@ public interface GamesManagementService {
 	 * 修改比赛
 	 * @return
 	 */
-	public boolean modifyGame(int gamesId, int hostUniform, int guestUniform, Date gamesTime, String gamesLocation);
+	public boolean modifyGame(int gamesId, String hostUniform, String guestUniform, Date gamesTime, String gamesLocation);
 	
 	public boolean deleteAllGoalsInGame(int gamesId);
 	
@@ -311,4 +311,32 @@ public interface GamesManagementService {
 	 * @return
 	 */
 	public boolean setGameOver(int gamesId, boolean isOver);
+	
+	/**
+	 * 根据球队Id获取未开始的比赛
+	 * @param teamId
+	 * @return
+	 */
+	public List<GameView> getNextGamesByTeamId(int teamId);
+	
+	/**
+	 * 根据球队Id获取结束的比赛
+	 * @param teamId
+	 * @return
+	 */
+	public List<GameView> getLatestGamesByTeamid(int teamId);
+	
+	/**
+	 * 根据运动员Id获取未开始的比赛，上限10条
+	 * @param athleteId
+	 * @return
+	 */
+	public List<GameView> getNextGamesByAthleteIdLimit10(int athleteId);
+	
+	/**
+	 * 根据运动员Id获取已经结束的比赛，上限10条
+	 * @param athleteId
+	 * @return
+	 */
+	public List<GameView> getLastGamesByAthleteIdLimit10(int athleteId);
 }

@@ -560,8 +560,8 @@ public class GamesManagementServiceImpl implements GamesManagementService{
 
 	@Override
 	public boolean addGamesInfo(int zoneId, int gamesOrder, int hostTeamId,
-			int hostUniform, int guestTeamId,
-			int guestUniform, Date gamesTime, String gamesLocation,
+			String hostUniform, int guestTeamId,
+			String guestUniform, Date gamesTime, String gamesLocation,
 			int chiefUmpireId, int sideRefereeId_1, int sideRefereeId_2,
 			int forth_Officer, int officer_1, int officer_2, int recorder_1,
 			int recorder_2) {
@@ -632,8 +632,8 @@ public class GamesManagementServiceImpl implements GamesManagementService{
 
 	@Override
 	public boolean addGamesInfo(int zoneId, int gamesOrder, int hostTeamId,
-			int hostUniform, int guestTeamId,
-			int guestUniform, Date gamesTime, String gamesLocation) {
+			String hostUniform, int guestTeamId,
+			String guestUniform, Date gamesTime, String gamesLocation) {
 		YsmsGames ysmsGames = new YsmsGames();
 		ysmsGames.setGamesOrder(gamesOrder);
 		ysmsGames.setYsmsTeamByHostTeamid(teamDao.findById(hostTeamId));
@@ -693,17 +693,26 @@ public class GamesManagementServiceImpl implements GamesManagementService{
 	public GameView getGameById(int gamesId) {
 		YsmsGames ysmsGames = gamesDao.findById(gamesId);
 		GameView gameView = new GameView();
+		Date date = ysmsGames.getGamesTime();
+		if(date!=null){
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+			gameView.setGameTime(sdf.format(date));
+		}
 		gameView.setGameLocation(ysmsGames.getGameLocation());
 		gameView.setGamesId(ysmsGames.getGamesId());
-		Date date = ysmsGames.getGamesTime();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-		if(date!=null)
-			gameView.setGameTime(sdf.format(date));
-		gameView.setGuestSchoolName(ysmsGames.getYsmsTeamByGuestTeamid().getYsmsSchool().getSchoolName());
-		gameView.setGuestUniform(ysmsGames.getGuestUniform());
 		gameView.setHostSchoolName(ysmsGames.getYsmsTeamByHostTeamid().getYsmsSchool().getSchoolName());
+		gameView.setGuestSchoolName(ysmsGames.getYsmsTeamByGuestTeamid().getYsmsSchool().getSchoolName());
+		gameView.setHostTeamName(ysmsGames.getYsmsTeamByHostTeamid().getTeamName());
+		gameView.setGuestTeamName(ysmsGames.getYsmsTeamByGuestTeamid().getTeamName());
 		gameView.setHostUniform(ysmsGames.getHostUniform());
+		gameView.setGuestUniform(ysmsGames.getGuestUniform());
+		gameView.setHostScore(ysmsGames.getHostScore());
+		gameView.setGuestScore(ysmsGames.getGuestScore());
+		gameView.setHostTeamId(ysmsGames.getYsmsTeamByHostTeamid().getTeamId());
+		gameView.setGuestTeamId(ysmsGames.getYsmsTeamByGuestTeamid().getTeamId());
 		gameView.setLeagueName(ysmsGames.getYsmsLeagueZone().getYsmsLeague().getLeagueName());
+		gameView.setZoneName(ysmsGames.getYsmsLeagueZone().getZoneName());
+		gameView.setOrderName(ysmsGames.getGamesOrder()==1?"小组赛":"淘汰赛");
 		int gameOrder = ysmsGames.getGamesOrder();
 		if(gameOrder == 1){
 			YsmsZoneTeam ysmsZoneTeam = zoneTeamDao.findByTeamId(ysmsGames.getYsmsTeamByHostTeamid().getTeamId());
@@ -716,7 +725,7 @@ public class GamesManagementServiceImpl implements GamesManagementService{
 	}
 
 	@Override
-	public boolean modifyGame(int gamesId, int hostUniform, int guestUniform,
+	public boolean modifyGame(int gamesId, String hostUniform, String guestUniform,
 			Date gamesTime, String gamesLocation) {
 		YsmsGames ysmsGames = gamesDao.findById(gamesId);
 		ysmsGames.setHostUniform(hostUniform);
@@ -955,6 +964,126 @@ public class GamesManagementServiceImpl implements GamesManagementService{
 		game.setIsGameOver(isOver?1:0);
 		gamesDao.save(game);
 		return true;
+	}
+
+	@Override
+	public List<GameView> getNextGamesByTeamId(int teamId) {
+		List<GameView> views = new ArrayList<GameView>();
+		List<YsmsGames> games = gamesDao.getNextGamesByTeamId(teamId);
+		if(games!=null){
+			for(int i=0;i<games.size();i++){
+				YsmsGames game = games.get(i);
+				GameView gv = new GameView();
+				gv.setGamesId(game.getGamesId());
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日 HH:mm");
+				gv.setGameTime(sdf.format(game.getGamesTime()));
+				gv.setGameLocation(game.getGameLocation());
+				gv.setIsOvertimeFlag(game.getIsOvertimeFlag());
+				gv.setIsPenaltyFlag(game.getIsPenaltyFlag());
+				gv.setIsGameOver(game.getIsGameOver());
+				gv.setHostScore(game.getHostScore());
+				gv.setGuestScore(game.getGuestScore());
+				gv.setHostOvertimeScore(game.getHostOvertimeScore());
+				gv.setGuestOvertimeScore(game.getGuestOvertimeScore());
+				gv.setHostPenaltyScore(game.getHostPenaltyScore());
+				gv.setGuestPenaltyScore(game.getGuestPenaltyScore());
+				gv.setHostSchoolName(game.getYsmsTeamByHostTeamid().getYsmsSchool().getSchoolName());
+				gv.setGuestSchoolName(game.getYsmsTeamByGuestTeamid().getYsmsSchool().getSchoolName());
+				gv.setLeagueName(game.getYsmsLeagueZone().getYsmsLeague().getLeagueName());
+				views.add(gv);
+			}
+		}
+		return views;
+	}
+
+	@Override
+	public List<GameView> getLatestGamesByTeamid(int teamId) {
+		List<GameView> views = new ArrayList<GameView>();
+		List<YsmsGames> games = gamesDao.getLastGamesByTeamId(teamId);
+		if(games!=null){
+			for(int i=0;i<games.size();i++){
+				YsmsGames game = games.get(i);
+				GameView gv = new GameView();
+				gv.setGamesId(game.getGamesId());
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日 HH:mm");
+				gv.setGameTime(sdf.format(game.getGamesTime()));
+				gv.setGameLocation(game.getGameLocation());
+				gv.setIsOvertimeFlag(game.getIsOvertimeFlag());
+				gv.setIsPenaltyFlag(game.getIsPenaltyFlag());
+				gv.setIsGameOver(game.getIsGameOver());
+				gv.setHostScore(game.getHostScore());
+				gv.setGuestScore(game.getGuestScore());
+				gv.setHostOvertimeScore(game.getHostOvertimeScore());
+				gv.setGuestOvertimeScore(game.getGuestOvertimeScore());
+				gv.setHostPenaltyScore(game.getHostPenaltyScore());
+				gv.setGuestPenaltyScore(game.getGuestPenaltyScore());
+				gv.setHostSchoolName(game.getYsmsTeamByHostTeamid().getYsmsSchool().getSchoolName());
+				gv.setGuestSchoolName(game.getYsmsTeamByGuestTeamid().getYsmsSchool().getSchoolName());
+				gv.setLeagueName(game.getYsmsLeagueZone().getYsmsLeague().getLeagueName());
+				views.add(gv);
+			}
+		}
+		return views;
+	}
+
+	@Override
+	public List<GameView> getNextGamesByAthleteIdLimit10(int athleteId) {
+		List<GameView> views = new ArrayList<GameView>();
+		List<YsmsGames> games = gamesDao.getNextGamesByAthleteId(athleteId);
+		if(games!=null){
+			for(int i=0;i<games.size();i++){
+				YsmsGames game = games.get(i);
+				GameView gv = new GameView();
+				gv.setGamesId(game.getGamesId());
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日 HH:mm");
+				gv.setGameTime(sdf.format(game.getGamesTime()));
+				gv.setGameLocation(game.getGameLocation());
+				gv.setIsOvertimeFlag(game.getIsOvertimeFlag());
+				gv.setIsPenaltyFlag(game.getIsPenaltyFlag());
+				gv.setIsGameOver(game.getIsGameOver());
+				gv.setHostScore(game.getHostScore());
+				gv.setGuestScore(game.getGuestScore());
+				gv.setHostOvertimeScore(game.getHostOvertimeScore());
+				gv.setGuestOvertimeScore(game.getGuestOvertimeScore());
+				gv.setHostPenaltyScore(game.getHostPenaltyScore());
+				gv.setGuestPenaltyScore(game.getGuestPenaltyScore());
+				gv.setHostSchoolName(game.getYsmsTeamByHostTeamid().getYsmsSchool().getSchoolName());
+				gv.setGuestSchoolName(game.getYsmsTeamByGuestTeamid().getYsmsSchool().getSchoolName());
+				gv.setLeagueName(game.getYsmsLeagueZone().getYsmsLeague().getLeagueName());
+				views.add(gv);
+			}
+		}
+		return views;
+	}
+
+	@Override
+	public List<GameView> getLastGamesByAthleteIdLimit10(int athleteId) {
+		List<GameView> views = new ArrayList<GameView>();
+		List<YsmsGames> games = gamesDao.getLastGamesByAthleteId(athleteId);
+		if(games!=null){
+			for(int i=0;i<games.size();i++){
+				YsmsGames game = games.get(i);
+				GameView gv = new GameView();
+				gv.setGamesId(game.getGamesId());
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日 HH:mm");
+				gv.setGameTime(sdf.format(game.getGamesTime()));
+				gv.setGameLocation(game.getGameLocation());
+				gv.setIsOvertimeFlag(game.getIsOvertimeFlag());
+				gv.setIsPenaltyFlag(game.getIsPenaltyFlag());
+				gv.setIsGameOver(game.getIsGameOver());
+				gv.setHostScore(game.getHostScore());
+				gv.setGuestScore(game.getGuestScore());
+				gv.setHostOvertimeScore(game.getHostOvertimeScore());
+				gv.setGuestOvertimeScore(game.getGuestOvertimeScore());
+				gv.setHostPenaltyScore(game.getHostPenaltyScore());
+				gv.setGuestPenaltyScore(game.getGuestPenaltyScore());
+				gv.setHostSchoolName(game.getYsmsTeamByHostTeamid().getYsmsSchool().getSchoolName());
+				gv.setGuestSchoolName(game.getYsmsTeamByGuestTeamid().getYsmsSchool().getSchoolName());
+				gv.setLeagueName(game.getYsmsLeagueZone().getYsmsLeague().getLeagueName());
+				views.add(gv);
+			}
+		}
+		return views;
 	}
 	
 }

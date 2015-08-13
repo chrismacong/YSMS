@@ -91,6 +91,13 @@ public interface GamesDao extends GenericDao  {
 	 */
 	public YsmsGames getNextGameByTeamId(int teamId);
 	
+	/**
+	 * 根据队伍Id获取最近的比赛列表
+	 * @param teamId
+	 * @return
+	 */
+	public List<YsmsGames> getNextGamesByTeamId(int teamId);
+	
 	
 	/**
 	 * 根据队伍Id获取最近刚结束的比赛
@@ -98,6 +105,13 @@ public interface GamesDao extends GenericDao  {
 	 * @return
 	 */
 	public YsmsGames getLastGameByTeamId(int teamId);
+	
+	/**
+	 * 根据队伍Id获取最近刚结束的比赛列表
+	 * @param teamId
+	 * @return
+	 */
+	public List<YsmsGames> getLastGamesByTeamId(int teamId);
 	
 	/**
 	 * 根据球员Id获取他最近一场未开始的比赛
@@ -112,6 +126,22 @@ public interface GamesDao extends GenericDao  {
 	 * @return
 	 */
 	public YsmsGames getLastGameByAthleteId(int athleteId);
+	
+	/**
+	 * 根据球员Id获取他最近未开始的比赛列表
+	 * 限制不超过10条
+	 * @param athleteId
+	 * @return
+	 */
+	public List<YsmsGames> getNextGamesByAthleteId(int athleteId);
+	
+	/**
+	 * 根据球员Id获取他最近刚结束的比赛列表
+	 * 限制不超过10条
+	 * @param athleteId
+	 * @return
+	 */
+	public List<YsmsGames> getLastGamesByAthleteId(int athleteId);
 	
 	public List<YsmsGames> findByFuzzyQueryAndPage(Integer leagueId, Integer zoneId,
 			Date date, Page page);

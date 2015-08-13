@@ -150,20 +150,45 @@ public class WeChatControl extends HttpServlet{
 	public ModelAndView result(HttpServletRequest request,
 			HttpSession session, HttpServletResponse response) throws Exception {
 		Map<String, Object> model = new HashMap<String, Object>();
-		Integer athleteId = Integer.parseInt(request.getParameter("athlete_id"));
+		Integer games_id = Integer.parseInt(request.getParameter("games_id"));
 		session.setAttribute("userName", "wechat"); //需要写入session，否则其他的依然无法访问
-		model.put("athlete_id", athleteId);
+		model.put("games_id", games_id);
 		return new ModelAndView("WechatResultPage", model);
 	}
-
+	
 	@RequestMapping(value = "game", method = RequestMethod.GET)
 	public ModelAndView game(HttpServletRequest request,
 			HttpSession session, HttpServletResponse response) throws Exception {
 		Map<String, Object> model = new HashMap<String, Object>();
+		Integer games_id = Integer.parseInt(request.getParameter("games_id"));
+		session.setAttribute("userName", "wechat"); //需要写入session，否则其他的依然无法访问
+		model.put("games_id", games_id);
+		return new ModelAndView("WechatGamePage", model);
+	}
+	
+
+	@RequestMapping(value = "gamelist", method = RequestMethod.GET)
+	public ModelAndView gameList(HttpServletRequest request,
+			HttpSession session, HttpServletResponse response) throws Exception {
+		Map<String, Object> model = new HashMap<String, Object>();
 		Integer athleteId = Integer.parseInt(request.getParameter("athlete_id"));
+		List<GameView> views = gamesManagementService.getNextGamesByAthleteIdLimit10(athleteId);
 		session.setAttribute("userName", "wechat"); //需要写入session，否则其他的依然无法访问
 		model.put("athlete_id", athleteId);
-		return new ModelAndView("WechatGamePage", model);
+		model.put("games", views);
+		return new ModelAndView("WechatNextGameListPage", model);
+	}
+
+	@RequestMapping(value = "resultlist", method = RequestMethod.GET)
+	public ModelAndView resultList(HttpServletRequest request,
+			HttpSession session, HttpServletResponse response) throws Exception {
+		Map<String, Object> model = new HashMap<String, Object>();
+		Integer athleteId = Integer.parseInt(request.getParameter("athlete_id"));
+		List<GameView> views = gamesManagementService.getLastGamesByAthleteIdLimit10(athleteId);
+		session.setAttribute("userName", "wechat"); //需要写入session，否则其他的依然无法访问
+		model.put("athlete_id", athleteId);
+		model.put("games", views);
+		return new ModelAndView("WechatPastGameListPage", model);
 	}
 	
 	@RequestMapping(value = "bind", method = RequestMethod.GET)
@@ -237,6 +262,31 @@ public class WeChatControl extends HttpServlet{
 		model.put("game", gameView);
 		if(gameView!=null){
 			int gamesId = gameView.getGamesId();
+			List<GoalView> hostGoalList = gamesManagementService.getTeamGoalsInGame(gamesId, gameView.getHostTeamId());
+			List<GoalView> guestGoalList = gamesManagementService.getTeamGoalsInGame(gamesId, gameView.getGuestTeamId());
+			List<FoulView> hostFoulList = gamesManagementService.getTeamFoulInGame(gamesId, gameView.getHostTeamId());
+			List<FoulView> guestFoulList = gamesManagementService.getTeamFoulInGame(gamesId, gameView.getGuestTeamId());
+			List<MemberAthleteView> hostAthleteList = teamManagementService.getAthleteMemberByTeamId(gameView.getHostTeamId());
+			List<MemberAthleteView> guestAthleteList = teamManagementService.getAthleteMemberByTeamId(gameView.getGuestTeamId());
+			model.put("host_goals", hostGoalList);
+			model.put("guest_goals", guestGoalList);
+			model.put("host_fouls",  hostFoulList);
+			model.put("guest_fouls", guestFoulList);
+			model.put("host_athletes", hostAthleteList);
+			model.put("guest_athletes", guestAthleteList);
+		}
+		return model;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "getgame", method = RequestMethod.GET)
+	public Map<String, Object> getGame(HttpServletRequest request,
+			HttpSession session, HttpServletResponse response) throws Exception {
+		Map<String, Object> model = new HashMap<String, Object>();
+		Integer gamesId = Integer.parseInt(request.getParameter("games_id"));
+		GameView gameView = gamesManagementService.getGameById(gamesId);
+		model.put("game", gameView);
+		if(gameView!=null){
 			List<GoalView> hostGoalList = gamesManagementService.getTeamGoalsInGame(gamesId, gameView.getHostTeamId());
 			List<GoalView> guestGoalList = gamesManagementService.getTeamGoalsInGame(gamesId, gameView.getGuestTeamId());
 			List<FoulView> hostFoulList = gamesManagementService.getTeamFoulInGame(gamesId, gameView.getHostTeamId());

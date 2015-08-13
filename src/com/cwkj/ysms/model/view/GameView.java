@@ -197,17 +197,17 @@ public class GameView {
 	public void setGuestTeamName(String guestTeamName) {
 		this.guestTeamName = guestTeamName;
 	}
-	public Integer hostUniform;
-	public Integer getHostUniform() {
+	public String hostUniform;
+	public String getHostUniform() {
 		return hostUniform;
 	}
-	public void setHostUniform(Integer hostUniform) {
+	public void setHostUniform(String hostUniform) {
 		this.hostUniform = hostUniform;
 	}
-	public Integer getGuestUniform() {
+	public String getGuestUniform() {
 		return guestUniform;
 	}
-	public void setGuestUniform(Integer guestUniform) {
+	public void setGuestUniform(String guestUniform) {
 		this.guestUniform = guestUniform;
 	}
 	public String getGameLocation() {
@@ -216,7 +216,7 @@ public class GameView {
 	public void setGameLocation(String gameLocation) {
 		this.gameLocation = gameLocation;
 	}
-	public Integer guestUniform;
+	public String guestUniform;
 	public String gameLocation;
 	public String getGameTime() {
 		return gameTime;
