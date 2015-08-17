@@ -405,6 +405,12 @@
 				<div class="score">
 					<table width="100%" style="text-align: center">
 						<tr>
+							<td style="width:150px;">
+								<table>
+									<tr><td><img id="host_downloadteammemberlist" class="download" src="${pageContext.request.contextPath}/images/gameview_downloadteammemberlist.png"/></td></tr>
+									<tr><td><img id="host_downloadteammemberlist" class="download" src="${pageContext.request.contextPath}/images/gameview_downloadcardiinfo.png"/></td></tr>
+								</table>
+							</td>
 							<td><img
 								src="${pageContext.request.contextPath}/images/logo.png">
 								<p id="record_host_school_name"></p></td>
@@ -419,6 +425,12 @@
 							<td><img
 								src="${pageContext.request.contextPath}/images/logo.png">
 								<p id="record_guest_school_name"></p></td>
+							<td style="width:150px;">
+								<table>
+									<tr><td><img id="guest_downloadteammemberlist" class="download" src="${pageContext.request.contextPath}/images/gameview_downloadteammemberlist.png"/></td></tr>
+									<tr><td><img id="guest_downloadteammemberlist" class="download" src="${pageContext.request.contextPath}/images/gameview_downloadcardiinfo.png"/></td></tr>
+								</table>
+							</td>
 						</tr>
 					</table>
 				</div>
