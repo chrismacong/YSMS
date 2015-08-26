@@ -52,6 +52,7 @@
 	}
 	.foot_right{
 		margin-left:150px;
+		margin-top:-5px;
 	}
 	.shuru{
 		width:282px;
@@ -131,4 +132,18 @@
 		font-size:20px;
 		color:#fff;
 		margin-left: 10px
+	}
+	#rapid_judge_register{
+		position:absolute;
+		width:200px;
+		height:40px;
+		background: url(../images/rapid_judge_register.png) no-repeat center center;
+		cursor:pointer;
+	}
+	#rapid_judge_register:hover{
+		position:absolute;
+		width:200px;
+		height:40px;
+		background: url(../images/rapid_judge_register_hover.png) no-repeat center center;
+		cursor:pointer;
 	}

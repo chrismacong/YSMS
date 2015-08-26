@@ -1,0 +1,209 @@
+.neirong_wk {
+	padding-top: 0;
+}
+
+.caipan_apply .neirong {
+	width: 800px
+}
+
+.add_info td {
+	height: 50px;
+}
+
+.name_checkbox {
+	height: 20px !important;
+}
+
+.btn_m {
+	float: left;
+	height: 50px;
+	width: 252px
+}
+
+.icon_fj {
+	width: 14px;
+	height: 30px;
+	float: left;
+	margin-right: 5px;
+	background: url(../images/huixingzhen.png)
+}
+
+.fujian {
+	position: absolute;
+	top: -20px;
+	left: 180px;
+	padding: 20px;
+	background: #fff;
+	border: 1px solid #0fd46c;
+	border-radius: 10px;
+	width: 644px;
+	height: 424px;
+	z-index: 99999;
+}
+
+.fujian div {
+	float: left;
+}
+
+.next, .prev {
+	width: 36px;
+	height: 70px;
+	margin-top: 20%
+}
+
+.next {
+	background: url(../images/next.png)
+}
+
+.prev {
+	background: url(../images/prev.png)
+}
+
+.img {
+	width: 530px;
+	padding: 20px;
+	position: relative;
+}
+
+.img img {
+	width: 100%;
+}
+
+.clearboth {
+	clear: both;
+}
+
+.img li {
+	height: 424px;
+	width: 530px;
+	float: left;
+}
+
+.soli ul {
+	margin-left: 0px;
+}
+
+.fujian a {
+	position: absolute;
+	top: -5px;
+	right: -20px;
+}
+
+.btn_wk {
+	height: 50px;
+	width: 290px;
+	margin: 5px auto;
+	cursor: pointer;
+}
+
+.soli {
+	height: 424px;
+	width: 530px;
+	overflow: hidden;
+	position: relative;
+}
+
+.showapply {
+	cursor: pointer;
+}
+.input_wk {
+	width: 280px;
+}
+
+.input_m {
+	width: 240px;
+	cursor: pointer;
+}
+
+.input_m .re_button {
+	background: #fff;
+	color: #333333;
+	font-size: 1em
+}
+
+textarea {
+	font-size: 1.0em;
+	font-family: 'Microsoft YaHei', 'SimHei', 'SimSun';
+	color: #160b2d;
+}
+
+.caipan_detailed {
+	position: absolute;
+	top: 0;
+	left: 105px;
+	padding: 20px;
+	background: #fff;
+	border: 1px solid #0fd46c;
+	border-radius: 10px;
+	width: 800px;
+	z-index: 99998;
+}
+
+.caipan_apply {
+	position: absolute;
+	top: 0;
+	left: 105px;
+	padding: 20px;
+	background: #fff;
+	border: 1px solid #0fd46c;
+	border-radius: 10px;
+	width: 800px;
+	z-index: 99998;
+}
+
+.add_info td {
+	height: 50px;
+}
+
+.name_checkbox {
+	height: 20px !important;
+}
+
+.black_overlay {
+	display: none;
+	position: absolute;
+	top: 0%;
+	left: 0%;
+	width: 100%;
+	height: 100%;
+	background-color: white;
+	z-index: 1001;
+	-moz-opacity: 0.8;
+	opacity: .80;
+	filter: alpha(opacity = 80);
+}
+
+#levels {
+	width: 480px;
+	height: 100%;
+	margin: 0 auto
+}
+
+#add_judge {
+	cursor:pointer;
+}
+
+.judge_block {
+	position: absolute;
+	top: 10%;
+	left: 25%;
+	height: 600px;
+	width: 50%;
+	border: 1px solid #0f0;
+	border-radius: 8px;
+	background: #fff;
+}
+
+.close {
+	position: absolute;
+	height: 36px;
+	width: 36px;
+	right: -15px;
+	top: -15px;
+	background: url(../images/outdiv_delete.png);
+}
+
+#register_judge_title{
+	width:100%;
+	text-align:center;
+}

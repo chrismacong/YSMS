@@ -58,6 +58,15 @@ public class Interceptor extends HandlerInterceptorAdapter implements Initializi
 			else if("voteresult".equals(methodNameResolver.getHandlerMethodName(request))&&(url.contains("newsmanagement"))){
 				return true;
 			}
+			else if("register".equals(methodNameResolver.getHandlerMethodName(request))&&(url.contains("judgemanagement"))){
+				return true;
+			}
+			else if("getjobsanddistrict".equals(methodNameResolver.getHandlerMethodName(request))&&(url.contains("judgemanagement"))){
+				return true;
+			}
+			else if("judegapply".equals(methodNameResolver.getHandlerMethodName(request))&&(url.contains("judgemanagement"))){
+				return true;
+			}
 			else if(url.contains("exportcard")){
 				return true;
 			}

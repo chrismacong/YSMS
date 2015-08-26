@@ -1,16 +1,22 @@
 package com.cwkj.ysms.service.impl;
 
 import java.awt.Color;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.swing.JSpinner.DateEditor;
 
+import jxl.Sheet;
 import jxl.Workbook;
 import jxl.format.UnderlineStyle;
+import jxl.read.biff.BiffException;
 import jxl.write.Label;
 import jxl.write.WritableCellFormat;
 import jxl.write.WritableFont;
@@ -974,5 +980,42 @@ public class DataExportingServiceImpl implements DataExportingService {
 			exports.add(cav);
 		}
 		return exports;
+	}
+
+	@Override
+	public Map<String, Object> addJudgeBatches(Sheet sheet) {
+		Map<String, Object> map = new HashMap<String, Object>();
+
+		int rows = sheet.getRows();
+		jxl.Cell[] cell = sheet.getRow(0);
+		String[] checkName = {"姓名","性别","身份证号","联系电话","用户名","密码","校级执法资格","区级执法资格","市级裁判员资格","市级助理裁判资格","市级第四官员资格","市级裁判监督资格","市级比赛监督资格","市级统计资格"};
+		for(int j=0; j<cell.length; j++) {
+			if(!checkName[j].equals(sheet.getCell(j,0).getContents())){
+				map.put("resultCode", "300");
+				map.put("resultDesc", "请确认使用平台中下载的Excel模板！");
+				return map;
+			}
+		}
+		map.put("resultCode", "200");
+		map.put("resultDesc", "批量导入成功");
+		return map;
+	}
+	
+	public static void main(String[] args) {
+		try {
+			Workbook book = Workbook.getWorkbook(new File("C:\\Users\\Administrator\\Desktop\\judgebatch.xls"));
+			Sheet sheet = book.getSheet(0);
+			Map map = new DataExportingServiceImpl().addJudgeBatches(sheet);
+			System.out.println(map.get("resultCode") + " " + map.get("resultDesc"));
+		} catch (BiffException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IndexOutOfBoundsException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

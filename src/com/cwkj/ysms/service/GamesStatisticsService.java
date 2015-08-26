@@ -4,7 +4,9 @@ import java.util.List;
 
 import com.cwkj.ysms.model.YsmsGames;
 import com.cwkj.ysms.model.YsmsLeagueZone;
+import com.cwkj.ysms.model.view.AssistRankView;
 import com.cwkj.ysms.model.view.MarkItemView;
+import com.cwkj.ysms.model.view.ShooterRankView;
 
 /**
  * 赛事统计Service接口
@@ -132,4 +134,19 @@ public interface GamesStatisticsService {
 	 * @return
 	 */
 	public List<MarkItemView> getLeagueTable(int zoneId, String groupName);
+	
+	/**
+	 * 获取射手榜 
+	 * @param zoneId
+	 * @return
+	 */
+	public List<ShooterRankView> getShooterRank(int zoneId, int topHowMany);
+	
+	/**
+	 * 获取助攻榜
+	 * @param zoneId
+	 * @param topHowMany
+	 * @return
+	 */
+	public List<AssistRankView> getAssistRank(int zoneId, int topHowMany);
 }

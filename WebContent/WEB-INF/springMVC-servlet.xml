@@ -100,6 +100,7 @@
 				<value>com.cwkj.ysms.model.YsmsJudgeAtt</value>
 				<value>com.cwkj.ysms.model.YsmsJudgeandlevel</value>
 				<value>com.cwkj.ysms.model.YsmsJudgelevel</value>
+				<value>com.cwkj.ysms.model.YsmsJudgeUser</value>
 				<value>com.cwkj.ysms.model.YsmsLeague</value>
 				<value>com.cwkj.ysms.model.YsmsLeagueLevel</value>
 				<value>com.cwkj.ysms.model.YsmsLeagueZone</value>

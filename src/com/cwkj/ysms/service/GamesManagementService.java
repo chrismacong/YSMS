@@ -8,6 +8,7 @@ import com.cwkj.ysms.model.YsmsGames;
 import com.cwkj.ysms.model.view.FoulView;
 import com.cwkj.ysms.model.view.GameView;
 import com.cwkj.ysms.model.view.GoalView;
+import com.cwkj.ysms.model.view.SuspensionView;
 
 /**
  * 比赛管理Service接口
@@ -275,8 +276,23 @@ public interface GamesManagementService {
 	 */
 	public List<FoulView> getTeamFoulInGame(int gameId, int teamId);
 	
+	/**
+	 * 根据分页信息获取比赛里列表
+	 * @param leagueId
+	 * @param zoneId
+	 * @param date
+	 * @param pageIndex
+	 * @return
+	 */
 	public List<GameView> getGamesByPage(Integer leagueId, Integer zoneId, Date date, String pageIndex);
 
+	/**
+	 * 获取某联赛组在某一天的比赛总数
+	 * @param leagueId
+	 * @param zoneId
+	 * @param date
+	 * @return
+	 */
 	public int getGamesCount(Integer leagueId, Integer zoneId, Date date);
 	
 	public boolean deleteGame(int gamesId);
@@ -339,4 +355,12 @@ public interface GamesManagementService {
 	 * @return
 	 */
 	public List<GameView> getLastGamesByAthleteIdLimit10(int athleteId);
+	
+	/**
+	 * 获取球队在比赛中的停赛信息
+	 * @param teamId
+	 * @param gamesId
+	 * @return
+	 */
+	public List<SuspensionView> getSuspensionList(int teamId, int gamesId);
 }

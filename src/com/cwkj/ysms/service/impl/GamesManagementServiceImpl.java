@@ -1,6 +1,5 @@
 package com.cwkj.ysms.service.impl;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -29,12 +28,14 @@ import com.cwkj.ysms.model.YsmsFoul;
 import com.cwkj.ysms.model.YsmsGames;
 import com.cwkj.ysms.model.YsmsGamesJudge;
 import com.cwkj.ysms.model.YsmsGoal;
+import com.cwkj.ysms.model.YsmsJobs;
 import com.cwkj.ysms.model.YsmsJudge;
 import com.cwkj.ysms.model.YsmsTeammember;
 import com.cwkj.ysms.model.YsmsZoneTeam;
 import com.cwkj.ysms.model.view.FoulView;
 import com.cwkj.ysms.model.view.GameView;
 import com.cwkj.ysms.model.view.GoalView;
+import com.cwkj.ysms.model.view.SuspensionView;
 import com.cwkj.ysms.service.GamesManagementService;
 import com.cwkj.ysms.util.Page;
 
@@ -1085,5 +1086,95 @@ public class GamesManagementServiceImpl implements GamesManagementService{
 		}
 		return views;
 	}
-	
+
+	@Override
+	public List<SuspensionView> getSuspensionList(int teamId, int gamesId) {
+		List<SuspensionView> result = new ArrayList<SuspensionView>();
+		//首先查找出球队在本场比赛之前已经结束的比赛
+		//由于球队与联赛组别强关联，只需要查询出在比赛时间之前结束的所有比赛即可
+		YsmsGames game = gamesDao.findById(gamesId);
+		List<YsmsGames> gamesBeforeThisGame = gamesDao.getGamesByTeamIdBeforeDate(teamId, game.getGamesTime());
+		//获取这只球队的球员名单
+		List<YsmsTeammember> teammemberList = teammemberDao.findAthletesByTeamId(teamId);
+		//获取球队的上一场比赛，这在停赛判断中很重要
+		YsmsGames lastGame = gamesDao.getLastGameByTeamId(teamId);
+		//获取每一个球员的红黄牌信息
+		if(teammemberList!=null){
+			for(int i=0;i<teammemberList.size();i++){
+				YsmsTeammember member = teammemberList.get(i);
+				List<YsmsFoul> fouls = foulDao.getYsmsFoulsByAthleteId(member.getYsmsAthlete().getAthleteId());
+				int countYellow = 0;
+				int countYellowCrossGame = 0;//交叉赛黄牌
+				int countRed = 0;
+				boolean didLastGameGetYellow = false;//上场比赛是否吃到了黄牌？
+				boolean didLastGameGetDoubleYellow = false;//上场比赛是否吃到两张黄牌？
+				boolean didLastGameGetRed = false;//上场比赛是否吃到了红牌？
+				if(fouls!=null){
+					for(int m=0;m<fouls.size();m++){
+						YsmsFoul foul = fouls.get(m);
+						if(foul.getFoulLevel()==1){
+							if(foul.getYsmsGames().getGamesOrder()==2){
+								countYellowCrossGame++;
+							}
+							countYellow++;
+							if(foul.getYsmsGames().getGamesId()==lastGame.getGamesId()){
+								if(didLastGameGetYellow){
+									didLastGameGetDoubleYellow = true;
+								}
+								else{
+									didLastGameGetYellow = true;
+								}
+							}
+						}
+						else if(foul.getFoulLevel()==2){
+							countRed++;
+							if(foul.getYsmsGames().getGamesId().equals(lastGame.getGamesId())){
+								didLastGameGetRed = true;
+							}
+						}
+					}
+				}
+				//下面做判断
+				//如果发现该球员有红牌，并且该球员上场比赛吃到了红牌,停赛一场
+				if(countRed>0&&didLastGameGetRed){
+					SuspensionView sv = new SuspensionView();
+					sv.setPlayerName(member.getYsmsAthlete().getIdentifiedName());
+					sv.setPlayerNum(member.getAthleteNum()==null?"":member.getAthleteNum().toString());
+					sv.setSuspensionReason("红牌停赛");
+					result.add(sv);
+				}
+				//如果球员上场比赛吃到了两张黄牌，同样红牌停赛
+				else if(didLastGameGetDoubleYellow){
+					SuspensionView sv = new SuspensionView();
+					sv.setPlayerName(member.getYsmsAthlete().getIdentifiedName());
+					sv.setPlayerNum(member.getAthleteNum()==null?"":member.getAthleteNum().toString());
+					sv.setSuspensionReason("红牌停赛");
+					result.add(sv);
+				}
+				//如果这一场依然是小组赛，并且球员黄牌数为2的倍数，并且上场比赛吃到了黄牌。累计黄牌停赛
+				else if(game.getGamesOrder()==1 &&
+						countYellow > 0 &&
+						countYellow%2==0 &&
+						didLastGameGetYellow){
+					SuspensionView sv = new SuspensionView();
+					sv.setPlayerName(member.getYsmsAthlete().getIdentifiedName());
+					sv.setPlayerNum(member.getAthleteNum()==null?"":member.getAthleteNum().toString());
+					sv.setSuspensionReason("累计黄牌停赛");
+					result.add(sv);
+				}
+				//如果这一场是淘汰赛，那么小组赛累计的黄牌清零，只看淘汰赛的情况
+				else if(game.getGamesOrder()==2 &&
+						countYellowCrossGame > 0 &&
+						countYellowCrossGame%2==0 &&
+						didLastGameGetYellow){
+					SuspensionView sv = new SuspensionView();
+					sv.setPlayerName(member.getYsmsAthlete().getIdentifiedName());
+					sv.setPlayerNum(member.getAthleteNum()==null?"":member.getAthleteNum().toString());
+					sv.setSuspensionReason("累计黄牌停赛");
+					result.add(sv);
+				}
+			}
+		}
+		return result;
+	}
 }

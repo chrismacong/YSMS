@@ -18,6 +18,8 @@
 <link type="text/css" href="<%=basePath%>css/style.css" rel="stylesheet" />
 <link type="text/css" href="<%=basePath%>css/league.css"
 	rel="stylesheet" />
+<link type="text/css" href="<%=basePath%>css/judge.css"
+	rel="stylesheet" />
 <script src="<%=basePath%>js/jquery.min.js"></script>
 <script src="<%=basePath%>js/jquery-ui.min.js"></script>
 <script language="javascript" type="text/javascript"
@@ -26,6 +28,14 @@
 	src="<%=basePath%>js/jquery.ui.datepicker-zh-CN.js"></script>
 <script language="javascript" type="text/javascript"
 	src="${pageContext.request.contextPath}/js/ds.dialog.js"></script>
+<link rel="stylesheet" type="text/css"
+	href="<%=basePath%>css/html5tooltips.css" />
+<link rel="stylesheet" type="text/css"
+	href="<%=basePath%>css/html5tooltips.animation.css" />
+<script type="text/javascript" src="<%=basePath%>js/html5tooltips.js"></script>
+<script type="text/javascript"
+	src="${pageContext.request.contextPath}/js/md5.js"></script>
+
 <script type="text/javascript">
 	/*注册裁判的选择等级 */
 	$(function() {
@@ -57,6 +67,7 @@
 			 
 		})
 		$('#riqi').datepicker();
+		$("#detail_birthday").datepicker();
 		 
 	 
     	$('.fujian a').click(function(){
@@ -83,191 +94,83 @@
     			$('.soli ul').css('margin-left',mar_left)
     		}
     	})
+    	
+    	$("#add_judge").click(function(){
+    		$(".judge_block").show();
+
+			$("#judgeName").val("");
+			$("#judgeGender").val("1");
+			$("#judgeUserName").val("");
+			$("#judgeUserPassword").val("");
+			$("#judgeUserComfirnPassword").val(""); 
+			$(".caizhu").find("span").addClass("lev4")
+    	})
+    	
+    	$(".close").click(function(){
+    		$(".judge_block").hide();
+    		//todo 清空block中input的所有输入内容
+    	})
 	})
+	
+	html5tooltips([
+	  {
+		contentText: "校级联赛裁判",
+		targetSelector: ".judgelevel1",
+		stickTo: "top",
+		maxWidth: 100 ,
+		animateFunction: "slidein"
+	  },
+	  {
+		contentText: "区级联赛裁判",
+		targetSelector: ".judgelevel2",
+		stickTo: "top",
+		maxWidth: 100 ,
+		animateFunction: "slidein"
+	  },
+	  {
+		contentText: "市级裁判员",
+		targetSelector: ".judgelevel3",
+		stickTo: "top",
+		maxWidth: 100 ,
+		animateFunction: "slidein"
+	  },
+	  {
+		contentText: "市级助理裁判",
+		targetSelector: ".judgelevel4",
+		stickTo: "top",
+		maxWidth: 100 ,
+		animateFunction: "slidein"
+	  },
+	  {
+		contentText: "市级第四官员",
+		targetSelector: ".judgelevel5",
+		stickTo: "top",
+		maxWidth: 100 ,
+		animateFunction: "slidein"
+	  },
+	  {
+		contentText: "市级裁判监督",
+		targetSelector: ".judgelevel6",
+		stickTo: "top",
+		maxWidth: 100 ,
+		animateFunction: "slidein"
+	  },
+	  {
+		contentText: "市级比赛监督",
+		targetSelector: ".judgelevel7",
+		stickTo: "top",
+		maxWidth: 100 ,
+		animateFunction: "slidein"
+	  },
+	  {
+		contentText: "市级统计",
+		targetSelector: ".judgelevel8",
+		stickTo: "top",
+		maxWidth: 100 ,
+		animateFunction: "slidein"
+	  }
+	]);
 </script>
-<style type="text/css">
-.neirong_wk {
-	padding-top: 0;
-}
-
- 
-
-.caipan_apply .neirong {
-	width: 800px
-}
-
-.add_info td {
-	height: 50px;
-}
-
-.name_checkbox {
-	height: 20px !important;
-}
-
-.btn_m {
-	float: left;
-	height: 50px;
-	width: 252px
-}
-
-.icon_fj {
-	width: 14px;
-	height: 30px;
-	float: left;
-	margin-right: 5px;
-	background: url(images/huixingzhen.png)
-}
-
-.fujian {
-	position: absolute;
-	top: -20px;
-	left: 180px;
-	padding: 20px;
-	background: #fff;
-	border: 1px solid #0fd46c;
-	border-radius: 10px;
-	width: 644px;
-	height: 424px;
-	z-index: 99999;
-}
-
-.fujian div {
-	float: left;
-}
-
-.next, .prev {
-	width: 36px;
-	height: 70px;
-	margin-top: 20%
-}
-
-.next {
-	background: url(images/next.png)
-}
-
-.prev {
-	background: url(images/prev.png)
-}
-
-.img {
-	width: 530px;
-	padding: 20px;
-	position: relative;
-}
-
-.img img {
-	width: 100%;
-}
-
-.clearboth {
-	clear: both;
-}
-
-.img li {
-	height: 424px;
-	width: 530px;
-	float: left;
-}
-
-.soli ul {
-	margin-left: 0px;
-}
-
-.fujian a {
-	position: absolute;
-	top: -5px;
-	right: -20px;
-}
-
-.btn_wk {
-    height: 50px;
-    width: 290px;
-    margin: 5px auto;
-    cursor: pointer;
-}
-
-.soli {
-	height: 424px;
-	width: 530px;
-	overflow: hidden;
-	position: relative;
-}
-
-.showapply {
-	cursor: pointer;
-}
-</style>
-<style type="text/css">
-.input_wk {
-	width: 280px;
-}
-
-.input_m {
-	width: 240px;
-	cursor: pointer;
-}
-
-.input_m .re_button {
-	background: #fff;
-	color: #333333;
-	font-size: 1em
-}
-
- 
-
-textarea {
-	font-size: 1.0em;
-	font-family: 'Microsoft YaHei', 'SimHei', 'SimSun';
-	color: #160b2d;
-}
-
-.caipan_detailed {
-	position: absolute;
-	top: 0;
-	left: 105px;
-	padding: 20px;
-	background: #fff;
-	border: 1px solid #0fd46c;
-	border-radius: 10px;
-	width: 800px;
-	z-index: 99998;
-}
-
-.caipan_apply {
-	position: absolute;
-	top: 0;
-	left: 105px;
-	padding: 20px;
-	background: #fff;
-	border: 1px solid #0fd46c;
-	border-radius: 10px;
-	width: 800px;
-	z-index: 99998;
-}
-
-.add_info td {
-	height: 50px;
-}
-
-.name_checkbox {
-	height: 20px !important;
-}
-
-.black_overlay {
-	display: none;
-	position: absolute;
-	top: 0%;
-	left: 0%;
-	width: 100%;
-	height: 100%;
-	background-color: white;
-	z-index: 1001;
-	-moz-opacity: 0.8;
-	opacity: .80;
-	filter: alpha(opacity = 80);
-}
-#levels{width:480px;height:100%;margin:0 auto}
-</style>
 </head>
 <body>
 
@@ -286,14 +189,15 @@ textarea {
 								<img src="<%=basePath%>images/a_add.png" />
 							</div>
 							<p>添加裁判</p></li> --%>
-			 
-				<li   onclick="show(2)"><div>
+
+				<li onclick="show(2)"><div>
 						<img src="<%=basePath%>images/a_message.png" />
 					</div>
 					<p>申请消息</p></li>
-				 <li id="delete_button" onclick="deleteJudges()"><div>
-					<img src="<%=basePath%>images/a_delete.png" /></div>
-						<p>删除裁判</p></li>  
+				<li id="delete_button" onclick="deleteJudges()"><div>
+						<img src="<%=basePath%>images/a_delete.png" />
+					</div>
+					<p>删除裁判</p></li>
 			</ul>
 		</div>
 		<div class="neirong_wk">
@@ -305,10 +209,10 @@ textarea {
 				<thead>
 					<tr>
 						<td width='200px'>
-							<div class="table_head_left" style="width: 210px">姓名</div>
+							<div class="table_head_left" id="add_judge" style="width: 210px">添加裁判</div>
 						</td>
 						<td width='100px'>性别</td>
-						<td width="192px">出生年月</td>
+						<td width="192px">联系方式</td>
 						<td width="466px">裁判等级</td>
 						<td width='100px'></td>
 					</tr>
@@ -316,7 +220,7 @@ textarea {
 				<tbody>
 					<tr>
 						<td colspan="5">
-							<div class="tbody_sroll" style="height:482px;">
+							<div class="tbody_sroll" style="height: 482px;">
 								<table id="list_judge" cellpadding="0" cellspacing="0"
 									width='100%'>
 
@@ -338,8 +242,9 @@ textarea {
 									<div>
 										<div class="input_l"></div>
 										<div class="input_m">
-											<input id="detail_name" type="text" class="input_text" disabled="disabled">
-											<input id="detail_judgeid" type="text" class="input_text" style="display: none;">
+											<input id="detail_name" type="text" class="input_text"
+												disabled="disabled"> <input id="detail_judgeid"
+												type="text" class="input_text" style="display: none;">
 										</div>
 										<div class="input_r"></div>
 									</div>
@@ -350,7 +255,7 @@ textarea {
 										<div class="input_l"></div>
 										<div class="input_m">
 											<div class="select_wk">
-												<select id="detail_gender" disabled="disabled">
+												<select id="detail_gender">
 													<option value="" selected="selected">--请选择--</option>
 													<option value="1">男</option>
 													<option value="0">女</option>
@@ -367,7 +272,7 @@ textarea {
 									<div>
 										<div class="input_l"></div>
 										<div class="input_m">
-											<input id="detail_id" type="text" class="input_text" disabled="disabled">
+											<input id="detail_id" type="text" class="input_text">
 										</div>
 										<div class="input_r"></div>
 									</div>
@@ -377,7 +282,7 @@ textarea {
 									<div>
 										<div class="input_l"></div>
 										<div class="input_m">
-											<input id="detail_birthday" type="text" class="input_text" disabled="disabled">
+											<input id="detail_birthday" type="text" class="input_text">
 										</div>
 										<div class="input_r"></div>
 									</div>
@@ -392,7 +297,7 @@ textarea {
 									<div>
 										<div class="input_l"></div>
 										<div class="input_m">
-											<input id="detail_nationality" type="text" class="input_text" disabled="disabled"	>
+											<input id="detail_nationality" type="text" class="input_text">
 										</div>
 										<div class="input_r"></div>
 									</div>
@@ -431,7 +336,7 @@ textarea {
 										<div class="input_l"></div>
 										<div class="input_m">
 											<div class="select_wk">
-												<select id="detail_level" disabled="disabled">
+												<select id="detail_level">
 													<option value="" selected="selected">--请选择--</option>
 													<option value="0">无</option>
 													<option value="1">三级裁判</option>
@@ -475,8 +380,8 @@ textarea {
 								</td>
 							</tr>
 							<tr>
-								<td >家庭地址：</td>
-								<td >
+								<td>家庭地址：</td>
+								<td>
 									<div>
 										<div class="input_l"></div>
 										<div class="input_m">
@@ -490,7 +395,7 @@ textarea {
 								<td colspan="4" style="text-align: center">请选择裁判等级</td>
 							</tr>
 							<tr>
-								<td  class="level caizhu" colspan="4">
+								<td class="level caizhu" colspan="4">
 									<p width="315px" id="levels"></p>
 								</td>
 							</tr>
@@ -500,7 +405,7 @@ textarea {
 										<div class="btn_l btn_l_a_green"></div>
 										<div class="btn_m btn_m_a_green">
 											<input type="button" class="input_btn"
-												style="background:none" value="保存修改" onclick="update()">
+												style="background: none" value="保存修改" onclick="update()">
 										</div>
 										<div class="btn_r btn_r_a_green"></div>
 									</div>
@@ -520,7 +425,7 @@ textarea {
 			<table id="caipan_list" class="list_info" cellpadding="0"
 				cellspacing="0" style="display: none;">
 				<thead>
-	 
+
 					<tr>
 						<td width='200px'>
 							<div class="table_head_left" style="width: 210px">姓名</div>
@@ -535,13 +440,14 @@ textarea {
 				<tbody>
 					<tr>
 						<td colspan="6">
-							<div class="tbody_sroll" style="height:481px"> 
-								<table id="application_list" cellpadding="0" cellspacing="0" width='100%'>
-									 
+							<div class="tbody_sroll" style="height: 481px">
+								<table id="application_list" cellpadding="0" cellspacing="0"
+									width='100%'>
+
 								</table>
 							</div>
-					 </td>
-					 </tr>
+						</td>
+					</tr>
 				</tbody>
 			</table>
 			<!--申请消息查看 END-->
@@ -550,7 +456,8 @@ textarea {
 			<div class="caipan_apply" style="display: none">
 				<div class="neirong">
 					<div class="close"></div>
-					<table id="app_detail" class="add_info" cellpadding="0" cellspacing="0" width='85%'>
+					<table id="app_detail" class="add_info" cellpadding="0"
+						cellspacing="0" width='85%'>
 						<tbody>
 							<tr>
 								<td style="display: none;" id="app_id"></td>
@@ -602,7 +509,7 @@ textarea {
 										<div class="btn_l btn_l_a_green"></div>
 										<div class="btn_m btn_m_a_green">
 											<input id="yes" type="button" class="input_btn"
-												style="background:none" value="通过申请" onclick="isPassed(2)">
+												style="background: none" value="通过申请" onclick="isPassed(2)">
 										</div>
 										<div class="btn_r btn_r_a_green"></div>
 									</div>
@@ -613,7 +520,7 @@ textarea {
 										<div class="btn_l btn_l_a_red"></div>
 										<div class="btn_m btn_m_a_red">
 											<input id="no" type="button" class="input_btn"
-												style="background:none" value="拒绝申请" onclick="isPassed(3)">
+												style="background: none" value="拒绝申请" onclick="isPassed(3)">
 										</div>
 										<div class="btn_r btn_r_a_red"></div>
 									</div>
@@ -632,14 +539,14 @@ textarea {
 					&nbsp;<a href="javascript:void(0)">关闭</a>
 					<div class="soli">
 						<ul id="atts">
-							  
+
 						</ul>
 					</div>
 				</div>
 				<div class="next"></div>
 				<div class="clearboth"></div>
 			</div>
-			 
+
 
 			<!--分页跳转，裁判信息和申请消息都需要-->
 			<div id="paging">
@@ -656,120 +563,6 @@ textarea {
 						<input id='pageIndex' type='text' width='10px' value='1'>
 					</p>
 				</div>
-			</div>
-
-
-
-			<!--注册裁判-->
-			<div id="caipan_add" class="neirong" style="display: none">
-				<table class="add_info" cellpadding="0" cellspacing="0">
-					<tbody>
-						<tr>
-							<td>裁判姓名：</td>
-							<td>
-								<div>
-									<div class="input_l"></div>
-									<div class="input_m">
-										<input id="judgeName" type="text" class="input_text">
-									</div>
-									<div class="input_r"></div>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td>性别：</td>
-							<td>
-								<div>
-									<div class="input_l"></div>
-									<div class="input_m">
-										<div class="select_wk">
-											<select id="judgeGender">
-												<option value="" selected="selected">--请选择--</option>
-												<option value="1">男</option>
-												<option value="0">女</option>
-											</select>
-											<div class="select_icon"></div>
-										</div>
-									</div>
-									<div class="input_r"></div>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td>用户名：</td>
-							<td>
-								<div>
-									<div class="input_l"></div>
-									<div class="input_m">
-										<input id="judgeUserName" type="text" class="input_text">
-									</div>
-									<div class="input_r"></div>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td>输入密码：</td>
-							<td>
-								<div>
-									<div class="input_l"></div>
-									<div class="input_m">
-										<input id="judgeUserPassword" type="password"
-											class="input_text">
-									</div>
-									<div class="input_r"></div>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td>确认密码：</td>
-							<td>
-								<div>
-									<div class="input_l"></div>
-									<div class="input_m">
-										<input id="judgeUserComfirnPassword" type="password"
-											class="input_text">
-									</div>
-									<div class="input_r"></div>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="4" style="text-align: center">请选择裁判等级</td>
-						</tr>
-						<tr>
-							<td class='level caizhu' colspan="4"><span id="level1"
-								class="lev1 lev4">校
-									<div></div>
-							</span> <span id="level2" class="lev2 lev4">区
-									<div></div>
-							</span> <span id="level3" class="lev3 lev4">主
-									<div></div>
-							</span> <span id="level4" class="lev3 lev4">边
-									<div></div>
-							</span> <span id="level5" class="lev3 lev4">四
-									<div></div>
-							</span> <span id="level6" class="lev3 lev4">记
-									<div></div>
-							</span> <span id="level7" class="lev3 lev4">官
-									<div></div>
-							</span></td>
-						</tr>
-						<tr>
-							<td colspan="2">
-								<div class="btn_wk">
-									<div class="btn_l btn_l_a_green"></div>
-									<div class="btn_m btn_m_a_green">
-										<input type="button" class="input_btn"
-											style="background:none" value="注册裁判"
-											onclick="registerJudge()">
-									</div>
-									<div class="btn_r btn_r_a_green"></div>
-								</div>
-							</td>
-						</tr>
-
-					</tbody>
-				</table>
 			</div>
 
 			<div id="caipan_search" class="neirong" style="display: none">
@@ -857,19 +650,21 @@ textarea {
 						</tr>
 						<tr>
 							<td class='level caizhu' colspan="4"><span id="slevel1"
-								class="lev1 lev4">校
+								class="lev1 lev4 judgelevel1">校
 									<div></div>
-							</span> <span id="slevel2" class="lev2 lev4">区
+							</span> <span id="slevel2" class="lev2 lev4 judgelevel2">区
 									<div></div>
-							</span> <span id="slevel3" class="lev3 lev4">主
+							</span> <span id="slevel3" class="lev3 lev4 judgelevel3">主
 									<div></div>
-							</span> <span id="slevel4" class="lev3 lev4">边
+							</span> <span id="slevel4" class="lev3 lev4 judgelevel4">边
 									<div></div>
-							</span> <span id="slevel5" class="lev3 lev4">四
+							</span> <span id="slevel5" class="lev3 lev4 judgelevel5">四
 									<div></div>
-							</span> <span id="slevel6" class="lev3 lev4">记
+							</span> <span id="slevel6" class="lev3 lev4 judgelevel6">裁
 									<div></div>
-							</span> <span id="slevel7" class="lev3 lev4">官
+							</span> <span id="slevel7" class="lev3 lev4 judgelevel7">赛
+									<div></div>
+							</span> <span id="slevel8" class="lev3 lev4 judgelevel8">统
 									<div></div>
 							</span></td>
 						</tr>
@@ -891,13 +686,160 @@ textarea {
 				</table>
 			</div>
 
-
+	
 
 
 
 		</div>
 	</div>
 	<div id="fade" class="black_overlay"></div>
+
+	<div class="judge_block" style="display: none">
+		<div class="close"></div>
+		<br/>
+		<h1 id="register_judge_title">注册裁判员</h1><button>批量导入</button>
+		<br/>
+			<!--注册裁判-->
+			<div id="caipan_add" class="neirong">
+				<table class="add_info" cellpadding="0" cellspacing="0">
+					<tbody>
+						<tr>
+							<td>裁判姓名：</td>
+							<td>
+								<div>
+									<div class="input_l"></div>
+									<div class="input_m">
+										<input id="judgeName" type="text" class="input_text">
+									</div>
+									<div class="input_r"></div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>性别：</td>
+							<td>
+								<div>
+									<div class="input_l"></div>
+									<div class="input_m">
+										<div class="select_wk">
+											<select id="judgeGender">
+												<option value="" selected="selected">--请选择--</option>
+												<option value="1">男</option>
+												<option value="0">女</option>
+											</select>
+											<div class="select_icon"></div>
+										</div>
+									</div>
+									<div class="input_r"></div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>身份证号：</td>
+							<td>
+								<div>
+									<div class="input_l"></div>
+									<div class="input_m">
+										<input id="judgeUserIdentifiedId" type="text"
+											class="input_text">
+									</div>
+									<div class="input_r"></div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>联系电话：</td>
+							<td>
+								<div>
+									<div class="input_l"></div>
+									<div class="input_m">
+										<input id="judgeUserPhonenum" type="text"
+											class="input_text">
+									</div>
+									<div class="input_r"></div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>用户名：</td>
+							<td>
+								<div>
+									<div class="input_l"></div>
+									<div class="input_m">
+										<input id="judgeUserName" type="text" class="input_text">
+									</div>
+									<div class="input_r"></div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>输入密码：</td>
+							<td>
+								<div>
+									<div class="input_l"></div>
+									<div class="input_m">
+										<input id="judgeUserPassword" type="password"
+											class="input_text">
+									</div>
+									<div class="input_r"></div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>确认密码：</td>
+							<td>
+								<div>
+									<div class="input_l"></div>
+									<div class="input_m">
+										<input id="judgeUserComfirnPassword" type="password"
+											class="input_text">
+									</div>
+									<div class="input_r"></div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="4" style="text-align: center">请选择裁判等级</td>
+						</tr>
+						<tr>
+							<td class='level caizhu' colspan="4"><span id="level1"
+								class="lev1 lev4 judgelevel1">校
+									<div></div>
+							</span> <span id="level2" class="lev2 lev4 judgelevel2">区
+									<div></div>
+							</span> <span id="level3" class="lev3 lev4 judgelevel3">主
+									<div></div>
+							</span> <span id="level4" class="lev3 lev4 judgelevel4">助
+									<div></div>
+							</span> <span id="level5" class="lev3 lev4 judgelevel5">四
+									<div></div>
+							</span> <span id="level6" class="lev3 lev4 judgelevel6">裁
+									<div></div>
+							</span> <span id="level7" class="lev3 lev4 judgelevel7">赛
+									<div></div>
+							</span> <span id="level8" class="lev3 lev4 judgelevel8">统
+									<div></div>
+							</span></td>
+						</tr>
+						<tr>
+							<td colspan="2">
+								<div class="btn_wk">
+									<div class="btn_l btn_l_a_green"></div>
+									<div class="btn_m btn_m_a_green">
+										<input type="button" class="input_btn"
+											style="background: none" value="注册裁判"
+											onclick="registerJudge()">
+									</div>
+									<div class="btn_r btn_r_a_green"></div>
+								</div>
+							</td>
+						</tr>
+
+					</tbody>
+				</table>
+			</div>
+	</div>
+		
 
 	<script type="text/javascript">
 		$(function(){
@@ -916,7 +858,6 @@ textarea {
 				getJudges();
 				$("#caipan_xinxi").css("display", "block");
 				$("#caipan_list").css("display", "none");
-				$("#caipan_add").css("display", "none");
 				$("#caipan_search").css("display", "none");
 				
 			 $("#delete_button").css("display", "block");   
@@ -927,7 +868,6 @@ textarea {
 				 $("#paging").css("display", "block");
 				$("#caipan_xinxi").css("display", "none");
 				  $("#delete_button").css("display", "block");   	
-				$("#caipan_add").css("display", "none");
 				$("#caipan_search").css("display", "none");
 				$("#caipan_list").css("display", "block");
 				getApplications();
@@ -956,7 +896,6 @@ textarea {
 				 
 				$("#caipan_xinxi").css("display", "none");
 				$("#caipan_list").css("display", "none");
-				$("#caipan_add").css("display", "none");
 				$("#delete_button").css("display", "none");  
 			}
 		}
@@ -982,29 +921,34 @@ textarea {
 			var judgeGender = $("#judgeGender").val();
 			var judgeUserName = $("#judgeUserName").val();
 			var judgeUserPassword = $("#judgeUserPassword").val();
-			var judgeUserComfirnPassword = $("#judgeUserComfirnPassword").val()
-					;
+			var judgeUserComfirnPassword = $("#judgeUserComfirnPassword").val();
+			var judgeUserIdentifiedId = $("#judgeUserIdentifiedId").val();
+			var judgeUserPhonenum = $("#judgeUserPhonenum").val();
+			
 			var judgeLevel="";
-			if($("#level1").attr("class")=="lev1"){
+			if($("#level1").attr("class")=="lev1 judgelevel1"){
 				judgeLevel+=1+",";
 			}
-			if($("#level2").attr("class")=="lev2"){
+			if($("#level2").attr("class")=="lev2 judgelevel2"){
 				judgeLevel+=2+",";
 			}
-			if($("#level3").attr("class")=="lev3"){
+			if($("#level3").attr("class")=="lev3 judgelevel3"){
 				judgeLevel+=3+",";
 			}
-			if($("#level4").attr("class")=="lev3"){
+			if($("#level4").attr("class")=="lev3 judgelevel4"){
 				judgeLevel+=4+",";
 			}
-			if($("#level5").attr("class")=="lev3"){
+			if($("#level5").attr("class")=="lev3 judgelevel5"){
 				judgeLevel+=5+",";
 			}
-			if($("#level6").attr("class")=="lev3"){
+			if($("#level6").attr("class")=="lev3 judgelevel6"){
 				judgeLevel+=6+",";
 			}
-			if($("#level7").attr("class")=="lev3"){
+			if($("#level7").attr("class")=="lev3 judgelevel7"){
 				judgeLevel+=7+",";
+			}
+			if($("#level8").attr("class")=="lev3 judgelevel8"){
+				judgeLevel+=8+",";
 			}
 			 
 			if (isEmpty("judgeName")) {
@@ -1057,6 +1001,27 @@ textarea {
 				$("#judgeUserComfirnPassword").focus();
 				return;
 			}
+			if (isEmpty("judgeUserIdentifiedId")||judgeUserIdentifiedId.length!=18) {
+				ds.dialog({
+					title : '消息提示',
+					content : "请输入正确的18位身份证号码！",
+					onyes : true,
+					icon : "../images/info.png"
+				});
+				$("#judgeUserIdentifiedId").focus();
+				return;
+			}
+			if (isEmpty("judgeUserPhonenum")) {
+				ds.dialog({
+					title : '消息提示',
+					content : "请输入联系电话！",
+					onyes : true,
+					icon : "../images/info.png"
+				});
+				$("#judgeUserPhonenum").focus();
+				return;
+			}
+			
 			if (judgeUserPassword != judgeUserComfirnPassword) {
 				ds.dialog({
 					title : '消息提示',
@@ -1087,8 +1052,10 @@ textarea {
 					judgeName:judgeName,
 		        	judgeGender:judgeGender,
 		        	judgeUserName:judgeUserName,
-		        	judgeUserPassword:judgeUserPassword,
-		        	judgeLevel:judgeLevel
+		        	judgeUserPassword:hex_md5(judgeUserPassword),
+		        	judgeLevel:judgeLevel,
+		        	judgeIdentifiedId: judgeUserIdentifiedId,
+		        	judgePhonenum: judgeUserPhonenum
 				},  
 				dataType : "json",
 				url : "<%=basePath%>judgemanagement/addjudge.html",
@@ -1160,6 +1127,9 @@ textarea {
 			if($("#slevel7").attr("class")=="lev3"){
 				judgeLevel+=7+",";
 			}
+			if($("#slevel8").attr("class")=="lev3"){
+				judgeLevel+=8+",";
+			}
 		    $.ajax({
 		        async: false,
 		        cache: false,
@@ -1205,45 +1175,50 @@ textarea {
 		                	}else if(data.data[i].gender==1){
 		                		$("#tr"+i+"").append("<td width='100px'>男</td>");
 		                	}
-		                	$("#tr"+i+"").append("<td>"+data.data[i].birthday+"</td>")
+		                	$("#tr"+i+"").append("<td>"+data.data[i].mobile+"</td>")
 		                	$("#tr"+i+"").append("<td id='td"+i+"' width='466px' class='level'></td>");
 		                	 
 		                	levelIds=data.data[i].level;
 		                	 
 		                	if(levelIds.indexOf("1")!=-1){
-		                		$("#td"+i+"").append("<span class='lev1'>校<div></div></span>");
+		                		$("#td"+i+"").append("<span class='lev1 judgelevel1'>校<div></div></span>");
 		                	}else{
-		                		$("#td"+i+"").append("<span class='lev1 lev4'>校<div></div></span>");
+		                		$("#td"+i+"").append("<span class='lev1 lev4 judgelevel1'>校<div></div></span>");
 		                	}
 		                	if(levelIds.indexOf("2")!=-1){
-		                		$("#td"+i+"").append(" <span class='lev2'>区<div></div></span> ");
+		                		$("#td"+i+"").append(" <span class='lev2 judgelevel2'>区<div></div></span> ");
 		                	}else{
-		                		$("#td"+i+"").append(" <span class='lev2 lev4'>区<div></div></span> ");
+		                		$("#td"+i+"").append(" <span class='lev2 lev4 judgelevel2'>区<div></div></span> ");
 		                	}
 		                	if(levelIds.indexOf("3")!=-1){
-		                		$("#td"+i+"").append("<span class='lev3'>主<div></div></span>");
+		                		$("#td"+i+"").append("<span class='lev3 judgelevel3'>主<div></div></span>");
 		                	}else{
-		                		$("#td"+i+"").append("<span class='lev3 lev4'>主<div></div></span>");
+		                		$("#td"+i+"").append("<span class='lev3 lev4 judgelevel3'>主<div></div></span>");
 		                	}
 		                	if(levelIds.indexOf("4")!=-1){
-		                		$("#td"+i+"").append("<span class='lev3'>边<div></div></span>");
+		                		$("#td"+i+"").append("<span class='lev3 judgelevel4'>助<div></div></span>");
 		                	}else{
-		                		$("#td"+i+"").append("<span class='lev3 lev4'>边<div></div></span>");
+		                		$("#td"+i+"").append("<span class='lev3 lev4 judgelevel4'>助<div></div></span>");
 		                	}
 		                	if(levelIds.indexOf("5")!=-1){
-		                		$("#td"+i+"").append("<span class='lev3'>四<div></div></span> ");
+		                		$("#td"+i+"").append("<span class='lev3 judgelevel5'>四<div></div></span> ");
 		                	}else{
-		                		$("#td"+i+"").append("<span class='lev3 lev4'>四<div></div></span> ");
+		                		$("#td"+i+"").append("<span class='lev3 lev4 judgelevel5'>四<div></div></span> ");
 		                	}
 		                	if(levelIds.indexOf("6")!=-1){
-		                		$("#td"+i+"").append("<span class='lev3'>记<div></div></span>");
+		                		$("#td"+i+"").append("<span class='lev3 judgelevel6'>裁<div></div></span>");
 		                	}else{
-		                		$("#td"+i+"").append("<span class='lev3 lev4'>记<div></div></span>");
+		                		$("#td"+i+"").append("<span class='lev3 lev4 judgelevel6'>裁<div></div></span>");
 		                	}
 		                	if(levelIds.indexOf("7")!=-1){
-		                		$("#td"+i+"").append("<span class='lev3'>官<div></div></span>");
+		                		$("#td"+i+"").append("<span class='lev3 judgelevel7'>赛<div></div></span>");
 		                	}else{
-		                		$("#td"+i+"").append("<span class='lev3 lev4'>官<div></div></span>");
+		                		$("#td"+i+"").append("<span class='lev3 lev4 judgelevel7'>赛<div></div></span>");
+		                	}
+		                	if(levelIds.indexOf("8")!=-1){
+		                		$("#td"+i+"").append("<span class='lev3 judgelevel8'>统<div></div></span>");
+		                	}else{
+		                		$("#td"+i+"").append("<span class='lev3 lev4 judgelevel8'>统<div></div></span>");
 		                	}
 		                  
 		                	$("#tr"+i+"").append("<td width='100px'><div class='input_l'></div><div class='input_m detailed' style='width: auto' onclick='getJudgeById("+data.data[i].id+")'>详细</div><div class='input_r'></div></td>")
@@ -1396,7 +1371,7 @@ textarea {
 							title : '消息提示',
 							content : data.returnMessage,
 							onyes : true,
-							icon : "../images/info.png"
+							icon : "../images/socceralert.png"
 						});
 					}
 				}
@@ -1407,7 +1382,6 @@ textarea {
 			  getJudges();
 			  $("#caipan_xinxi").css("display", "block");
 				$("#caipan_list").css("display", "none");
-				$("#caipan_add").css("display", "none");
 				$("#caipan_search").css("display", "none");
 				 $("#xscp").css('border-bottom','3px solid #127419');
 				 $("#cxcp").css('border','none');
@@ -1452,39 +1426,44 @@ textarea {
 							 $("#detail_homeaddress").val(data.address);
 							 levelIds=data.levels;
 			                	if(levelIds.indexOf(1)!=-1){
-			                		$("#levels").append("<span id='xlevel1' class='lev1'>校<div></div></span>");
+			                		$("#levels").append("<span id='xlevel1' class='lev1 judgelevel1'>校<div></div></span>");
 			                	}else{
-			                		$("#levels").append("<span id='xlevel1' class='lev1 lev4'>校<div></div></span>");
+			                		$("#levels").append("<span id='xlevel1' class='lev1 lev4 judgelevel1'>校<div></div></span>");
 			                	}
 			                	if(levelIds.indexOf(2)!=-1){
-			                		$("#levels").append(" <span id='xlevel2' class='lev2'>区<div></div></span> ");
+			                		$("#levels").append(" <span id='xlevel2' class='lev2 judgelevel2'>区<div></div></span> ");
 			                	}else{
-			                		$("#levels").append(" <span id='xlevel2' class='lev2 lev4'>区<div></div></span> ");
+			                		$("#levels").append(" <span id='xlevel2' class='lev2 lev4 judgelevel2'>区<div></div></span> ");
 			                	}
 			                	if(levelIds.indexOf(3)!=-1){
-			                		$("#levels").append("<span id='xlevel3' class='lev3'>主<div></div></span>");
+			                		$("#levels").append("<span id='xlevel3' class='lev3 judgelevel3'>主<div></div></span>");
 			                	}else{
-			                		$("#levels").append("<span id='xlevel3' class='lev3 lev4'>主<div></div></span>");
+			                		$("#levels").append("<span id='xlevel3' class='lev3 lev4 judgelevel3'>主<div></div></span>");
 			                	}
 			                	if(levelIds.indexOf(4)!=-1){
-			                		$("#levels").append("<span id='xlevel4' class='lev3'>边<div></div></span>");
+			                		$("#levels").append("<span id='xlevel4' class='lev3 judgelevel4'>助<div></div></span>");
 			                	}else{
-			                		$("#levels").append("<span id='xlevel4' class='lev3 lev4'>边<div></div></span>");
+			                		$("#levels").append("<span id='xlevel4' class='lev3 lev4 judgelevel4'>助<div></div></span>");
 			                	}
 			                	if(levelIds.indexOf(5)!=-1){
-			                		$("#levels").append("<span id='xlevel5' class='lev3'>四<div></div></span> ");
+			                		$("#levels").append("<span id='xlevel5' class='lev3 judgelevel5'>四<div></div></span> ");
 			                	}else{
-			                		$("#levels").append("<span id='xlevel5' class='lev3 lev4'>四<div></div></span> ");
+			                		$("#levels").append("<span id='xlevel5' class='lev3 lev4 judgelevel5'>四<div></div></span> ");
 			                	}
 			                	if(levelIds.indexOf(6)!=-1){
-			                		$("#levels").append("<span id='xlevel6' class='lev3'>记<div></div></span>");
+			                		$("#levels").append("<span id='xlevel6' class='lev3 judgelevel6'>裁<div></div></span>");
 			                	}else{
-			                		$("#levels").append("<span id='xlevel6' class='lev3 lev4'>记<div></div></span>");
+			                		$("#levels").append("<span id='xlevel6' class='lev3 lev4 judgelevel6'>裁<div></div></span>");
 			                	}
 			                	if(levelIds.indexOf(7)!=-1){
-			                		$("#levels").append("<span id='xlevel7' class='lev3'>官<div></div></span>");
+			                		$("#levels").append("<span id='xlevel7' class='lev3 judgelevel7'>赛<div></div></span>");
 			                	}else{
-			                		$("#levels").append("<span id='xlevel7' class='lev3 lev4'>官<div></div></span>");
+			                		$("#levels").append("<span id='xlevel7' class='lev3 lev4 judgelevel7'>赛<div></div></span>");
+			                	}
+			                	if(levelIds.indexOf(8)!=-1){
+			                		$("#levels").append("<span id='xlevel8' class='lev3 judgelevel8'>统<div></div></span>");
+			                	}else{
+			                		$("#levels").append("<span id='xlevel8' class='lev3 lev4 judgelevel8'>统<div></div></span>");
 			                	}
 			                	
 			                	$("#levels span").click(function(){
@@ -1678,32 +1657,40 @@ textarea {
 		
 		function update(){
 			var judgeId=$("#detail_judgeid").val();
-			var jobId=$("#detail_job").val();
+			var gender = $("#detail_gender").val();
+			var identifiedId = $("#detail_id").val();
+			var nationality = $("#detail_nationality").val();
 			var judgeContact=$("#detail_mobile").val();
+			var jobId=$("#detail_job").val();
+			var level = $("#detail_level").val();
 			var districtId=$("#detail_district").val();
 			var jobAddress=$("#detail_jobaddress").val();
 			var identifiedAddress= $("#detail_homeaddress").val();
+			var birthday = $("#detail_birthday").val();
 			var judgeLevel="";
-			if($("#xlevel1").attr("class")=="lev1"){
+			if($("#xlevel1").attr("class")=="lev1 judgelevel1"){
 				judgeLevel+=1+",";
 			}
-			if($("#xlevel2").attr("class")=="lev2"){
+			if($("#xlevel2").attr("class")=="lev2 judgelevel2"){
 				judgeLevel+=2+",";
 			}
-			if($("#xlevel3").attr("class")=="lev3"){
+			if($("#xlevel3").attr("class")=="lev3 judgelevel3"){
 				judgeLevel+=3+",";
 			}
-			if($("#xlevel4").attr("class")=="lev3"){
+			if($("#xlevel4").attr("class")=="lev3 judgelevel4"){
 				judgeLevel+=4+",";
 			}
-			if($("#xlevel5").attr("class")=="lev3"){
+			if($("#xlevel5").attr("class")=="lev3 judgelevel5"){
 				judgeLevel+=5+",";
 			}
-			if($("#xlevel6").attr("class")=="lev3"){
+			if($("#xlevel6").attr("class")=="lev3 judgelevel6"){
 				judgeLevel+=6+",";
 			}
-			if($("#xlevel7").attr("class")=="lev3"){
+			if($("#xlevel7").attr("class")=="lev3 judgelevel7"){
 				judgeLevel+=7+",";
+			}
+			if($("#xlevel8").attr("class")=="lev3 judgelevel8"){
+				judgeLevel+=8+",";
 			}
 			$.ajax( {
 				async : false,
@@ -1716,7 +1703,13 @@ textarea {
 			  		identifiedAddress:identifiedAddress,
 			  		judgeContact:judgeContact,
 			  		jobAddress:jobAddress,
-			  		judgeLevel:judgeLevel 
+			  		judgeLevel:judgeLevel,
+			  		level : level,
+			  		nationality: nationality,
+			  		birthday :birthday,
+			  		identifiedId : identifiedId,
+			  		gender : gender
+			  		
 				},  
 				dataType : "json",
 				url : "<%=basePath%>judgemanagement/updatejudge.html",
@@ -1737,17 +1730,17 @@ textarea {
 							onyes : true,
 							icon : "../images/socceralert.png"
 						});
-						 $('.caipan_detailed').hide();
-						 $("#fade").hide();
+						$('.caipan_detailed').hide();
+						$("#fade").hide();
 						getJudges();
-					} else  {
+					} else {
 						ds.dialog({
 							title : '消息提示',
 							content : data.returnMessage,
 							onyes : true,
 							icon : "../images/info.png"
 						});
-					}  
+					}
 				}
 			})
 		}

@@ -121,7 +121,7 @@ public class YsmsJudge implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "district_id", nullable = false)
+	@JoinColumn(name = "district_id")
 	@JsonIgnore
 	public YsmsDistrict getYsmsDistrict() {
 		return this.ysmsDistrict;
@@ -132,7 +132,7 @@ public class YsmsJudge implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "job_id", nullable = false)
+	@JoinColumn(name = "job_id")
 	@JsonIgnore
 	public YsmsJobs getYsmsJobs() {
 		return this.ysmsJobs;
@@ -169,7 +169,7 @@ public class YsmsJudge implements java.io.Serializable {
 		this.identifiedGender = identifiedGender;
 	}
 
-	@Column(name = "identified_nationality", nullable = false, length = 128)
+	@Column(name = "identified_nationality", length = 128)
 	public String getIdentifiedNationality() {
 		return this.identifiedNationality;
 	}
@@ -178,7 +178,7 @@ public class YsmsJudge implements java.io.Serializable {
 		this.identifiedNationality = identifiedNationality;
 	}
 
-	@Column(name = "identified_address", nullable = false, length = 512)
+	@Column(name = "identified_address",  length = 512)
 	public String getIdentifiedAddress() {
 		return this.identifiedAddress;
 	}
@@ -188,7 +188,7 @@ public class YsmsJudge implements java.io.Serializable {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "identified_birthday", nullable = false, length = 0)
+	@Column(name = "identified_birthday",  length = 0)
 	public Date getIdentifiedBirthday() {
 		return this.identifiedBirthday;
 	}
@@ -206,7 +206,7 @@ public class YsmsJudge implements java.io.Serializable {
 		this.deleteflag = deleteflag;
 	}
 
-	@Column(name = "judge_jobaddress", nullable = false, length = 1024)
+	@Column(name = "judge_jobaddress", length = 1024)
 	public String getJudgeJobaddress() {
 		return this.judgeJobaddress;
 	}
@@ -215,7 +215,7 @@ public class YsmsJudge implements java.io.Serializable {
 		this.judgeJobaddress = judgeJobaddress;
 	}
 
-	@Column(name = "judge_level", nullable = false)
+	@Column(name = "judge_level")
 	public Integer getJudgeLevel() {
 		return this.judgeLevel;
 	}

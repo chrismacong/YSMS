@@ -30,7 +30,7 @@ public class JudgeManagementServiceTest {
 	@Test
 	public void testaddJudge() {
  
-		judgeManagementService.applyJudge("3201211989111031X", "潘海林", 1, "汉族", new Date(), "中国南京", 1, 1, "软件谷",1, 1, "13800000000", "333",null,null);
+		judgeManagementService.applyJudge("3201211989111031X", "潘海林", 1, "汉族", new Date(), "中国南京", 1, 1, "软件谷",1, 1, "13800000000", "333",null,null,"testjudge","123456");
 	}
 
 	@Test

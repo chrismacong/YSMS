@@ -3,9 +3,12 @@
 		padding:0;
 		font-family: '微软雅黑','黑体';
 	}
+	.right_content{
+		width:100%;
+	}
 	.main{
 		width:600px;
-		margin:20px auto;
+		margin:0px auto;
 	}
 	.main td{
        font-size: 18px;
@@ -47,14 +50,13 @@
 	.title{
 		font-size: 34px;
 		text-align: center;
+		height:40px;
 		color:#5abb3c;
-	}
-	.header{
-		height:50px;
-		width: 100%;
-		background:#5abb3c;
-		margin-bottom: 30px
 	}
 	.home{
 		
+	}
+	#left_pic{
+		margin-left: 50px;
+		margin-right: auto;
 	}

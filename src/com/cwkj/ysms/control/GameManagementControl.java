@@ -22,6 +22,7 @@ import com.cwkj.ysms.model.view.FoulView;
 import com.cwkj.ysms.model.view.GameView;
 import com.cwkj.ysms.model.view.GoalView;
 import com.cwkj.ysms.model.view.MemberAthleteView;
+import com.cwkj.ysms.model.view.SuspensionView;
 import com.cwkj.ysms.model.view.TeamView;
 import com.cwkj.ysms.model.view.ZoneView;
 import com.cwkj.ysms.service.GamesManagementService;
@@ -369,5 +370,15 @@ public class GameManagementControl {
 		int gamesId = Integer.parseInt(request.getParameter("game_id"));
 		boolean result = gameManagementService.setGameOver(gamesId, false);
 		return result;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/suspension", method = RequestMethod.POST)
+	public List<SuspensionView> suspension(HttpServletRequest request,
+			HttpSession session,HttpServletResponse response){
+		int teamId = Integer.parseInt(request.getParameter("team_id"));
+		int gamesId = Integer.parseInt(request.getParameter("game_id"));
+		List<SuspensionView> views = gameManagementService.getSuspensionList(teamId, gamesId);
+		return views;
 	}
 }

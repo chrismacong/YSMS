@@ -62,7 +62,30 @@
 	z-index: 2;
 }
 
+.suspension_block {
+	position: absolute;
+	top: 20%;
+	left: 25%;
+	height: 60%;
+	width: 50%;
+	border-radius: 5px;
+	border: 1px solid #aaa;
+	background: #fff;
+	display: none;
+	z-index: 3;
+}
+
 .close {
+	right: -13px !important;
+	top: -13px !important;
+	cursor: pointer;
+	background: url(../images/outdiv_delete.png);
+}
+
+.outerclose {
+	position:absolute;
+	width:36px;
+	height:36px;
 	right: -13px !important;
 	top: -13px !important;
 	cursor: pointer;

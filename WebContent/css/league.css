@@ -71,7 +71,7 @@
 
 	#caipan_add .input_wk .input_text{ text-align: center;}
 	.level{color:#fff!important;line-height: 47px; font-size: 1.2em}
-	.level span{display: block;float:left;width:66px;height:45px;cursor: pointer; position: relative; text-align: center}
+	.level span{display: block;float:left;width:58px;height:45px;cursor: pointer; position: relative; text-align: center}
 	.level div{position: absolute;top:5px;left:5px;height:16px;width:16px;background: url(../images/icon_xiu.png);display:none;}
 	.lev1{background: url(../images/level1.png)}
 	.lev2{background: url(../images/level2.png)}

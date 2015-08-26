@@ -19,6 +19,76 @@ $(function() {
 		$('#competition_apply').hide();
 		$('#match_list').show();
 	})
+	$("#host_downloadteammemberlist").click(function(){
+				window.location.href=forwardurl + "/team/exportpdf.html?team_id=" + selectedHostTeamId;
+			});
+			$("#guest_downloadteammemberlist").click(function(){
+				window.location.href=forwardurl + "/team/exportpdf.html?team_id=" + selectedGuestTeamId;
+			});
+			$("#host_suspension").click(function(){
+				loading_juggle_empty();
+				$(".suspension_block").show();
+				$("#suspension_table tbody").empty();
+				$.ajax({
+					type : 'POST',
+					url : forwardurl+"/gamemanagement/suspension.html",
+					data : {
+						game_id : recordingGameId,
+						team_id : selectedHostTeamId
+					},
+					dataType : "json",
+					success : function(data) {
+						if(data.length==0){
+							$("#suspension_table tbody").append("<tr><td colspan='3' style='text-align:center'>无停赛记录</td></tr>");
+						}
+						else{
+							$.each(data,function(i,item) {
+								var html = "<tr>";
+								html += "<td>" + item.playerNum + "</td>";
+								html += "<td>" + item.playerName + "</td>";
+								html += "<td>" + item.suspensionReason + "</td></tr>";
+								$("#suspension_table tbody").append(html);
+							});
+						}
+						cancel_loading();
+					},
+					error : function() {
+						cancel_loading();
+					}
+				});
+			})
+			$("#guest_suspension").click(function(){
+				loading_juggle_empty();
+				$(".suspension_block").show();
+				$("#suspension_table tbody").empty();
+				$.ajax({
+					type : 'POST',
+					url : forwardurl+"/gamemanagement/suspension.html",
+					data : {
+						game_id : recordingGameId,
+						team_id : selectedGuestTeamId
+					},
+					dataType : "json",
+					success : function(data) {
+						if(data.length==0){
+							$("#suspension_table tbody").append("<tr><td colspan='3' style='text-align:center'>无停赛记录</td></tr>");
+						}
+						else{
+							$.each(data,function(i,item) {
+								var html = "<tr>";
+								html += "<td>" + item.playerNum + "</td>";
+								html += "<td>" + item.playerName + "</td>";
+								html += "<td>" + item.suspensionReason + "</td></tr>";
+								$("#suspension_table tbody").append(html);
+							});
+						}
+						cancel_loading();
+					},
+					error : function() {
+						cancel_loading();
+					}
+				});
+			})
 	//填写记录tab切换
 	$('.tab_xijie span').click(
 			function() {
@@ -45,6 +115,10 @@ $(function() {
 			$('.close').click(function() {
 				$('.saishi_results').hide();
 				$('.edit_match').hide();
+			})
+			
+			$(".outerclose").click(function(){
+				$(".suspension_block").hide();
 			})
 
 			$('#cancel_record').click(function() {
@@ -81,9 +155,9 @@ $(function() {
 							every_goal_has_shooter = false;
 						}
 						host_goal = host_goal+ $(this).find("option:selected").attr("id").substring(10) + ","
-								+ $(this).parent().next().next().find("option:selected").attr("id").substring(10) + ","
-								+ $(this).parent().next().next().next().find("select").eq(0).val() + ","
-								+ $(this).parent().next().next().next().next().find("input").eq(0).val()+ ";";
+						+ $(this).parent().next().next().find("option:selected").attr("id").substring(10) + ","
+						+ $(this).parent().next().next().next().find("select").eq(0).val() + ","
+						+ $(this).parent().next().next().next().next().find("input").eq(0).val()+ ";";
 					})
 					$(this).find(".goal_time").each(function() {
 						var time = $(this).val();
@@ -97,9 +171,9 @@ $(function() {
 							every_goal_has_shooter = false;
 						}
 						guest_goal = guest_goal + $(this).find("option:selected").attr("id").substring(11) + ","
-								+ $(this).parent().next().next().find("option:selected").attr("id").substring(11) + ","
-								+ $(this).parent().next().next().next().find("select").eq(0).val() + ","
-								+ $(this).parent().next().next().next().next().find("input").eq(0).val() + ";";
+						+ $(this).parent().next().next().find("option:selected").attr("id").substring(11) + ","
+						+ $(this).parent().next().next().next().find("select").eq(0).val() + ","
+						+ $(this).parent().next().next().next().next().find("input").eq(0).val() + ";";
 					})
 					$(this).find(".goal_time").each(function() {
 						var time = $(this).val();
@@ -113,8 +187,8 @@ $(function() {
 							every_foul_has_player = false;
 						}
 						host_foul = host_foul + $(this).find("option:selected").attr("id").substring(10) + ","
-								+ $(this).parent().next().find("select").eq(0).val() + ","
-								+ $(this).parent().next().next().find("input").eq(0).val() + ";";
+						+ $(this).parent().next().find("select").eq(0).val() + ","
+						+ $(this).parent().next().next().find("input").eq(0).val() + ";";
 					})
 					$(this).find(".foul_time").each(function() {
 						var time = $(this).val();
@@ -128,8 +202,8 @@ $(function() {
 							very_foul_has_player = false;
 						}
 						guest_foul = guest_foul + $(this).find("option:selected").attr("id").substring(11) + ","
-								+ $(this).parent().next().find("select").eq(0).val()+ ","
-								+ $(this).parent().next().next().find("input").eq(0).val() + ";";
+						+ $(this).parent().next().find("select").eq(0).val()+ ","
+						+ $(this).parent().next().next().find("input").eq(0).val() + ";";
 					})
 					$(this).find(".foul_time").each(function() {
 						var time = $(this).val();
@@ -150,7 +224,7 @@ $(function() {
 				if (!every_foul_has_player) {
 					ds.dialog({
 						title : '消息提示',
-				    	content : "必须选择犯规人!",
+						content : "必须选择犯规人!",
 						onyes : true,
 						icon : "../images/info.png"
 					});
@@ -214,23 +288,23 @@ $(function() {
 						host_foul : host_foul,
 						guest_foul : guest_foul,
 						isovertime_flag : isovertime_flag==true?1:0,
-						ispenalty_flag : ispenalty_flag==true?1:0,
-						host_goal_attempt : host_goal_attempt,
-						host_target_number : host_target_number,
-						host_corner_kick : host_corner_kick,
-						host_free_kick : host_free_kick,
-						host_foul_number : host_foul_number,
-						host_offside : host_offside,
-						host_overtime_score : host_overtime_score,
-						host_penalty_score : host_penalty_score,
-						guest_goal_attempt : guest_goal_attempt,
-						guest_target_number : guest_target_number,
-						guest_corner_kick : guest_corner_kick,
-						guest_free_kick : guest_free_kick,
-						guest_foul_number : guest_foul_number,
-						guest_offside : guest_offside,
-						guest_overtime_score : guest_overtime_score,
-						guest_penalty_score : guest_penalty_score
+								ispenalty_flag : ispenalty_flag==true?1:0,
+										host_goal_attempt : host_goal_attempt,
+										host_target_number : host_target_number,
+										host_corner_kick : host_corner_kick,
+										host_free_kick : host_free_kick,
+										host_foul_number : host_foul_number,
+										host_offside : host_offside,
+										host_overtime_score : host_overtime_score,
+										host_penalty_score : host_penalty_score,
+										guest_goal_attempt : guest_goal_attempt,
+										guest_target_number : guest_target_number,
+										guest_corner_kick : guest_corner_kick,
+										guest_free_kick : guest_free_kick,
+										guest_foul_number : guest_foul_number,
+										guest_offside : guest_offside,
+										guest_overtime_score : guest_overtime_score,
+										guest_penalty_score : guest_penalty_score
 					},
 					dataType : "json",
 					success : function(data) {
@@ -676,12 +750,6 @@ function refresh_competitions() {
 				}
 			});
 			cancel_loading();
-			$("#host_downloadteammemberlist").click(function(){
-				window.location.href=forwardurl + "/team/exportpdf.html?team_id=" + selectedHostTeamId;
-			});
-			$("#guest_downloadteammemberlist").click(function(){
-				window.location.href=forwardurl + "/team/exportpdf.html?team_id=" + selectedGuestTeamId;
-			});
 			$('.record').click(function() {
 				$("#host_goal_bottom_tr").siblings().remove();
 				$("#guest_goal_bottom_tr").siblings().remove();
@@ -768,7 +836,7 @@ function refresh_competitions() {
 						$("#guest_penalty_score").val(guestPenaltyScore);
 						$("#host_overtime_score").val(hostOvertimeScore);
 						$("#guest_overtime_score").val(guestOvertimeScore);
-						
+
 						//主队比赛数据
 						var hostGoalAttempt = data.game.hostGoalAttempt;
 						if(hostGoalAttempt == null)
@@ -794,7 +862,7 @@ function refresh_competitions() {
 						if(hostOffside == null)
 							hostOffside = "";
 						$("#host_offside_input").val(hostOffside)
-						
+
 						//客队比赛数据
 						var guestGoalAttempt = data.game.guestGoalAttempt;
 						if(guestGoalAttempt == null)
@@ -820,7 +888,7 @@ function refresh_competitions() {
 						if(guestOffside == null)
 							guestOffside = "";
 						$("#guest_offside_input").val(guestOffside)
-						
+ 
 						$("#record_host_score").val(hostScore);
 						$("#record_guest_score").val(guestScore);
 						hostSelectNumHtml = "<option id='host_num_0' value='0'></option>";

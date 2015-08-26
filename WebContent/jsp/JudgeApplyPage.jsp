@@ -33,112 +33,140 @@
 
 <script language="javascript" type="text/javascript"
 	src="${pageContext.request.contextPath}/js/ds.dialog.js"></script>
+<script type="text/javascript"
+	src="${pageContext.request.contextPath}/js/md5.js"></script>
 </head>
 <body>
-	<div class="header">
-		<div class="home"></div>
-		<!--头部可以根据首页再修改-->
-	</div>
-	<div class="title">裁判员资格申请</div>
-	<div class="main">
-		<table width='100%'>
+	<div class="content">
+		<table style="width:100%;">
 			<tr>
-				<td width='120px'>姓 &nbsp; &nbsp; &nbsp; 名：</td>
-				<td><input id="name" type="text" class="inputtext"
-					onblur="blura(this)"></td>
-			</tr>
-			<tr>
-				<td>性 &nbsp; &nbsp; &nbsp; 别：</td>
-				<td><input type="radio" name="sex" id="gender" value="1"
-					class="radio_" checked="checked" onblur="blura(this)"> <label
-					for="Y">男</label> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-					&nbsp; &nbsp; <input type="radio" name="sex" id="X" class="radio_"
-					value="0"><label for="X">女</label></td>
-			</tr>
-			<tr>
-				<td>民 &nbsp; &nbsp; &nbsp; 族：</td>
-				<td><input id="nationality" type="text" class="inputtext"
-					onblur="blura(this)"></td>
-			</tr>
+				<td width="40%"><img id="left_pic"
+					src="${pageContext.request.contextPath}/images/judgeleftpic.png" />
+				</td>
+				<td width="60%">
+					<div class="right_content">
+						<div class="title">裁判员资格申请</div>
+						<div class="main">
+							<table width='100%'>
+								<tr>
+									<td width='120px'>姓 &nbsp; &nbsp; &nbsp; 名：</td>
+									<td><input id="name" type="text" class="inputtext"
+										onblur="blura(this)"></td>
+								</tr>
+								<tr>
+									<td>性 &nbsp; &nbsp; &nbsp; 别：</td>
+									<td><input type="radio" name="sex" id="Y" value="1"
+										class="radio_" checked="checked">
+										<label for="Y">男</label> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+										&nbsp; &nbsp; &nbsp; &nbsp; <input type="radio" name="sex"
+										id="X" class="radio_" value="0"><label for="X">女</label></td>
+								</tr>
+								<tr>
+									<td>民 &nbsp; &nbsp; &nbsp; 族：</td>
+									<td><input id="nationality" type="text" class="inputtext"
+										onblur="blura(this)"></td>
+								</tr>
 
-			<tr>
-				<td>身&nbsp; 份&nbsp; 证：</td>
-				<td><input id="identifiedCard" type="text" class="inputtext"
-					onblur="blura(this)"></td>
-			</tr>
-			<tr>
-				<td>家庭住址：</td>
-				<td><input id="homeAddress" type="text" class="inputtext"
-					onblur="blura(this)"></td>
-			</tr>
-			<tr>
-				<td>职 &nbsp; &nbsp; &nbsp; 业：</td>
-				<td><select id="job" class="inputselect" onblur="blura(this)">
+								<tr>
+									<td>身&nbsp; 份&nbsp; 证：</td>
+									<td><input id="identifiedCard" type="text"
+										class="inputtext" onblur="blura(this)"></td>
+								</tr>
+								<tr>
+									<td>家庭住址：</td>
+									<td><input id="homeAddress" type="text" class="inputtext"
+										onblur="blura(this)"></td>
+								</tr>
+								<tr>
+									<td>职 &nbsp; &nbsp; &nbsp; 业：</td>
+									<td><select id="job" class="inputselect"
+										onblur="blura(this)">
 
-				</select></td>
-			</tr>
-			<tr>
-				<td>工作所在区：</td>
-				<td><select id="district" class="inputselect"
-					onblur="blura(this)">
+									</select></td>
+								</tr>
+								<tr>
+									<td>工作所在区：</td>
+									<td><select id="district" class="inputselect"
+										onblur="blura(this)">
 
-				</select></td>
-			</tr>
-			<tr>
-				<td>工作地点：</td>
-				<td><input id="jobAddress" type="text" class="inputtext"
-					onblur="blura(this)"></td>
-			</tr>
-			<tr>
-				<td>证书等级：</td>
-				<td><select id="level" class="inputselect"
-					onchange="showTips()" onblur="blura(this)">
-						<option value="">－－－请选择－－－</option>
-						<option value="0">无</option>
-						<option value="1">三级裁判员</option>
-						<option value="2">二级裁判员</option>
-						<option value="3">一级裁判员</option>
-						<option value="4">国家级裁判员</option>
-						<option value="5">国际级裁判员</option>
-				</select></td>
-			</tr>
-			<tr id="tr_level" style="display: none;">
-				<td>证书上传：</td>
-				<td><input id="att_level" name="att_level" type="file"
-					class="inputtext"></td>
-			</tr>
-			<tr id="textarea" style="display: none;">
-				<td>自我介绍：</td>
-				<td><textarea id="tips" rows="6" cols="43" style="resize: none"
-						onblur="blura(this)"></textarea></td>
-			</tr>
-			<tr>
-				<td>手机号码：</td>
-				<td><input id="mobile" type="text" class="inputtext"
-					onblur="blura(this)"></td>
-			</tr>
-			<tr>
-				<td>身份证上传：</td>
-				<td><input id="att_id" name="att_id" type="file"
-					class="inputtext"></td>
-			</tr>
-			<tr>
-				<td colspan="2" align="center"><input id="ok" type="button"
-					class="inputbtn" value="提交申请" onclick="apply();"></td>
+									</select></td>
+								</tr>
+								<tr>
+									<td>工作地点：</td>
+									<td><input id="jobAddress" type="text" class="inputtext"
+										onblur="blura(this)"></td>
+								</tr>
+								<tr>
+									<td>证书等级：</td>
+									<td><select id="level" class="inputselect"
+										onchange="showTips()" onblur="blura(this)">
+											<option value="">－－－请选择－－－</option>
+											<option value="0">无</option>
+											<option value="1">三级裁判员</option>
+											<option value="2">二级裁判员</option>
+											<option value="3">一级裁判员</option>
+											<option value="4">国家级裁判员</option>
+											<option value="5">国际级裁判员</option>
+									</select></td>
+								</tr>
+								<tr id="tr_level" style="display: none;">
+									<td>证书上传：</td>
+									<td><input id="att_level" name="att_level" type="file"
+										class="inputtext"></td>
+								</tr>
+								<tr id="textarea" style="display: none;">
+									<td>自我介绍：</td>
+									<td><textarea id="tips" rows="6" cols="43"
+											style="resize: none" onblur="blura(this)"></textarea></td>
+								</tr>
+								<tr>
+									<td>手机号码：</td>
+									<td><input id="mobile" type="text" class="inputtext"
+										onblur="blura(this)"></td>
+								</tr>
+								<tr>
+									<td>用户名：</td>
+									<td><input id="username" type="text" class="inputtext"
+										onblur="blura(this)"></td>
+								</tr>
+								<tr>
+									<td>密码：</td>
+									<td><input id="password" type="password" class="inputtext"
+										onblur="blura(this)"></td>
+								</tr>
+								<tr>
+									<td>确认密码：</td>
+									<td><input id="verifypassword" type="password" class="inputtext"
+										onblur="blura(this)"></td>
+								</tr>
+								<tr>
+									<td>身份证上传：</td>
+									<td><input id="att_id" name="att_id" type="file"
+										class="inputtext"></td>
+								</tr>
+								<tr>
+									<td colspan="2" align="center"><input id="ok"
+										type="button" class="inputbtn" value="提交申请" onclick="apply();"></td>
+								</tr>
+							</table>
+						</div>
+						<div id="mobanerror" style="display: none">
+							<div class="error">
+								<div class="error_left"></div>
+								<div class="error_middle">请输入正确的名字</div>
+								<div class="error_right"></div>
+							</div>
+						</div>
+						<div id="mobanok" style="display: none">
+							<div class="shuruok">
+								<div></div>
+							</div>
+						</div>
+					</div>
+				</td>
 			</tr>
 		</table>
-	</div>
-	<div id="mobanerror" style="display: none">
-		<div class="error">
-			<div class="error_left"></div>
-			<div class="error_middle">请输入正确的名字</div>
-			<div class="error_right"></div>
-		</div>
-	</div>
-	<div id="mobanok" style="display: none">
-		<div class="shuruok">
-			<div></div>
-		</div>
+
 	</div>
 </body>
 <script type="text/javascript">
@@ -223,14 +251,8 @@ function showTips(){
 }
 
 function apply(){
-	ds.dialog({
-		title : '消息提示',
-		content : "请选择职业！",
-		onyes : true,
-		icon : "../../images/info.png"
-	});
 	var name=$("#name").val();
-	var gender=$("#gender").val();
+	var gender=$('input:radio[name="sex"]:checked').val();
 	var nationality=$("#nationality").val();
 	var identifiedCard=$("#identifiedCard").val();
 	var homeAddress=$("#homeAddress").val();
@@ -240,6 +262,9 @@ function apply(){
 	var level=$("#level").val();
 	var mobile=$("#mobile").val();
 	var tips=$("#tips").val();
+	var username = $("#username").val();
+	var password = $("#password").val();
+	var verifypassword = $("#verifypassword").val();
 	if (isEmpty("name")) {
 		ds.dialog({
 			title : '消息提示',
@@ -248,16 +273,6 @@ function apply(){
 			icon : "../../images/info.png"
 		});
 		$("#name").focus();
-		return;
-	}
-	if (isEmpty("gender")) {
-		ds.dialog({
-			title : '消息提示',
-			content : "请选择性别！",
-			onyes : true,
-			icon : "../../images/info.png"
-		});
-		$("#gender").focus();
 		return;
 	}
 	if (isEmpty("nationality")) {
@@ -352,6 +367,46 @@ function apply(){
 		$("#mobile").focus();
 		return;
 	}
+	if (isEmpty("username")) {
+		ds.dialog({
+			title : '消息提示',
+			content : "请填写用户名！",
+			onyes : true,
+			icon : "../../images/info.png"
+		});
+		$("#username").focus();
+		return;
+	}
+	if (isEmpty("password")) {
+		ds.dialog({
+			title : '消息提示',
+			content : "请填写密码！",
+			onyes : true,
+			icon : "../../images/info.png"
+		});
+		$("#password").focus();
+		return;
+	}
+	if (isEmpty("verifypassword")) {
+		ds.dialog({
+			title : '消息提示',
+			content : "请重输密码确认！",
+			onyes : true,
+			icon : "../../images/info.png"
+		});
+		$("#verifypassword").focus();
+		return;
+	}
+	if(password!=verifypassword){
+		ds.dialog({
+			title : '消息提示',
+			content : "确认密码与密码不一致！",
+			onyes : true,
+			icon : "../../images/info.png"
+		});
+		$("#verifypassword").focus();
+		return;
+	}
 	 $.ajaxFileUpload({  
 		 type: 'POST',
          url:"<%=basePath%>judgemanagement/judegapply.html",  
@@ -367,7 +422,9 @@ function apply(){
          	districtId:district,
          	jobAddress:jobAddress,
          	judgeLevel:level,
-         	judgeTips:tips
+         	judgeTips:tips,
+         	username:username,
+         	password:hex_md5(password)
          },
          fileElementId:["att_level","att_id"],   //file的id  
          dataType:"json",                  //返回数据类型为文本  
@@ -379,20 +436,23 @@ function apply(){
      			icon : "../../images/info.png"
      		});
 			 if(data.returnCode==200){
-				 	
-					name=$("#name").val("");
-					gender=$("#gender").val("");
-					nationality=$("#nationality").val("");
-					identifiedCard=$("#identifiedCard").val("");
-					homeAddress=$("#homeAddress").val("");
-					job=$("#job").val("");
-					district=$("#district").val("");
-					jobAddress=$("#jobAddress").val("");
-					level=$("#level").val("");
-					mobile=$("#mobile").val("");
-					tips=$("#tips").val("");
-				  
-					location.reload();
+					ds.dialog({
+						title : '消息提示',
+						content : data.returnMessage,
+						onyes : true,
+						icon : "../../images/socceralert.png"
+					});
+					setTimeout(function(){
+						window.location.href = "${pageContext.request.contextPath}/management.html"
+						}, 3000);
+			 }
+			 else{
+				 ds.dialog({
+						title : '消息提示',
+						content : data.returnMessage,
+						onyes : true,
+						icon : "../../images/info.png"
+					});
 			 }
          }  
      })  

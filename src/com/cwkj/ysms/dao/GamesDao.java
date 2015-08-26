@@ -6,6 +6,8 @@ import java.util.List;
 import com.cwkj.ysms.basedao.GenericDao;
 import com.cwkj.ysms.model.YsmsAthlete;
 import com.cwkj.ysms.model.YsmsGames;
+import com.cwkj.ysms.model.view.AssistRankView;
+import com.cwkj.ysms.model.view.ShooterRankView;
 import com.cwkj.ysms.util.Page;
 
 /**
@@ -165,4 +167,28 @@ public interface GamesDao extends GenericDao  {
 
 	List<YsmsGames> getGamesBySchoolIdBetweenDate(int schoolId, Date beginDate,
 			Date endDate);
+	
+	/**
+	 * 获取球队在某个日期前的比赛
+	 * @param teamId
+	 * @param date
+	 * @return
+	 */
+	List<YsmsGames> getGamesByTeamIdBeforeDate(int teamId, Date date);
+	
+	/**
+	 * 查询积分榜
+	 * @param zoneId
+	 * @param topHowMany 查询前几名
+	 * @return
+	 */
+	List<ShooterRankView> getShooterRank(int zoneId, int topHowMany);
+
+	/**
+	 * 查询助攻榜
+	 * @param zoneId
+	 * @param topHowMany 查询前几名
+	 * @return
+	 */
+	List<AssistRankView> getAssistRank(int zoneId, int topHowMany);
 }

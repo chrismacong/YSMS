@@ -71,6 +71,13 @@ public class JudgeManagementControl {
 			HttpSession session, HttpServletResponse response) {
 		return new ModelAndView("JudgeManagementPage");
 	}
+	
+	@RequestMapping(value = "/register", method = RequestMethod.GET)
+	@Transactional
+	public ModelAndView register(HttpServletRequest request,
+			HttpSession session, HttpServletResponse response) {
+		return new ModelAndView("JudgeApplyPage");
+	}
 
 	/**
 	 * 
@@ -88,7 +95,7 @@ public class JudgeManagementControl {
 			HttpServletResponse response) {
 		JSONObject map = new JSONObject();
 		map.put("returnCode", 500);
-		map.put("returnMessage", "服务器出错啦！");
+		map.put("returnMessage", "无法连接，请联系管理员！");
 		try {
 
 			response.setContentType("text/html");
@@ -140,6 +147,8 @@ public class JudgeManagementControl {
 			File file_level = null;
 			String fileName_id = null;
 			String fileName_level = null;
+			String username = request.getParameter("username");
+			String password = request.getParameter("password");
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			String identifiedBirthday = "";
 			map.put("returnCode", "300");
@@ -156,7 +165,18 @@ public class JudgeManagementControl {
 				response.getWriter().write(map.toString());
 				return null;
 			}
+			if(ToolsUtil.isEmpty(username)){
+				map.put("returnMessage", "用户名不能为空!");
 
+				response.getWriter().write(map.toString());
+				return null;
+			}
+			if(ToolsUtil.isEmpty(password)){
+				map.put("returnMessage", "密码不能为空!");
+				
+				response.getWriter().write(map.toString());
+				return null;
+			}
 			if (ToolsUtil.isEmpty(identifiedId)) {
 				map.put("returnMessage", "身份证ID不能为空");
 
@@ -264,9 +284,9 @@ public class JudgeManagementControl {
 					sdf.parse(identifiedBirthday), identifiedAddress,
 					Integer.parseInt(jobId), Integer.parseInt(districtId),
 					jobAddress, Integer.parseInt(judgeLevel), 1, judgeMobile,
-					judgeTips, fileName_id, fileName_level)) {
+					judgeTips, fileName_id, fileName_level, username, password)) {
 				map.put("returnCode", 200);
-				map.put("returnMessage", "申请成功，请等待审核！");
+				map.put("returnMessage", "申请成功，马上自动跳转至登陆界面!");
 
 				response.getWriter().write(map.toString());
 				return null;
@@ -298,66 +318,78 @@ public class JudgeManagementControl {
 	 *
 	 */
 
-	// @RequestMapping(value = "/addjudge")
-	// @ResponseBody
-	// @Transactional
-	// public Map<String, Object> addJudge(HttpServletRequest request,
-	// HttpSession session) {
-	// Map<String, Object> map = new HashMap<String, Object>();
-	// try {
-	// map.put("returnCode", 500);
-	// map.put("returnMessage", "添加裁判员失败！");
-	// String judgeName = request.getParameter("judgeName");
-	// String userPassword = request.getParameter("judgeUserPassword");
-	// String userName = request.getParameter("judgeUserName");
-	// String judgeGender = request.getParameter("judgeGender");
-	// String judgeLevel = request.getParameter("judgeLevel");
-	// if (ToolsUtil.isEmpty(judgeName)) {
-	// map.put("returnCode", 300);
-	// map.put("returnMessage", "出错啦，裁判员姓名不能为空！");
-	// return map;
-	// }
-	// if (ToolsUtil.isEmpty(judgeGender)) {
-	// map.put("returnCode", 300);
-	// map.put("returnMessage", "出错啦，裁判员性别不能为空！");
-	// return map;
-	// }
-	// if (ToolsUtil.isEmpty(userName)) {
-	// map.put("returnCode", 300);
-	// map.put("returnMessage", "出错啦，裁判员用户名不能为空！");
-	// return map;
-	// }
-	// if (ToolsUtil.isEmpty(userPassword)) {
-	// map.put("returnCode", 300);
-	// map.put("returnMessage", "出错啦，裁判员用户密码不能为空！");
-	// return map;
-	// }
-	//
-	// if (ToolsUtil.isEmpty(judgeLevel)) {
-	// map.put("returnCode", 300);
-	// map.put("returnMessage", "出错啦，裁判员等级不能为空！");
-	// return map;
-	// }
-	// // 检查用户名是否存在
-	// if (userManagementService.getUserList(null, null, userName, null,
-	// null, "1").size() > 0) {
-	// map.put("returnCode", 400);
-	// map.put("returnMessage", "出错啦，用户名已存在！");
-	// return map;
-	// }
-	// if (judgeManagementService.addJudge(userPassword, userName,
-	// judgeName, judgeGender, judgeLevel)) {
-	// map.put("returnCode", 200);
-	// map.put("returnMessage", "添加裁判员成功！");
-	// return map;
-	// }
-	//
-	// } catch (Exception exception) {
-	// exception.printStackTrace();
-	//
-	// }
-	// return map;
-	// }
+	 @RequestMapping(value = "/addjudge")
+	 @ResponseBody
+	 @Transactional
+	 public Map<String, Object> addJudge(HttpServletRequest request,
+	 HttpSession session) {
+	 Map<String, Object> map = new HashMap<String, Object>();
+	 try {
+	 map.put("returnCode", 500);
+	 map.put("returnMessage", "添加裁判员失败！");
+	 String judgeName = request.getParameter("judgeName");
+	 String userPassword = request.getParameter("judgeUserPassword");
+	 String userName = request.getParameter("judgeUserName");
+	 String judgeGender = request.getParameter("judgeGender");
+	 String judgeLevel = request.getParameter("judgeLevel");
+	 String judgeIdentifiedId = request.getParameter("judgeIdentifiedId");
+	 String judgePhonenum = request.getParameter("judgePhonenum");
+	 if (ToolsUtil.isEmpty(judgeName)) {
+	 map.put("returnCode", 300);
+	 map.put("returnMessage", "出错啦，裁判员姓名不能为空！");
+	 return map;
+	 }
+	 if (ToolsUtil.isEmpty(judgeGender)) {
+	 map.put("returnCode", 300);
+	 map.put("returnMessage", "出错啦，裁判员性别不能为空！");
+	 return map;
+	 }
+	 if (ToolsUtil.isEmpty(userName)) {
+	 map.put("returnCode", 300);
+	 map.put("returnMessage", "出错啦，裁判员用户名不能为空！");
+	 return map;
+	 }
+	 if (ToolsUtil.isEmpty(userPassword)) {
+	 map.put("returnCode", 300);
+	 map.put("returnMessage", "出错啦，裁判员用户密码不能为空！");
+	 return map;
+	 }
+	 if (ToolsUtil.isEmpty(judgeIdentifiedId)) {
+		 map.put("returnCode", 300);
+		 map.put("returnMessage", "出错啦，裁判员身份证号不能为空！");
+		 return map;
+	 }
+	 if (ToolsUtil.isEmpty(judgePhonenum)) {
+		 map.put("returnCode", 300);
+		 map.put("returnMessage", "出错啦，裁判员联系电话不能为空！");
+		 return map;
+	 }
+	
+	 if (ToolsUtil.isEmpty(judgeLevel)) {
+	 map.put("returnCode", 300);
+	 map.put("returnMessage", "出错啦，裁判员等级不能为空！");
+	 return map;
+	 }
+	 // 检查用户名是否存在
+	 if (userManagementService.getUserList(null, null, userName, null,
+	 null, "1").size() > 0) {
+	 map.put("returnCode", 400);
+	 map.put("returnMessage", "出错啦，用户名已存在！");
+	 return map;
+	 }
+	 if (judgeManagementService.addJudge(userPassword, userName,
+	 judgeName, judgeGender, judgeLevel, judgeIdentifiedId, judgePhonenum)) {
+	 map.put("returnCode", 200);
+	 map.put("returnMessage", "添加裁判员成功！");
+	 return map;
+	 }
+	
+	 } catch (Exception exception) {
+	 exception.printStackTrace();
+	
+	 }
+	 return map;
+	 }
 
 	/**
 	 * 
@@ -423,8 +455,8 @@ public class JudgeManagementControl {
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("name", judge_list.get(i).get("identified_name"));
 				map.put("id", judge_list.get(i).get("judge_id"));
-				map.put("birthday", judge_list.get(i)
-						.get("identified_birthday"));
+				map.put("mobile", judge_list.get(i)
+						.get("judge_mobile"));
 				map.put("gender", judge_list.get(i).get("identified_gender"));
 				List<Map<String, Object>> judgeandlevel_list = judgeManagementService
 						.getJudgeLevelByJudge(judge_list.get(i).get("judge_id")
@@ -542,12 +574,18 @@ public class JudgeManagementControl {
 			String judgeLevel = request.getParameter("judgeLevel");
 			String jobAddress = request.getParameter("jobAddress");
 			String judgeContact = request.getParameter("judgeContact");
+			String level = request.getParameter("level");
+			String nationality = request.getParameter("nationality");
+			String birthday = request.getParameter("birthday");
+			String identifiedId = request.getParameter("identifiedId");
+			String gender = request.getParameter("gender");
 			if(ToolsUtil.isEmpty(judgeId)){
 				map.put("returnCode", 300);
 				map.put("returnMessage", "获取裁判员ID失败！");
 				return map;
 			}
-			if(judgeManagementService.updateJudge(judgeId, jobId, jobAddress, districtId, identifiedAddress, judgeContact, judgeLevel)){
+			if(judgeManagementService.updateJudge(judgeId, jobId, jobAddress, districtId, identifiedAddress, judgeContact, judgeLevel,
+					level, nationality, birthday, identifiedId, gender)){
 				map.put("returnCode", 200);
 				map.put("returnMessage", "修改裁判员成功！");
 				return map;
@@ -631,7 +669,8 @@ public class JudgeManagementControl {
 				map.put("returnMessage", "附件类型不能为空！");
 				return map;
 			}
-			List<Map<String, Object>> list = judgeManagementService.getAtt(
+			String forwardDir =  File.separator + "YSMSRepo" + File.separator;
+			List<Map<String, Object>> list = judgeManagementService.getAtt(forwardDir, 
 					judgeId, attType);
 			map.put("returnCode", 200);
 			map.put("returnMessage", list);

@@ -38,7 +38,6 @@ public class SchoolUserDaoImpl extends GenericDaoImpl implements SchoolUserDao {
 	}
 	@Override
 	public List<YsmsSchooluser> findBySchoolId(int schoolId) {
-		// TODO Auto-generated method stub
 		log.debug("finding YsmsSchooluser instance by schoolId");
 		try {
 			String sql = " from YsmsSchooluser as s where s.ysmsSchool.schoolId = "+ schoolId;
@@ -57,7 +56,6 @@ public class SchoolUserDaoImpl extends GenericDaoImpl implements SchoolUserDao {
 	}
 	@Override
 	public List<YsmsSchooluser> findByUserId(int userId) {
-		// TODO Auto-generated method stub
 		log.debug("finding YsmsSchooluser instance by schoolId");
 		try {
 			String sql = " from YsmsSchooluser as s where s.ysmsUser.userId = "+ userId;

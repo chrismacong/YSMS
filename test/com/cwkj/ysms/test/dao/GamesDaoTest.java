@@ -15,6 +15,8 @@ import com.cwkj.ysms.dao.LeagueZoneDao;
 import com.cwkj.ysms.dao.TeamDao;
 import com.cwkj.ysms.model.YsmsGames;
 import com.cwkj.ysms.model.YsmsLeagueZone;
+import com.cwkj.ysms.model.view.AssistRankView;
+import com.cwkj.ysms.model.view.ShooterRankView;
 
 @RunWith(SpringJUnit4ClassRunner.class) 
 @ContextConfiguration(locations="file:WebContent/WEB-INF/springMVC-servlet.xml") 
@@ -172,6 +174,26 @@ public class GamesDaoTest {
 		}
 		else {
 			System.out.println(ysmsGames.getGamesTime());
+		}
+	}
+	
+	@Test
+	public void testGetShooterRank(){
+		List<ShooterRankView> list = gamesDao.getShooterRank(18, 10);
+		for(int i=0;i<list.size();i++){
+			ShooterRankView srv = list.get(i);
+			System.out.println(srv.getSchoolName() + "\t" + srv.getAthleteName() + "\t" 
+					+ srv.getGoalCount() + "(" + srv.getPenaltyCount() + ")");
+		}
+	}
+	
+	@Test
+	public void testGetAssistRank(){
+		List<AssistRankView> list = gamesDao.getAssistRank(17, 10);
+		for(int i=0;i<list.size();i++){
+			AssistRankView arv = list.get(i);
+			System.out.println(arv.getSchoolName() + "\t" + arv.getAthleteName() + "\t" 
+					+ arv.getAssistCount());
 		}
 	}
 }

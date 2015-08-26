@@ -49,7 +49,8 @@ public interface JudgeManagementService {
 			Date identifiedBirthday, String identifiedAddress, int jobId,
 			int districtId, String jobAddress, int judgeLevel, int judgeStatus,
 			String judgeMobile, String judgeTips, String fileName_id,
-			String fileName_level);
+			String fileName_level,
+			String username, String password);
 
 	/**
 	 * 
@@ -63,8 +64,9 @@ public interface JudgeManagementService {
 	 * @return boolean
 	 *
 	 */
-	// public boolean addJudge(String userPassword,
-	// String userName, String judgeName, String judgeGender,String judgeLevel);
+	 public boolean addJudge(String userPassword,
+	 String userName, String judgeName, String judgeGender,String judgeLevel,
+	 String identifiedId, String phonenum);
 
 	/**
 	 * 获取所有裁判
@@ -115,7 +117,8 @@ public interface JudgeManagementService {
 	 */
 	public boolean updateJudge(String judgeId,String jobId,String jobAddress, String districtId,
 			String identifiedAddress,   String contact,
-			String judgeLevel);
+			String judgeLevel, String level, String nationality, String birthday, 
+			String identifiedId, String gender);
 
 	public List<Map<String, Object>> getJudgeLevelByJudge(String judgeId);
 
@@ -127,5 +130,5 @@ public interface JudgeManagementService {
 
 	public boolean isPassed(String judgeId, String judgeStatus);
 
-	public List<Map<String, Object>> getAtt(String judgeId, String attType);
+	public List<Map<String, Object>> getAtt(String forwardDir, String judgeId, String attType);
 }

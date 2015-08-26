@@ -29,7 +29,9 @@ import com.cwkj.ysms.model.YsmsLeagueZone;
 import com.cwkj.ysms.model.YsmsTeam;
 import com.cwkj.ysms.model.YsmsTeammember;
 import com.cwkj.ysms.model.YsmsZoneTeam;
+import com.cwkj.ysms.model.view.AssistRankView;
 import com.cwkj.ysms.model.view.MarkItemView;
+import com.cwkj.ysms.model.view.ShooterRankView;
 import com.cwkj.ysms.service.GamesStatisticsService;
 
 @Component
@@ -928,5 +930,15 @@ public class GamesStatisticsServiceImpl implements GamesStatisticsService{
 			}
 		}
 		return markListAfterOrder;
+	}
+
+	@Override
+	public List<ShooterRankView> getShooterRank(int zoneId, int topHowMany) {
+		return gameDao.getShooterRank(zoneId, topHowMany);
+	}
+
+	@Override
+	public List<AssistRankView> getAssistRank(int zoneId, int topHowMany) {
+		return gameDao.getAssistRank(zoneId, topHowMany);
 	}
 }

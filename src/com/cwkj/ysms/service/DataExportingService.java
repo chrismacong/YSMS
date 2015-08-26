@@ -2,6 +2,9 @@ package com.cwkj.ysms.service;
 
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Map;
+
+import jxl.Sheet;
 
 import com.cwkj.ysms.model.YsmsSchool;
 import com.cwkj.ysms.model.view.CardAthleteView;
@@ -92,4 +95,11 @@ public interface DataExportingService {
 	 * @return
 	 */
 	public List<CardCoachView> exportCard_Coach(int schoolId);
+	
+	/**
+	 * 批量导入裁判员
+	 * @param sheet
+	 * @return
+	 */
+	public Map<String, Object> addJudgeBatches(Sheet sheet);
 }

@@ -1,5 +1,6 @@
 package com.cwkj.ysms.dao.impl;
 
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Repository;
 import com.cwkj.ysms.basedao.impl.GenericDaoImpl;
 import com.cwkj.ysms.dao.GamesDao;
 import com.cwkj.ysms.model.YsmsGames;
+import com.cwkj.ysms.model.view.AssistRankView;
+import com.cwkj.ysms.model.view.ShooterRankView;
 import com.cwkj.ysms.util.Page;
 
 @Repository
@@ -488,5 +491,101 @@ public class GamesDaoImpl extends GenericDaoImpl implements GamesDao {
 			log.error("find by teamId after date failed", re);
 			throw re;
 		}
+	}
+
+	@Override
+	public List<YsmsGames> getGamesByTeamIdBeforeDate(int teamId, Date date) {
+		log.debug("find YsmsGames instance by teamId and before date");
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String sql = " from YsmsGames g where g.gamesTime < '" + sdf.format(date) + 
+					"' and (g.ysmsTeamByHostTeamid.teamId = " + teamId + 
+					" or g.ysmsTeamByGuestTeamid.teamId = " + teamId + ")";
+			Query query = getSession().createQuery(sql);
+			List<YsmsGames> results = query.list();
+			log.debug("find by teamId and period successful, result size: "
+					+ results.size());
+			return results;
+		} catch (RuntimeException re) {
+			log.error("find by teamId and period failed", re);
+			throw re;
+		}
+	}
+
+	@Override
+	public List<ShooterRankView> getShooterRank(int zoneId, int topHowMany) {
+		List<ShooterRankView> views = new ArrayList<ShooterRankView>();
+		log.debug("find Shooter Rank");
+		try {
+			String sql = "select sc.school_id, sc.school_name, ath.identified_name, ath.athlete_id, count(goal.goal_id), count(goalc.goal_id)"
+					+ " from ysms_school sc, ysms_athlete ath, ysms_games game, ysms_goal goal"
+					+ " left outer join ysms_goal goalc"
+					+ " on goal.goal_id = goalc.goal_id"
+					+ " and goalc.style = 2"
+					+ " where goal.shooter = ath.athlete_id"	
+					+ " and goal.games_id = game.games_id"
+					+ " and game.zone_id = " + zoneId
+					+ " and ath.school_id = sc.school_id"
+					+ " and (goal.style = 1 or goal.style = 2)"
+					+ " group by athlete_id"
+					+ " order by count(goal.goal_id) desc";
+			Query query = getSession().createSQLQuery(sql).setMaxResults(topHowMany);
+			List<Object[]> results = query.list();
+			log.debug("find Shooter Rank successful, result size: "
+					+ results.size());
+			if(results!=null){
+				for(int i=0;i<results.size();i++){
+					ShooterRankView srv = new ShooterRankView();
+					Object[] objs = results.get(i);
+					srv.setSchoolId((int) objs[0]);
+					srv.setSchoolName(objs[1].toString());
+					srv.setAthleteName(objs[2].toString());
+					srv.setAthleteId((int)objs[3]);
+					srv.setGoalCount(((BigInteger) objs[4]).intValue());
+					srv.setPenaltyCount(((BigInteger) objs[5]).intValue());
+					views.add(srv);
+				}
+			}
+		} catch (RuntimeException re) {
+			log.error("find by teamId and period failed", re);
+			throw re;
+		}
+		return views;
+	}
+
+	@Override
+	public List<AssistRankView> getAssistRank(int zoneId, int topHowMany) {
+		List<AssistRankView> views = new ArrayList<AssistRankView>();
+		log.debug("find Assist Rank");
+		try {
+			String sql = "select sc.school_id, sc.school_name, ath.identified_name, ath.athlete_id, count(goal.goal_id)"
+					+ " from ysms_school sc, ysms_athlete ath, ysms_games game, ysms_goal goal"
+					+ " where goal.assistant = ath.athlete_id"	
+					+ " and goal.games_id = game.games_id"
+					+ " and game.zone_id = " + zoneId
+					+ " and ath.school_id = sc.school_id"
+					+ " group by athlete_id"
+					+ " order by count(goal.goal_id) desc";
+			Query query = getSession().createSQLQuery(sql).setMaxResults(topHowMany);
+			List<Object[]> results = query.list();
+			log.debug("find Shooter Rank successful, result size: "
+					+ results.size());
+			if(results!=null){
+				for(int i=0;i<results.size();i++){
+					AssistRankView srv = new AssistRankView();
+					Object[] objs = results.get(i);
+					srv.setSchoolId((int) objs[0]);
+					srv.setSchoolName(objs[1].toString());
+					srv.setAthleteName(objs[2].toString());
+					srv.setAthleteId((int)objs[3]);
+					srv.setAssistCount(((BigInteger) objs[4]).intValue());
+					views.add(srv);
+				}
+			}
+		} catch (RuntimeException re) {
+			log.error("find by teamId and period failed", re);
+			throw re;
+		}
+		return views;
 	}
 }

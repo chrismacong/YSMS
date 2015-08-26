@@ -1,6 +1,7 @@
 package com.cwkj.ysms.service.impl;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -15,21 +16,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cwkj.ysms.dao.DistrictDao;
+import com.cwkj.ysms.dao.GroupDao;
 import com.cwkj.ysms.dao.JobsDao;
 import com.cwkj.ysms.dao.JudgeAndLevelDao;
 import com.cwkj.ysms.dao.JudgeDao;
+import com.cwkj.ysms.dao.JudgeUserDao;
 import com.cwkj.ysms.dao.UserDao;
 import com.cwkj.ysms.model.YsmsDistrict;
 import com.cwkj.ysms.model.YsmsGroup;
 import com.cwkj.ysms.model.YsmsJobs;
 import com.cwkj.ysms.model.YsmsJudge;
 import com.cwkj.ysms.model.YsmsJudgeAtt;
+import com.cwkj.ysms.model.YsmsJudgeUser;
 import com.cwkj.ysms.model.YsmsJudgeandlevel;
 import com.cwkj.ysms.model.YsmsJudgelevel;
 import com.cwkj.ysms.model.YsmsUser;
 import com.cwkj.ysms.service.JudgeManagementService;
 import com.cwkj.ysms.service.UserManagementService;
-import com.cwkj.ysms.util.Page;
 import com.cwkj.ysms.util.ToolsUtil;
 
 /**
@@ -91,13 +94,36 @@ public class JudgeManagementServiceImpl implements JudgeManagementService {
 			UserManagementService userManagementService) {
 		this.userManagementService = userManagementService;
 	}
+	
+	@Resource
+	private JudgeUserDao judgeUserDao;
+
+	public JudgeUserDao getJudgeUserDao() {
+		return judgeUserDao;
+	}
+
+	public void setJudgeUserDao(JudgeUserDao judgeUserDao) {
+		this.judgeUserDao = judgeUserDao;
+	}
+	
+	@Resource
+	private GroupDao groupDao;
+
+	public GroupDao getGroupDao() {
+		return groupDao;
+	}
+
+	public void setGroupDao(GroupDao groupDao) {
+		this.groupDao = groupDao;
+	}
 
 	@Override
 	public boolean applyJudge(String identifiedId, String identifiedName,
 			int identifiedGender, String identifiedNationality,Date identifiedBirthday,
 			String identifiedAddress, int jobId, int districtId,
 			String jobAddress, int judgeLevel, int judgeStatus,
-			String judgeMobile, String judgeTips,String fileName_id,String fileName_level) {
+			String judgeMobile, String judgeTips,String fileName_id,String fileName_level,
+			String username, String password) {
 		try {
 			YsmsJudge ysmsJudge=new YsmsJudge();
 			 
@@ -121,6 +147,17 @@ public class JudgeManagementServiceImpl implements JudgeManagementService {
 			ysmsJudge.setYsmsJobs(jobs);
 			judgeDao.save(ysmsJudge);
 			
+			YsmsUser ysmsUser = new YsmsUser();
+			ysmsUser.setDeleteflag(0);
+			ysmsUser.setUserName(username);
+			ysmsUser.setUserPassword(password);
+			ysmsUser.setYsmsGroup(groupDao.findById(9));//hard code
+			userDao.save(ysmsUser);
+			
+			YsmsJudgeUser ju = new YsmsJudgeUser();
+			ju.setYsmsJudge(ysmsJudge);
+			ju.setYsmsUser(ysmsUser);
+			judgeUserDao.save(ju);
 			
 			if(!ToolsUtil.isEmpty(fileName_level)){
 				YsmsJudgeAtt att=new YsmsJudgeAtt();
@@ -168,55 +205,63 @@ public class JudgeManagementServiceImpl implements JudgeManagementService {
  
  
 
-//	@Override
-//	public boolean addJudge(String userPassword, String userName,
-//			String judgeName, String judgeGender, String judgeLevel) {
-//
-//		try {
-//	
-//			YsmsJudge ysmsJudge = new YsmsJudge();
-//
-//			ysmsJudge.setDeleteflag(0);
-//			ysmsJudge.setIdentifiedName(judgeName);
-//			ysmsJudge.setIdentifiedGender(Integer.parseInt(judgeGender));
-//			ysmsJudge.setJudgeStatus(1);
-//
-//			YsmsUser ysmsUser = new YsmsUser();
-//			ysmsUser.setUserName(userName);
-//			ysmsUser.setUserPassword(userPassword);
-//			ysmsUser.setDeleteflag(0);
-//			 
-//
-//			YsmsGroup ysmsGroup = new YsmsGroup();
-//			ysmsGroup.setGroupId(3);
-//			ysmsUser.setYsmsGroup(ysmsGroup);
-//			ysmsJudge.setYsmsUser(ysmsUser);
-//			Set<YsmsJudgeandlevel> ysmsJudgeandlevels = new HashSet<YsmsJudgeandlevel>();
-//			String[] levels = judgeLevel.split(",");
-//			for (String level : levels) {
-//				YsmsJudgeandlevel judgeandlevel = new YsmsJudgeandlevel();
-//				judgeandlevel.setYsmsJudge(ysmsJudge);
-//				YsmsJudgelevel judgeLevelTemp = new YsmsJudgelevel();
-//				judgeLevelTemp.setLevelId(Integer.parseInt(level));
-//				judgeandlevel.setYsmsJudgelevel(judgeLevelTemp);
-//				ysmsJudgeandlevels.add(judgeandlevel);
-//			}
-//			ysmsJudge.setYsmsJudgeandlevels(ysmsJudgeandlevels);
-//			userDao.save(ysmsUser);
-//			judgeDao.save(ysmsJudge);
-//
-//		} catch (Exception exception) {
-//			exception.printStackTrace();
-//			return false;
-//		}
-//		return true;
-//	}
+	@Override
+	public boolean addJudge(String userPassword, String userName,
+			String judgeName, String judgeGender, String judgeLevel,
+			 String identifiedId, String phonenum) {
+
+		try {
+	
+			YsmsJudge ysmsJudge = new YsmsJudge();
+
+			ysmsJudge.setDeleteflag(0);
+			ysmsJudge.setIdentifiedName(judgeName);
+			ysmsJudge.setIdentifiedGender(Integer.parseInt(judgeGender));
+			ysmsJudge.setJudgeStatus(2);
+			ysmsJudge.setIdentifiedId(identifiedId);
+			ysmsJudge.setJudgeMobile(phonenum);
+			Set<YsmsJudgeandlevel> ysmsJudgeandlevels = new HashSet<YsmsJudgeandlevel>();
+			String[] levels = judgeLevel.split(",");
+			for (String level : levels) {
+				YsmsJudgeandlevel judgeandlevel = new YsmsJudgeandlevel();
+				judgeandlevel.setYsmsJudge(ysmsJudge);
+				YsmsJudgelevel judgeLevelTemp = new YsmsJudgelevel();
+				judgeLevelTemp.setLevelId(Integer.parseInt(level));
+				judgeandlevel.setYsmsJudgelevel(judgeLevelTemp);
+				ysmsJudgeandlevels.add(judgeandlevel);
+			}
+			ysmsJudge.setYsmsJudgeandlevels(ysmsJudgeandlevels);
+
+			YsmsUser ysmsUser = new YsmsUser();
+			ysmsUser.setUserName(userName);
+			ysmsUser.setUserPassword(userPassword);
+			ysmsUser.setDeleteflag(0);			
+			//HARD CODE
+			YsmsGroup ysmsGroup = groupDao.findById(9);
+			ysmsUser.setYsmsGroup(ysmsGroup);
+			
+			//先保存，进入持久态获取Id
+			userDao.save(ysmsUser);
+			judgeDao.save(ysmsJudge);
+			
+			YsmsJudgeUser judgeUser = new YsmsJudgeUser();
+			judgeUser.setYsmsJudge(ysmsJudge);
+			judgeUser.setYsmsUser(ysmsUser);
+			judgeUserDao.save(judgeUser);
+
+		} catch (Exception exception) {
+			exception.printStackTrace();
+			return false;
+		}
+		return true;
+	}
 
  
 	@Override
 	public boolean updateJudge(String judgeId,String jobId,String jobAddress, String districtId,
 			String identifiedAddress,   String contact,
-			String judgeLevel) {
+			String judgeLevel, String level, String nationality, String birthday, 
+			String identifiedId, String gender) {
 		try {
 			YsmsJudge ysmsJudge = judgeDao.findById(Integer.parseInt(judgeId));
 			if (!ToolsUtil.isEmpty(jobId)) {
@@ -238,15 +283,31 @@ public class JudgeManagementServiceImpl implements JudgeManagementService {
 			if (!ToolsUtil.isEmpty(contact)) {
 				ysmsJudge.setJudgeMobile(contact);
 			}
+			if(!ToolsUtil.isEmpty(level)){
+				ysmsJudge.setJudgeLevel(Integer.parseInt(level));
+			}
+			if(!ToolsUtil.isEmpty(nationality)){
+				ysmsJudge.setIdentifiedNationality(nationality);
+			}
+			if(!ToolsUtil.isEmpty(birthday)){
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				ysmsJudge.setIdentifiedBirthday(sdf.parse(birthday));
+			}
+			if(!ToolsUtil.isEmpty(identifiedId)){
+				ysmsJudge.setIdentifiedId(identifiedId);
+			}
+			if(!ToolsUtil.isEmpty(gender)){
+				ysmsJudge.setIdentifiedGender(Integer.parseInt(gender));
+			}
 			if (!ToolsUtil.isEmpty(judgeLevel)) {
 				judgeAndLevelDao.deleteLevel(Integer.parseInt(judgeId));
 				Set<YsmsJudgeandlevel> ysmsJudgeandlevels = new HashSet<YsmsJudgeandlevel>();
 				String[] levels = judgeLevel.split(",");
-				for (String level : levels) {
+				for (String _level : levels) {
 					YsmsJudgeandlevel judgeandlevel = new YsmsJudgeandlevel();
 					judgeandlevel.setYsmsJudge(ysmsJudge);
 					YsmsJudgelevel judgeLevelTemp = new YsmsJudgelevel();
-					judgeLevelTemp.setLevelId(Integer.parseInt(level));
+					judgeLevelTemp.setLevelId(Integer.parseInt(_level));
 					judgeandlevel.setYsmsJudgelevel(judgeLevelTemp);
 					ysmsJudgeandlevels.add(judgeandlevel);
 				}
@@ -360,16 +421,16 @@ public class JudgeManagementServiceImpl implements JudgeManagementService {
 	}
 
 	@Override
-	public List<Map<String, Object>> getAtt(String judgeId, String attType) {
+	public List<Map<String, Object>> getAtt(String forwardDir, String judgeId, String attType) {
 		List<Map<String, Object>> list=new ArrayList<Map<String,Object>>();
 		try{
 			list= judgeDao.gettAtt(Integer.parseInt(judgeId), Integer.parseInt(attType));
 			 
 			if(!ToolsUtil.isEmpty(list)){
 				if("0".equals(attType)){
-					list.get(0).put("att_name", "upload"+File.separator+"identifiedCard"+File.separator+list.get(0).get("att_name"));	
+					list.get(0).put("att_name", forwardDir + "upload"+File.separator+"identifiedCard"+File.separator+list.get(0).get("att_name"));	
 				}else if("1".equals(attType)){
-					list.get(0).put("att_name", "upload"+File.separator+"certificate"+File.separator+list.get(0).get("att_name"));	
+					list.get(0).put("att_name", forwardDir + "upload"+File.separator+"certificate"+File.separator+list.get(0).get("att_name"));	
 				}
 			}
 		 

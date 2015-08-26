@@ -405,10 +405,17 @@
 				<div class="score">
 					<table width="100%" style="text-align: center">
 						<tr>
-							<td style="width:150px;">
+							<td style="width: 150px;">
 								<table>
-									<tr><td><img id="host_downloadteammemberlist" class="download" src="${pageContext.request.contextPath}/images/gameview_downloadteammemberlist.png"/></td></tr>
-									<tr><td><img id="host_downloadteammemberlist" class="download" src="${pageContext.request.contextPath}/images/gameview_downloadcardiinfo.png"/></td></tr>
+									<tr>
+										<td><img id="host_downloadteammemberlist"
+											class="download"
+											src="${pageContext.request.contextPath}/images/gameview_downloadteammemberlist.png" /></td>
+									</tr>
+									<tr>
+										<td><img id="host_suspension" class="download"
+											src="${pageContext.request.contextPath}/images/gameview_downloadcardiinfo.png" /></td>
+									</tr>
 								</table>
 							</td>
 							<td><img
@@ -425,10 +432,17 @@
 							<td><img
 								src="${pageContext.request.contextPath}/images/logo.png">
 								<p id="record_guest_school_name"></p></td>
-							<td style="width:150px;">
+							<td style="width: 150px;">
 								<table>
-									<tr><td><img id="guest_downloadteammemberlist" class="download" src="${pageContext.request.contextPath}/images/gameview_downloadteammemberlist.png"/></td></tr>
-									<tr><td><img id="guest_downloadteammemberlist" class="download" src="${pageContext.request.contextPath}/images/gameview_downloadcardiinfo.png"/></td></tr>
+									<tr>
+										<td><img id="guest_downloadteammemberlist"
+											class="download"
+											src="${pageContext.request.contextPath}/images/gameview_downloadteammemberlist.png" /></td>
+									</tr>
+									<tr>
+										<td><img id="guest_suspension" class="download"
+											src="${pageContext.request.contextPath}/images/gameview_downloadcardiinfo.png" /></td>
+									</tr>
 								</table>
 							</td>
 						</tr>
@@ -539,7 +553,8 @@
 															<td colspan="2"><input type="checkbox"
 																class="overtime_checkbox"
 																style='vertical-align: middle;'
-																id="host_isovertime_flag" onchange="overtime_checkbox_change(this)"><a>是否加时赛</a></td>
+																id="host_isovertime_flag"
+																onchange="overtime_checkbox_change(this)"><a>是否加时赛</a></td>
 															<td>加时赛得分：</td>
 															<td><input id="host_overtime_score"
 																disabled="disabled"></td>
@@ -547,7 +562,8 @@
 														<tr>
 															<td colspan="2"><input type="checkbox"
 																class="penalty_checkbox" style='vertical-align: middle;'
-																id="host_ispenalty_flag" onchange="penalty_checkbox_change(this)"><a>是否点球决胜</a></td>
+																id="host_ispenalty_flag"
+																onchange="penalty_checkbox_change(this)"><a>是否点球决胜</a></td>
 															<td>球点球得分：</td>
 															<td><input id="host_penalty_score"
 																disabled="disabled"></td>
@@ -663,7 +679,8 @@
 															<td colspan="2"><input type="checkbox"
 																class="overtime_checkbox"
 																style='vertical-align: middle;'
-																id="guest_isovertime_flag" onchange="overtime_checkbox_change(this)"><a>是否加时赛</a></td>
+																id="guest_isovertime_flag"
+																onchange="overtime_checkbox_change(this)"><a>是否加时赛</a></td>
 															<td>加时赛得分：</td>
 															<td><input id="guest_overtime_score"
 																disabled="disabled"></td>
@@ -671,7 +688,8 @@
 														<tr>
 															<td colspan="2"><input type="checkbox"
 																class="penalty_checkbox" style='vertical-align: middle;'
-																id="guest_ispenalty_flag" onchange="penalty_checkbox_change(this)"><a>是否点球大战</a></td>
+																id="guest_ispenalty_flag"
+																onchange="penalty_checkbox_change(this)"><a>是否点球大战</a></td>
 															<td>点球大战得分：</td>
 															<td><input id="guest_penalty_score"
 																disabled="disabled"></td>
@@ -689,13 +707,12 @@
 						</tr>
 						<tr>
 							<td colspan="7"><a id="gamestatus0" onclick="setGameOver()"
-								href="javascript:void(0)" style="display:inline;">设置完赛 </a>
-								<a id="gamestatus1" onclick="cancelGameOver()"
-								href="javascript:void(0)" style="display:none;">取消完赛 </a>
-								<a id="save_record"
-								href="javascript:void(0)">保 &nbsp; &nbsp;存 </a> <a
-								id="cancel_record" href="javascript:void(0)">取 &nbsp; &nbsp;
-									消</a></td>
+								href="javascript:void(0)" style="display: inline;">设置完赛 </a> <a
+								id="gamestatus1" onclick="cancelGameOver()"
+								href="javascript:void(0)" style="display: none;">取消完赛 </a> <a
+								id="save_record" href="javascript:void(0)">保 &nbsp; &nbsp;存
+							</a> <a id="cancel_record" href="javascript:void(0)">取 &nbsp;
+									&nbsp; 消</a></td>
 						</tr>
 					</table>
 				</div>
@@ -826,7 +843,7 @@
 					<td><div class="input_wk">
 							<div class="input_l"></div>
 							<div class="input_m">
-								 <div class="select_wk">
+								<div class="select_wk">
 									<input id="host_uniform_input" type="text">
 								</div>
 							</div>
@@ -947,9 +964,24 @@
 			</table>
 		</div>
 		<!--添加比赛 END-->
-
-		<script
-			src="${pageContext.request.contextPath}/js/match.js"
+		<div class="suspension_block">
+			<div class="outerclose"></div>
+			<table class="personscore" id="suspension_table" cellpadding="0" cellspacing="0"
+				width="100%">
+				<thead>
+					<tr>
+						<td>球衣号码</td>
+						<td>球员姓名</td>
+						<td>停赛原因</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<script src="${pageContext.request.contextPath}/js/match.js"
 			type="text/javascript"></script>
 	</div>
 </body>
