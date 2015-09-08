@@ -195,8 +195,8 @@
 								<div class="input_l"></div>
 								<div class="input_m">
 									<div class="select_wk">
-										<input disabled="disabled" readOnly="readonly" type="text"
-											value="暂不支持">
+										<input <c:if test="${userGroup!='1'}">disabled="disabled" readOnly="readonly"</c:if> type="text"
+											id="judgeposition_1" class="choose_judge_input">
 									</div>
 								</div>
 								<div class="input_r"></div>
@@ -219,8 +219,8 @@
 								<div class="input_l"></div>
 								<div class="input_m">
 									<div class="select_wk">
-										<input disabled="disabled" readOnly="readonly" type="text"
-											value="暂不支持">
+										<input <c:if test="${userGroup!='1'}">disabled="disabled" readOnly="readonly"</c:if> type="text"
+											id="judgeposition_2" class="choose_judge_input">
 									</div>
 								</div>
 								<div class="input_r"></div>
@@ -243,8 +243,8 @@
 								<div class="input_l"></div>
 								<div class="input_m">
 									<div class="select_wk">
-										<input disabled="disabled" readOnly="readonly" type="text"
-											value="暂不支持">
+										<input <c:if test="${userGroup!='1'}">disabled="disabled" readOnly="readonly"</c:if> type="text"
+											id="judgeposition_3" class="choose_judge_input">
 									</div>
 								</div>
 								<div class="input_r"></div>
@@ -267,8 +267,8 @@
 								<div class="input_l"></div>
 								<div class="input_m">
 									<div class="select_wk">
-										<input disabled="disabled" readOnly="readonly" type="text"
-											value="暂不支持">
+										<input <c:if test="${userGroup!='1'}">disabled="disabled" readOnly="readonly"</c:if> type="text"
+											id="judgeposition_4" class="choose_judge_input">
 									</div>
 								</div>
 								<div class="input_r"></div>
@@ -290,8 +290,8 @@
 								<div class="input_l"></div>
 								<div class="input_m">
 									<div class="select_wk">
-										<input disabled="disabled" readOnly="readonly" type="text"
-											value="暂不支持">
+										<input <c:if test="${userGroup!='4'}">disabled="disabled" readOnly="readonly"</c:if> type="text"
+											id="judgeposition_5" class="choose_judge_input">
 									</div>
 								</div>
 								<div class="input_r"></div>
@@ -314,8 +314,8 @@
 								<div class="input_l"></div>
 								<div class="input_m">
 									<div class="select_wk">
-										<input disabled="disabled" readOnly="readonly" type="text"
-											value="暂不支持">
+										<input <c:if test="${userGroup!='4'}">disabled="disabled" readOnly="readonly"</c:if> type="text"
+											id="judgeposition_6" class="choose_judge_input">
 									</div>
 								</div>
 								<div class="input_r"></div>
@@ -337,8 +337,8 @@
 								<div class="input_l"></div>
 								<div class="input_m">
 									<div class="select_wk">
-										<input disabled="disabled" readOnly="readonly" type="text"
-											value="暂不支持">
+										<input <c:if test="${userGroup!='1'}">disabled="disabled" readOnly="readonly"</c:if> type="text"
+											id="judgeposition_7" class="choose_judge_input">
 									</div>
 								</div>
 								<div class="input_r"></div>
@@ -361,8 +361,8 @@
 								<div class="input_l"></div>
 								<div class="input_m">
 									<div class="select_wk">
-										<input disabled="disabled" readOnly="readonly" type="text"
-											value="暂不支持">
+										<input <c:if test="${userGroup!='1'}">disabled="disabled" readOnly="readonly"</c:if> type="text"
+											id="judgeposition_8" class="choose_judge_input">
 									</div>
 								</div>
 								<div class="input_r"></div>
@@ -743,13 +743,13 @@
 							</div>
 							<div class="input_r"></div>
 						</div></td>
-					<td>主 &nbsp; &nbsp; &nbsp; 裁：</td>
+					<td>裁判员：</td>
 					<td><div class="input_wk">
 							<div class="input_l"></div>
 							<div class="input_m">
 								<div class="select_wk">
-									<input disabled="disabled" readOnly="readonly" type="text"
-										value="暂不支持">
+									<input <c:if test="${userGroup!='1'}">disabled="disabled" readOnly="readonly"</c:if> type="text"
+										value="暂不支持" class="choose_judge_input">
 								</div>
 							</div>
 							<div class="input_r"></div>
@@ -768,13 +768,13 @@
 							</div>
 							<div class="input_r"></div>
 						</div></td>
-					<td>第一边裁：</td>
+					<td>第一助理裁判：</td>
 					<td><div class="input_wk">
 							<div class="input_l"></div>
 							<div class="input_m">
 								<div class="select_wk">
-									<input disabled="disabled" readOnly="readonly" type="text"
-										value="暂不支持">
+									<input <c:if test="${userGroup!='1'}">disabled="disabled" readOnly="readonly"</c:if> type="text"
+										value="暂不支持" class="choose_judge_input">
 								</div>
 							</div>
 							<div class="input_r"></div>
@@ -799,13 +799,13 @@
 							</div>
 							<div class="input_r"></div>
 						</div></td>
-					<td>第二边裁：</td>
+					<td>第二助理裁判：</td>
 					<td><div class="input_wk">
 							<div class="input_l"></div>
 							<div class="input_m">
 								<div class="select_wk">
-									<input disabled="disabled" readOnly="readonly" type="text"
-										value="暂不支持">
+									<input <c:if test="${userGroup!='1'}">disabled="disabled" readOnly="readonly"</c:if> type="text"
+										value="暂不支持" class="choose_judge_input">
 								</div>
 							</div>
 							<div class="input_r"></div>
@@ -826,13 +826,13 @@
 							</div>
 							<div class="input_r"></div>
 						</div></td>
-					<td>统&nbsp; &nbsp; &nbsp;计：</td>
+					<td>第四官员：</td>
 					<td><div class="input_wk">
 							<div class="input_l"></div>
 							<div class="input_m">
 								<div class="select_wk">
-									<input disabled="disabled" readOnly="readonly" type="text"
-										value="暂不支持">
+									<input <c:if test="${userGroup!='1'}">disabled="disabled" readOnly="readonly"</c:if> type="text"
+										value="暂不支持" class="choose_judge_input">
 								</div>
 							</div>
 							<div class="input_r"></div>
@@ -849,13 +849,13 @@
 							</div>
 							<div class="input_r"></div>
 						</div></td>
-					<td>统&nbsp; &nbsp; &nbsp;计：</td>
+					<td>比赛监督：</td>
 					<td><div class="input_wk">
 							<div class="input_l"></div>
 							<div class="input_m">
 								<div class="select_wk">
-									<input disabled="disabled" readOnly="readonly" type="text"
-										value="暂不支持">
+									<input <c:if test="${userGroup!='4'}">disabled="disabled" readOnly="readonly"</c:if> type="text"
+										value="暂不支持" class="choose_judge_input">
 								</div>
 							</div>
 							<div class="input_r"></div>
@@ -876,13 +876,13 @@
 							</div>
 							<div class="input_r"></div>
 						</div></td>
-					<td>第四官员：</td>
+					<td>裁判监督：</td>
 					<td><div class="input_wk">
 							<div class="input_l"></div>
 							<div class="input_m">
 								<div class="select_wk">
-									<input disabled="disabled" readOnly="readonly" type="text"
-										value="暂不支持">
+									<input <c:if test="${userGroup!='4'}">disabled="disabled" readOnly="readonly"</c:if> type="text"
+										value="暂不支持" class="choose_judge_input">
 								</div>
 							</div>
 							<div class="input_r"></div>
@@ -899,13 +899,13 @@
 							</div>
 							<div class="input_r"></div>
 						</div></td>
-					<td>现场官员：</td>
+					<td>统&nbsp;&nbsp;&nbsp;计：</td>
 					<td><div class="input_wk">
 							<div class="input_l"></div>
 							<div class="input_m">
 								<div class="select_wk">
-									<input disabled="disabled" readOnly="readonly" type="text"
-										value="暂不支持">
+									<input <c:if test="${userGroup!='1'}">disabled="disabled" readOnly="readonly"</c:if> type="text"
+										value="暂不支持" class="choose_judge_input">
 								</div>
 							</div>
 							<div class="input_r"></div>
@@ -923,12 +923,12 @@
 							</div>
 							<div class="input_r"></div>
 						</div></td>
-					<td>现场官员：</td>
-					<td><div class="input_wk">
+					<td>统&nbsp;&nbsp;&nbsp;计：</td>
+					<td><div class="input_wk" class="choose_judge_input">
 							<div class="input_l"></div>
 							<div class="input_m">
 								<div class="select_wk">
-									<input disabled="disabled" readOnly="readonly" type="text"
+									<input <c:if test="${userGroup!='1'}">disabled="disabled" readOnly="readonly"</c:if> type="text"
 										value="暂不支持">
 								</div>
 							</div>
@@ -980,6 +980,22 @@
 					</tr>
 				</tbody>
 			</table>
+		</div>
+		
+		<div class="choose_judge_block">
+			<div class="outerclose"></div>
+			<br/>
+			<div id="judge_table_container">
+			<table class="judges" id="judges" cellpadding="0" cellspacing="0" width="90%" style="margin-left:5%;">
+				<thead>
+					<tr>
+						<td colspan="2" style="text-align:center;">选择裁判员&nbsp;&nbsp;<a id="cancel_judge_selection" href="javascript:void(0)">取消选择</a></td>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			</div>
 		</div>
 		<script src="${pageContext.request.contextPath}/js/match.js"
 			type="text/javascript"></script>

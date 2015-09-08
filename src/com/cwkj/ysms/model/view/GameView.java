@@ -262,5 +262,11 @@ public class GameView {
 	public void setGameTimeForCalendar(String gameTimeForCalendar) {
 		this.gameTimeForCalendar = gameTimeForCalendar;
 	}
-	
+	public String[] judgePostionNames;
+	public String[] getJudgePostionNames() {
+		return judgePostionNames;
+	}
+	public void setJudgePostionNames(String[] judgePostionNames) {
+		this.judgePostionNames = judgePostionNames;
+	}
 }

@@ -1,6 +1,7 @@
 package com.cwkj.ysms.control;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,7 +14,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import net.sf.json.JSONArray;
+import jxl.Sheet;
+import jxl.Workbook;
+import jxl.read.biff.BiffException;
 import net.sf.json.JSONObject;
 
 import org.springframework.stereotype.Controller;
@@ -25,6 +28,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.cwkj.ysms.model.view.JudgeView;
+import com.cwkj.ysms.service.DataExportingService;
 import com.cwkj.ysms.service.JudgeManagementService;
 import com.cwkj.ysms.service.UserManagementService;
 import com.cwkj.ysms.util.IDCard;
@@ -47,6 +52,8 @@ public class JudgeManagementControl {
 	private JudgeManagementService judgeManagementService;
 	@Resource
 	private UserManagementService userManagementService;
+	@Resource
+	private DataExportingService dataExportingService;
 
 	public UserManagementService getUserManagementService() {
 		return userManagementService;
@@ -71,7 +78,7 @@ public class JudgeManagementControl {
 			HttpSession session, HttpServletResponse response) {
 		return new ModelAndView("JudgeManagementPage");
 	}
-	
+
 	@RequestMapping(value = "/register", method = RequestMethod.GET)
 	@Transactional
 	public ModelAndView register(HttpServletRequest request,
@@ -173,7 +180,7 @@ public class JudgeManagementControl {
 			}
 			if(ToolsUtil.isEmpty(password)){
 				map.put("returnMessage", "密码不能为空!");
-				
+
 				response.getWriter().write(map.toString());
 				return null;
 			}
@@ -318,78 +325,78 @@ public class JudgeManagementControl {
 	 *
 	 */
 
-	 @RequestMapping(value = "/addjudge")
-	 @ResponseBody
-	 @Transactional
-	 public Map<String, Object> addJudge(HttpServletRequest request,
-	 HttpSession session) {
-	 Map<String, Object> map = new HashMap<String, Object>();
-	 try {
-	 map.put("returnCode", 500);
-	 map.put("returnMessage", "添加裁判员失败！");
-	 String judgeName = request.getParameter("judgeName");
-	 String userPassword = request.getParameter("judgeUserPassword");
-	 String userName = request.getParameter("judgeUserName");
-	 String judgeGender = request.getParameter("judgeGender");
-	 String judgeLevel = request.getParameter("judgeLevel");
-	 String judgeIdentifiedId = request.getParameter("judgeIdentifiedId");
-	 String judgePhonenum = request.getParameter("judgePhonenum");
-	 if (ToolsUtil.isEmpty(judgeName)) {
-	 map.put("returnCode", 300);
-	 map.put("returnMessage", "出错啦，裁判员姓名不能为空！");
-	 return map;
-	 }
-	 if (ToolsUtil.isEmpty(judgeGender)) {
-	 map.put("returnCode", 300);
-	 map.put("returnMessage", "出错啦，裁判员性别不能为空！");
-	 return map;
-	 }
-	 if (ToolsUtil.isEmpty(userName)) {
-	 map.put("returnCode", 300);
-	 map.put("returnMessage", "出错啦，裁判员用户名不能为空！");
-	 return map;
-	 }
-	 if (ToolsUtil.isEmpty(userPassword)) {
-	 map.put("returnCode", 300);
-	 map.put("returnMessage", "出错啦，裁判员用户密码不能为空！");
-	 return map;
-	 }
-	 if (ToolsUtil.isEmpty(judgeIdentifiedId)) {
-		 map.put("returnCode", 300);
-		 map.put("returnMessage", "出错啦，裁判员身份证号不能为空！");
-		 return map;
-	 }
-	 if (ToolsUtil.isEmpty(judgePhonenum)) {
-		 map.put("returnCode", 300);
-		 map.put("returnMessage", "出错啦，裁判员联系电话不能为空！");
-		 return map;
-	 }
-	
-	 if (ToolsUtil.isEmpty(judgeLevel)) {
-	 map.put("returnCode", 300);
-	 map.put("returnMessage", "出错啦，裁判员等级不能为空！");
-	 return map;
-	 }
-	 // 检查用户名是否存在
-	 if (userManagementService.getUserList(null, null, userName, null,
-	 null, "1").size() > 0) {
-	 map.put("returnCode", 400);
-	 map.put("returnMessage", "出错啦，用户名已存在！");
-	 return map;
-	 }
-	 if (judgeManagementService.addJudge(userPassword, userName,
-	 judgeName, judgeGender, judgeLevel, judgeIdentifiedId, judgePhonenum)) {
-	 map.put("returnCode", 200);
-	 map.put("returnMessage", "添加裁判员成功！");
-	 return map;
-	 }
-	
-	 } catch (Exception exception) {
-	 exception.printStackTrace();
-	
-	 }
-	 return map;
-	 }
+	@RequestMapping(value = "/addjudge")
+	@ResponseBody
+	@Transactional
+	public Map<String, Object> addJudge(HttpServletRequest request,
+			HttpSession session) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+			map.put("returnCode", 500);
+			map.put("returnMessage", "添加裁判员失败！");
+			String judgeName = request.getParameter("judgeName");
+			String userPassword = request.getParameter("judgeUserPassword");
+			String userName = request.getParameter("judgeUserName");
+			String judgeGender = request.getParameter("judgeGender");
+			String judgeLevel = request.getParameter("judgeLevel");
+			String judgeIdentifiedId = request.getParameter("judgeIdentifiedId");
+			String judgePhonenum = request.getParameter("judgePhonenum");
+			if (ToolsUtil.isEmpty(judgeName)) {
+				map.put("returnCode", 300);
+				map.put("returnMessage", "出错啦，裁判员姓名不能为空！");
+				return map;
+			}
+			if (ToolsUtil.isEmpty(judgeGender)) {
+				map.put("returnCode", 300);
+				map.put("returnMessage", "出错啦，裁判员性别不能为空！");
+				return map;
+			}
+			if (ToolsUtil.isEmpty(userName)) {
+				map.put("returnCode", 300);
+				map.put("returnMessage", "出错啦，裁判员用户名不能为空！");
+				return map;
+			}
+			if (ToolsUtil.isEmpty(userPassword)) {
+				map.put("returnCode", 300);
+				map.put("returnMessage", "出错啦，裁判员用户密码不能为空！");
+				return map;
+			}
+			if (ToolsUtil.isEmpty(judgeIdentifiedId)) {
+				map.put("returnCode", 300);
+				map.put("returnMessage", "出错啦，裁判员身份证号不能为空！");
+				return map;
+			}
+			if (ToolsUtil.isEmpty(judgePhonenum)) {
+				map.put("returnCode", 300);
+				map.put("returnMessage", "出错啦，裁判员联系电话不能为空！");
+				return map;
+			}
+
+			if (ToolsUtil.isEmpty(judgeLevel)) {
+				map.put("returnCode", 300);
+				map.put("returnMessage", "出错啦，裁判员等级不能为空！");
+				return map;
+			}
+			// 检查用户名是否存在
+			if (userManagementService.getUserList(null, null, userName, null,
+					null, "1").size() > 0) {
+				map.put("returnCode", 400);
+				map.put("returnMessage", "出错啦，用户名已存在！");
+				return map;
+			}
+			if (judgeManagementService.addJudge(userPassword, userName,
+					judgeName, judgeGender, judgeLevel, judgeIdentifiedId, judgePhonenum)) {
+				map.put("returnCode", 200);
+				map.put("returnMessage", "添加裁判员成功！");
+				return map;
+			}
+
+		} catch (Exception exception) {
+			exception.printStackTrace();
+
+		}
+		return map;
+	}
 
 	/**
 	 * 
@@ -481,6 +488,16 @@ public class JudgeManagementControl {
 		returnMap.put("page", returnPage);
 		returnMap.put("data", list);
 		return returnMap;
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/listalljudges", method = RequestMethod.POST)
+	public Map<String, Object> listAllJudges(HttpServletRequest request,
+			HttpSession session) {
+		List<JudgeView> judgeViews = judgeManagementService.getAllJudge();
+		Map<String, Object> model = new HashMap<String, Object>();
+		model.put("result", judgeViews);
+		return model;
 	}
 
 	/**
@@ -746,5 +763,76 @@ public class JudgeManagementControl {
 	public static boolean isNumeric(String str) {
 		Pattern pattern = Pattern.compile("[0-9]*");
 		return pattern.matcher(str).matches();
+	}
+
+	@RequestMapping(value = "/batchxls", method = RequestMethod.POST)
+	@Transactional
+	public void batchxls(HttpServletRequest request, HttpSession session,
+			HttpServletResponse response) {
+		JSONObject map = new JSONObject();
+		map.put("returnCode", 911);
+		map.put("returnMessage", "请选择文件！");
+		response.setContentType("text/html");
+		try {
+			MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest) request;
+			MultipartFile batchFile = multipartHttpServletRequest
+					.getFile("batch_file");
+			String dir = request.getSession().getServletContext()
+					.getRealPath("../") + File.separator +"YSMSRepo" + File.separator + "file";
+			if (!batchFile.isEmpty()
+					&& !ToolsUtil.isXLS(batchFile.getOriginalFilename())) {
+				map.put("returnMessage", "上传格式不正确，仅支持xls!");
+			} else if (!batchFile.isEmpty()
+					&& ToolsUtil.isXLS(batchFile.getOriginalFilename())) {
+				// 获得文件后缀
+				// 重命名
+				String filename = session.getAttribute("userId") + "_" + System.currentTimeMillis() + ".xls";
+				// 拼完整文件路径
+				String path = dir + File.separator + filename;
+				File tempo_file = new File(path);
+				batchFile.transferTo(tempo_file);
+				//File tempo_file = new File("C:\\Users\\Administrator\\Desktop\\judgebatch.xls");
+				Workbook book = Workbook.getWorkbook(tempo_file);
+				Sheet sheet = book.getSheet(0);
+				Map<String, Object> returnMap = dataExportingService.addJudgeBatches(sheet);
+				map.put("returnCode", Integer.parseInt(returnMap.get("resultCode").toString()));
+				map.put("returnMessage", returnMap.get("resultDesc").toString());
+				//操作完成删掉文件
+				tempo_file.delete();
+			}
+			response.getWriter().write(map.toString());
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (BiffException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/bindjudgetogame", method = RequestMethod.POST)
+	@Transactional
+	public Map<String, Object> bindJudgeToGame(HttpServletRequest request,
+			HttpSession session) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		int judgeId = Integer.parseInt(request.getParameter("judge_id"));
+		int gamesId = Integer.parseInt(request.getParameter("games_id"));
+		int positionIndex = Integer.parseInt(request.getParameter("position_index"));
+		boolean result = judgeManagementService.bindJudgeToGame(judgeId, gamesId, positionIndex);
+		map.put("success", result);
+		return map;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/cancelbindjudgetogame", method = RequestMethod.POST)
+	@Transactional
+	public Map<String, Object> cancelBindJudgeToGame(HttpServletRequest request,
+			HttpSession session) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		int gamesId = Integer.parseInt(request.getParameter("games_id"));
+		int positionIndex = Integer.parseInt(request.getParameter("position_index"));
+		boolean result = judgeManagementService.cancelBindingJudgeToGame(gamesId, positionIndex);
+		map.put("success", result);
+		return map;
 	}
 }

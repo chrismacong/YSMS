@@ -7,11 +7,12 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
-import javax.swing.JSpinner.DateEditor;
 
 import jxl.Sheet;
 import jxl.Workbook;
@@ -32,10 +33,20 @@ import com.cwkj.ysms.dao.AthleteAttDao;
 import com.cwkj.ysms.dao.AthleteDao;
 import com.cwkj.ysms.dao.CoachAttDao;
 import com.cwkj.ysms.dao.CoachDao;
+import com.cwkj.ysms.dao.GroupDao;
+import com.cwkj.ysms.dao.JudgeAndLevelDao;
+import com.cwkj.ysms.dao.JudgeDao;
+import com.cwkj.ysms.dao.JudgeUserDao;
 import com.cwkj.ysms.dao.SchoolDao;
+import com.cwkj.ysms.dao.UserDao;
 import com.cwkj.ysms.model.YsmsAthlete;
 import com.cwkj.ysms.model.YsmsCoach;
+import com.cwkj.ysms.model.YsmsJudge;
+import com.cwkj.ysms.model.YsmsJudgeUser;
+import com.cwkj.ysms.model.YsmsJudgeandlevel;
+import com.cwkj.ysms.model.YsmsJudgelevel;
 import com.cwkj.ysms.model.YsmsSchool;
+import com.cwkj.ysms.model.YsmsUser;
 import com.cwkj.ysms.model.view.CardAthleteView;
 import com.cwkj.ysms.model.view.CardCoachView;
 import com.cwkj.ysms.model.view.CardSchoolView;
@@ -74,6 +85,49 @@ public class DataExportingServiceImpl implements DataExportingService {
 	private CoachAttDao coachAttDao;
 	@Resource
 	private SchoolDao schoolDao;
+	@Resource
+	private GroupDao groupDao;
+	@Resource
+	private UserDao userDao;
+	@Resource
+	private JudgeDao judgeDao;
+	@Resource
+	private JudgeUserDao judgeUserDao;
+	@Resource
+	private JudgeAndLevelDao judgeAndLevelDao;
+
+	public JudgeUserDao getJudgeUserDao() {
+		return judgeUserDao;
+	}
+
+	public void setJudgeUserDao(JudgeUserDao judgeUserDao) {
+		this.judgeUserDao = judgeUserDao;
+	}
+
+	public JudgeDao getJudgeDao() {
+		return judgeDao;
+	}
+
+	public void setJudgeDao(JudgeDao judgeDao) {
+		this.judgeDao = judgeDao;
+	}
+
+	public UserDao getUserDao() {
+		return userDao;
+	}
+
+	public void setUserDao(UserDao userDao) {
+		this.userDao = userDao;
+	}
+
+	public GroupDao getGroupDao() {
+		return groupDao;
+	}
+
+	public void setGroupDao(GroupDao groupDao) {
+		this.groupDao = groupDao;
+	}
+
 	public AthleteDao getAthleteDao() {
 		return athleteDao;
 	}
@@ -996,12 +1050,232 @@ public class DataExportingServiceImpl implements DataExportingService {
 				return map;
 			}
 		}
+		for(int i=1;i<rows-1;i++){
+			String name = sheet.getCell(0,i).getContents();
+			if(name==null||name.length()==0){
+				map.put("resultCode", "400");
+				map.put("resultDesc", "导入数据中用户姓名不能为空!");
+				return map;
+			}
+			else if(name.length()>32){
+				map.put("resultCode", "401");
+				map.put("resultDesc", "导入表格中用户姓名过长，请检查格式!");
+				return map;
+			}
+			
+			String sex = sheet.getCell(1,i).getContents();
+			if(sex==null||sex.length()==0){
+				map.put("resultCode", "410");
+				map.put("resultDesc", "导入表格中用户性别不能为空!");
+				return map;
+			}
+			else if(!sex.equals("男")&&!sex.equals("女")){
+				map.put("resultCode","411");
+				map.put("resultDesc","导入数据中用户性别格式错误，请输入男/女");
+				return map;
+			}
+			
+			String identifiedId = sheet.getCell(2,i).getContents();
+			if(identifiedId==null||identifiedId.length()==0){
+				map.put("resultCode", "420");
+				map.put("resultDesc", "导入表格中身份证号不能为空!");
+				return map;
+			}
+			
+			String phonenum = sheet.getCell(3,i).getContents();
+			if(phonenum==null||phonenum.length()==0){
+				map.put("resultCode", "430");
+				map.put("resultDesc", "导入表格中用户电话不能为空!");
+				return map;
+			}
+			
+			String username = sheet.getCell(4,i).getContents();
+			if(username==null||username.length()==0){
+				map.put("resultCode", "440");
+				map.put("resultDesc", "导入数据中用户名不能为空!");
+				return map;
+			}
+			else if(username.length()>32){
+				map.put("resultCode", "441");
+				map.put("resultDesc", "导入表格中用户名过长，请检查格式!");
+				return map;
+			}
+			
+			String password = sheet.getCell(5,i).getContents();
+			if(password==null||password.length()==0){
+				map.put("resultCode", "450");
+				map.put("resultDesc", "导入数据中用户密码不能为空!");
+				return map;
+			}
+			else if(password.length()>20){
+				map.put("resultCode", "451");
+				map.put("resultDesc", "导入表格中用户密码过长，请检查格式!");
+				return map;
+			}
+			
+			String judgeLevel1 = sheet.getCell(6,i).getContents();
+			String judgeLevel2 = sheet.getCell(7,i).getContents();
+			String judgeLevel3 = sheet.getCell(8,i).getContents();
+			String judgeLevel4 = sheet.getCell(9,i).getContents();
+			String judgeLevel5 = sheet.getCell(10,i).getContents();
+			String judgeLevel6 = sheet.getCell(11,i).getContents();
+			String judgeLevel7 = sheet.getCell(12,i).getContents();
+			String judgeLevel8 = sheet.getCell(13,i).getContents();
+			if(judgeLevel1==null||judgeLevel1.length()==0 
+					|| judgeLevel2==null||judgeLevel2.length()==0
+					|| judgeLevel3==null||judgeLevel3.length()==0
+					|| judgeLevel4==null||judgeLevel4.length()==0
+					|| judgeLevel5==null||judgeLevel5.length()==0
+					|| judgeLevel6==null||judgeLevel6.length()==0
+					|| judgeLevel7==null||judgeLevel7.length()==0
+					|| judgeLevel8==null||judgeLevel8.length()==0
+					){
+				map.put("resultCode", "500");
+				map.put("resultDesc", "导入数据中各项执法资格不能为空");
+				return map;
+			}
+			else if(!judgeLevel1.equals("是")&&!judgeLevel1.equals("否")){
+				map.put("resultCode", "501");
+				map.put("resultDesc", "校级执法资格格式为是/否");
+				return map;
+			}
+			else if(!judgeLevel2.equals("是")&&!judgeLevel2.equals("否")){
+				map.put("resultCode", "502");
+				map.put("resultDesc", "区级执法资格格式为是/否");
+				return map;
+			}
+			else if(!judgeLevel3.equals("是")&&!judgeLevel3.equals("否")){
+				map.put("resultCode", "503");
+				map.put("resultDesc", "市级裁判员执法资格格式为是/否");
+				return map;
+			}
+			else if(!judgeLevel4.equals("是")&&!judgeLevel4.equals("否")){
+				map.put("resultCode", "504");
+				map.put("resultDesc", "市级助理裁判执法资格格式为是/否");
+				return map;
+			}
+			else if(!judgeLevel5.equals("是")&&!judgeLevel5.equals("否")){
+				map.put("resultCode", "505");
+				map.put("resultDesc", "市级第四官员执法资格格式为是/否");
+				return map;
+			}
+			else if(!judgeLevel6.equals("是")&&!judgeLevel6.equals("否")){
+				map.put("resultCode", "506");
+				map.put("resultDesc", "市级裁判监督执法资格格式为是/否");
+				return map;
+			}
+			else if(!judgeLevel7.equals("是")&&!judgeLevel7.equals("否")){
+				map.put("resultCode", "507");
+				map.put("resultDesc", "市级比赛监督执法资格格式为是/否");
+				return map;
+			}
+			else if(!judgeLevel8.equals("是")&&!judgeLevel8.equals("否")){
+				map.put("resultCode", "508");
+				map.put("resultDesc", "市级统计执法资格格式为是/否");
+				return map;
+			}
+			YsmsUser ysmsUser = new YsmsUser();
+			ysmsUser.setDeleteflag(0);
+			YsmsUser sameNameUser = userDao.getUserByUsername(username);
+			if(sameNameUser!=null){
+				map.put("resultCode", "600");
+				map.put("resultDesc", "第" + (i) + "个裁判用户名已存在，添加中断！之前的裁判员已完成添加!");
+				return map;
+			}
+			//存用户
+			ysmsUser.setUserName(username);
+			ysmsUser.setUserPassword(password);
+			ysmsUser.setYsmsGroup(groupDao.findById(9));//HARD CODE HERE 
+			userDao.save(ysmsUser);
+			//存教练
+			YsmsJudge ysmsJudge = new YsmsJudge();
+			ysmsJudge.setDeleteflag(0);
+			ysmsJudge.setIdentifiedGender(sex.equals("男")?1:0);
+			ysmsJudge.setIdentifiedId(identifiedId);
+			ysmsJudge.setIdentifiedName(name);
+			ysmsJudge.setJudgeStatus(2);
+			ysmsJudge.setJudgeMobile(phonenum);
+			//执法等级
+			Set<YsmsJudgeandlevel> ysmsJudgeandlevels = new HashSet<YsmsJudgeandlevel>();
+			if(judgeLevel1.equals("是")){
+				YsmsJudgeandlevel judgeandlevel = new YsmsJudgeandlevel();
+				judgeandlevel.setYsmsJudge(ysmsJudge);
+				YsmsJudgelevel judgeLevelTemp = new YsmsJudgelevel();
+				judgeLevelTemp.setLevelId(1);
+				judgeandlevel.setYsmsJudgelevel(judgeLevelTemp);
+				ysmsJudgeandlevels.add(judgeandlevel);
+			}
+			if(judgeLevel2.equals("是")){
+				YsmsJudgeandlevel judgeandlevel = new YsmsJudgeandlevel();
+				judgeandlevel.setYsmsJudge(ysmsJudge);
+				YsmsJudgelevel judgeLevelTemp = new YsmsJudgelevel();
+				judgeLevelTemp.setLevelId(2);
+				judgeandlevel.setYsmsJudgelevel(judgeLevelTemp);
+				ysmsJudgeandlevels.add(judgeandlevel);
+			}
+			if(judgeLevel3.equals("是")){
+				YsmsJudgeandlevel judgeandlevel = new YsmsJudgeandlevel();
+				judgeandlevel.setYsmsJudge(ysmsJudge);
+				YsmsJudgelevel judgeLevelTemp = new YsmsJudgelevel();
+				judgeLevelTemp.setLevelId(3);
+				judgeandlevel.setYsmsJudgelevel(judgeLevelTemp);
+				ysmsJudgeandlevels.add(judgeandlevel);
+			}
+			if(judgeLevel4.equals("是")){
+				YsmsJudgeandlevel judgeandlevel = new YsmsJudgeandlevel();
+				judgeandlevel.setYsmsJudge(ysmsJudge);
+				YsmsJudgelevel judgeLevelTemp = new YsmsJudgelevel();
+				judgeLevelTemp.setLevelId(4);
+				judgeandlevel.setYsmsJudgelevel(judgeLevelTemp);
+				ysmsJudgeandlevels.add(judgeandlevel);
+			}
+			if(judgeLevel5.equals("是")){
+				YsmsJudgeandlevel judgeandlevel = new YsmsJudgeandlevel();
+				judgeandlevel.setYsmsJudge(ysmsJudge);
+				YsmsJudgelevel judgeLevelTemp = new YsmsJudgelevel();
+				judgeLevelTemp.setLevelId(5);
+				judgeandlevel.setYsmsJudgelevel(judgeLevelTemp);
+				ysmsJudgeandlevels.add(judgeandlevel);
+			}
+			if(judgeLevel6.equals("是")){
+				YsmsJudgeandlevel judgeandlevel = new YsmsJudgeandlevel();
+				judgeandlevel.setYsmsJudge(ysmsJudge);
+				YsmsJudgelevel judgeLevelTemp = new YsmsJudgelevel();
+				judgeLevelTemp.setLevelId(6);
+				judgeandlevel.setYsmsJudgelevel(judgeLevelTemp);
+				ysmsJudgeandlevels.add(judgeandlevel);
+			}
+			if(judgeLevel7.equals("是")){
+				YsmsJudgeandlevel judgeandlevel = new YsmsJudgeandlevel();
+				judgeandlevel.setYsmsJudge(ysmsJudge);
+				YsmsJudgelevel judgeLevelTemp = new YsmsJudgelevel();
+				judgeLevelTemp.setLevelId(7);
+				judgeandlevel.setYsmsJudgelevel(judgeLevelTemp);
+				ysmsJudgeandlevels.add(judgeandlevel);
+			}
+			if(judgeLevel8.equals("是")){
+				YsmsJudgeandlevel judgeandlevel = new YsmsJudgeandlevel();
+				judgeandlevel.setYsmsJudge(ysmsJudge);
+				YsmsJudgelevel judgeLevelTemp = new YsmsJudgelevel();
+				judgeLevelTemp.setLevelId(8);
+				judgeandlevel.setYsmsJudgelevel(judgeLevelTemp);
+				ysmsJudgeandlevels.add(judgeandlevel);
+			}
+			ysmsJudge.setYsmsJudgeandlevels(ysmsJudgeandlevels);
+			judgeDao.save(ysmsJudge);
+			//添加关联
+			YsmsJudgeUser judgeUser = new YsmsJudgeUser();
+			judgeUser.setYsmsJudge(ysmsJudge);
+			judgeUser.setYsmsUser(ysmsUser);
+			judgeUserDao.save(judgeUser);
+		}
+		
 		map.put("resultCode", "200");
 		map.put("resultDesc", "批量导入成功");
 		return map;
 	}
 	
-	public static void main(String[] args) {
+/*	public static void main(String[] args) {
 		try {
 			Workbook book = Workbook.getWorkbook(new File("C:\\Users\\Administrator\\Desktop\\judgebatch.xls"));
 			Sheet sheet = book.getSheet(0);
@@ -1017,5 +1291,5 @@ public class DataExportingServiceImpl implements DataExportingService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
+	}*/
 }

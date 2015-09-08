@@ -49,4 +49,10 @@ public interface JudgeAndLevelDao extends GenericDao {
 	 *
 	 */
 	public List<Map<String,Object>> query(String judge_id, String level_id);
+
+	/**
+	 * 根据judgeid获取等级
+	 * @return
+	 */
+	public List<YsmsJudgeandlevel> getByJudgeId(int judgeId);
 }

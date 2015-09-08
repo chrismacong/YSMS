@@ -437,7 +437,7 @@ textarea {
 	function getGroups(id,flag) {
 		var data="";
 		if(flag==false){
-			data="1,3,6,7,8"; //可以被添加的用户组ID，奇怪的写法
+			data="1,3,4,6,7,8"; //可以被添加的用户组ID，奇怪的写法
 		}
 	    $("#"+id+"").empty();
 	    $.ajax({

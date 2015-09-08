@@ -207,3 +207,11 @@ textarea {
 	width:100%;
 	text-align:center;
 }
+
+#batch_div{
+	position:absolute;
+	width:92%;
+	height:30px;
+	margin-left:4%;
+	border:1px solid #0f0
+}

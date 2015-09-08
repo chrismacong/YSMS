@@ -41,7 +41,7 @@ import com.cwkj.ysms.util.Page;
 
 @Component
 public class GamesManagementServiceImpl implements GamesManagementService{
-	
+
 	@Resource
 	private GamesDao gamesDao;
 	@Resource
@@ -99,7 +99,7 @@ public class GamesManagementServiceImpl implements GamesManagementService{
 	public void setJudgeDao(JudgeDao judgeDao) {
 		this.judgeDao = judgeDao;
 	}
-	
+
 	@Resource
 	private TeammemberDao teammemberDao;
 	public TeammemberDao getTeammemberDao() {
@@ -198,7 +198,7 @@ public class GamesManagementServiceImpl implements GamesManagementService{
 		theRecorder2.setYsmsGames(ysmsGames);
 		theRecorder2.setYsmsJudge(recorder2);
 		gamesJudgeDao.save(theRecorder2);
-		
+
 		return true; 
 	}
 
@@ -217,7 +217,7 @@ public class GamesManagementServiceImpl implements GamesManagementService{
 		gameView.setIsOvertimeFlag(ysmsGames.getIsOvertimeFlag());
 		gameView.setIsPenaltyFlag(ysmsGames.getIsPenaltyFlag());
 		gameView.setIsGameOver(ysmsGames.getIsGameOver());
-		
+
 		gameView.setHostGoalAttempt(ysmsGames.getHostGoalAttempt());
 		gameView.setHostTargetNumber(ysmsGames.getHostTargetNumber());
 		gameView.setHostCornerKick(ysmsGames.getHostCornerKick());
@@ -226,7 +226,7 @@ public class GamesManagementServiceImpl implements GamesManagementService{
 		gameView.setHostOffside(ysmsGames.getHostOffside());
 		gameView.setHostOvertimeScore(ysmsGames.getHostOvertimeScore());
 		gameView.setHostPenaltyScore(ysmsGames.getHostPenaltyScore());
-		
+
 		gameView.setGuestGoalAttempt(ysmsGames.getGuestGoalAttempt());
 		gameView.setGuestTargetNumber(ysmsGames.getGuestTargetNumber());
 		gameView.setGuestCornerKick(ysmsGames.getGuestCornerKick());
@@ -235,7 +235,7 @@ public class GamesManagementServiceImpl implements GamesManagementService{
 		gameView.setGuestOffside(ysmsGames.getGuestOffside());
 		gameView.setGuestOvertimeScore(ysmsGames.getGuestOvertimeScore());
 		gameView.setGuestPenaltyScore(ysmsGames.getGuestPenaltyScore());
-		
+
 		return gameView;
 	}
 
@@ -411,7 +411,7 @@ public class GamesManagementServiceImpl implements GamesManagementService{
 		cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
 		Date lastDay = cal.getTime();
 		return gamesDao.getGamesByTeamIdBetweenDate(teamId, firstDay, lastDay);
-		
+
 	}
 
 	@Override
@@ -627,7 +627,7 @@ public class GamesManagementServiceImpl implements GamesManagementService{
 		theRecorder2.setYsmsGames(ysmsGames);
 		theRecorder2.setYsmsJudge(recorder2);
 		gamesJudgeDao.save(theRecorder2);
-		
+
 		return true; 
 	}
 
@@ -722,6 +722,15 @@ public class GamesManagementServiceImpl implements GamesManagementService{
 		else
 			gameView.setOrderName("淘汰赛");
 		gameView.setZoneName(ysmsGames.getYsmsLeagueZone().getZoneName());
+		String[] positionNames = new String[8];
+		for(int i=1;i<=8;i++){
+			YsmsGamesJudge gamesJudge = gamesJudgeDao.getJudgeByGameAndPosition(gamesId, i);
+			if(gamesJudge==null)
+				positionNames[i-1] = ">未选择<";
+			else
+				positionNames[i-1] = gamesJudge.getYsmsJudge().getIdentifiedName();
+		}
+		gameView.setJudgePostionNames(positionNames);
 		return gameView;
 	}
 
@@ -838,7 +847,7 @@ public class GamesManagementServiceImpl implements GamesManagementService{
 			gv.setHostSchoolName(game.getYsmsTeamByHostTeamid().getYsmsSchool().getSchoolName());
 			gv.setGuestSchoolName(game.getYsmsTeamByGuestTeamid().getYsmsSchool().getSchoolName());
 			gv.setLeagueName(game.getYsmsLeagueZone().getYsmsLeague().getLeagueName());
-			
+
 			SimpleDateFormat sdfForCalendar = new SimpleDateFormat("MM-dd-yyyy");
 			gv.setGameTimeForCalendar(sdfForCalendar.format(game.getGamesTime()));
 			viewList.add(gv);
@@ -869,7 +878,7 @@ public class GamesManagementServiceImpl implements GamesManagementService{
 			gv.setHostSchoolName(game.getYsmsTeamByHostTeamid().getYsmsSchool().getSchoolName());
 			gv.setGuestSchoolName(game.getYsmsTeamByGuestTeamid().getYsmsSchool().getSchoolName());
 			gv.setLeagueName(game.getYsmsLeagueZone().getYsmsLeague().getLeagueName());
-			
+
 			SimpleDateFormat sdfForCalendar = new SimpleDateFormat("MM-dd-yyyy");
 			gv.setGameTimeForCalendar(sdfForCalendar.format(game.getGamesTime()));
 			viewList.add(gv);
@@ -896,10 +905,10 @@ public class GamesManagementServiceImpl implements GamesManagementService{
 								+ "&nbsp;&nbsp;" + gv.getLeagueName() + "</a>";
 						if(gv.getIsGameOver()==0)
 							val += "<a style='color:black;'>" + gv.getHostSchoolName() + " VS " 
-										+ gv.getGuestSchoolName() + "</a><br/>";
+									+ gv.getGuestSchoolName() + "</a><br/>";
 						else if(gv.getIsGameOver()==1)
 							val += "<a style='color:black;'>" + gv.getHostSchoolName() + "&nbsp;" + gv.getHostScore() 
-										+ ":" + gv.getGuestScore() + "&nbsp;" + gv.getGuestSchoolName() + "</a><br/>";
+							+ ":" + gv.getGuestScore() + "&nbsp;" + gv.getGuestSchoolName() + "</a><br/>";
 						result.put(keystr, val);
 						containsDate = true;
 					}
@@ -910,10 +919,10 @@ public class GamesManagementServiceImpl implements GamesManagementService{
 							+ "&nbsp;&nbsp;" + gv.getLeagueName() + "</a>";
 					if(gv.getIsGameOver()==0)
 						val += "<a style='color:black;'>" + gv.getHostSchoolName() + " VS " 
-									+ gv.getGuestSchoolName() + "</a><br/>";
+								+ gv.getGuestSchoolName() + "</a><br/>";
 					else if(gv.getIsGameOver()==1)
 						val += "<a style='color:black;'>" + gv.getHostSchoolName() + "&nbsp;" + gv.getHostScore() 
-									+ ":" + gv.getGuestScore() + "&nbsp;" + gv.getGuestSchoolName() + "</a><br/>";
+						+ ":" + gv.getGuestScore() + "&nbsp;" + gv.getGuestSchoolName() + "</a><br/>";
 					result.put(date, val);
 				}
 				index++;
@@ -951,7 +960,7 @@ public class GamesManagementServiceImpl implements GamesManagementService{
 			gv.setHostSchoolName(game.getYsmsTeamByHostTeamid().getYsmsSchool().getSchoolName());
 			gv.setGuestSchoolName(game.getYsmsTeamByGuestTeamid().getYsmsSchool().getSchoolName());
 			gv.setLeagueName(game.getYsmsLeagueZone().getYsmsLeague().getLeagueName());
-			
+
 			SimpleDateFormat sdfForCalendar = new SimpleDateFormat("MM-dd-yyyy");
 			gv.setGameTimeForCalendar(sdfForCalendar.format(game.getGamesTime()));
 			viewList.add(gv);

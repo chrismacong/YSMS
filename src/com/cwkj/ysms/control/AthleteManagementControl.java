@@ -670,7 +670,6 @@ public class AthleteManagementControl {
 						.getParameter("guardian2_phone");
 				String coachName = request.getParameter("coach_name");
 				String photoBase64 = request.getParameter("image");
-				System.out.println("schoolid:" + schoolId);
 				boolean result = athleteManagementService
 						.addAthlete(schoolId, athleteGuardian1name,
 								athleteGuardian2name, athleteGuardian1mobi,

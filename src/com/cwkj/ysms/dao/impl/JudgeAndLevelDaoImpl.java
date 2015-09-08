@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.cwkj.ysms.basedao.impl.GenericDaoImpl;
 import com.cwkj.ysms.dao.JudgeAndLevelDao;
 import com.cwkj.ysms.model.YsmsJudgeandlevel;
+import com.cwkj.ysms.model.YsmsLeagueZone;
 import com.cwkj.ysms.util.ToolsUtil;
 
 /**
@@ -71,6 +72,22 @@ public class JudgeAndLevelDaoImpl extends GenericDaoImpl implements
 
 		}
 		return judgeandlevel_List;
+	}
+
+	@Override
+	public List<YsmsJudgeandlevel> getByJudgeId(int judgeId) {
+		try {
+			String sql = " from YsmsJudgeandlevel as jl where jl.ysmsJudge.judgeId = "+judgeId;
+			List<Object> objects= findByHQL(sql);
+			List<YsmsJudgeandlevel> results = new ArrayList<YsmsJudgeandlevel>();
+			for(int i=0;i<objects.size();i++){
+				YsmsJudgeandlevel judgeLevel = (YsmsJudgeandlevel)objects.get(i);
+				results.add(judgeLevel);
+			}
+			return results;
+		} catch (RuntimeException re) {
+			throw re;
+		}
 	}
 
 }

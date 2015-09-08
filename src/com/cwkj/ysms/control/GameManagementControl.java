@@ -76,6 +76,7 @@ public class GameManagementControl {
 			HttpSession session, HttpServletResponse response) {
 		Map<String, Object> model = new HashMap<String, Object>();
 		List<YsmsLeague> leagues = leagueManagementService.getAllLeagues();
+		model.put("userGroup", session.getAttribute("userGroup"));
 		model.put("leagues", leagues);
 		return new ModelAndView("GameManagementPage", model);
 	}

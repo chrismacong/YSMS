@@ -360,6 +360,20 @@ public final class ToolsUtil {
 			return false;
 		}
 	}
+	/**
+	 * 判断后缀是否为xls片格式
+	 * 
+	 * @param fileName
+	 * @return
+	 */
+	public static boolean isXLS(String fileName) {
+		String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);
+		if (suffix.equalsIgnoreCase("xls")) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 	/**
 	 * 判断邮箱格式

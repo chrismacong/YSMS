@@ -33,6 +33,8 @@
 <link rel="stylesheet" type="text/css"
 	href="<%=basePath%>css/html5tooltips.animation.css" />
 <script type="text/javascript" src="<%=basePath%>js/html5tooltips.js"></script>
+<script language="javascript" type="text/javascript"
+	src="<%=basePath%>js/ajaxfileupload.js"></script>
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/js/md5.js"></script>
 
@@ -108,7 +110,42 @@
     	
     	$(".close").click(function(){
     		$(".judge_block").hide();
-    		//todo 清空block中input的所有输入内容
+    		$("#judgeUserIdentifiedId").val("");
+    		$("#judgeUserPhonenum").val("");
+    	})
+    	
+    	$("#upload_batchxls").click(function(){
+    		loading_juggle_empty();
+    		 $.ajaxFileUpload({  
+    			 type: 'POST',
+    	         url:"<%=basePath%>judgemanagement/batchxls.html",  
+    	         secureuri:false,  
+    	         fileElementId:["batch_file"],   //file的id  
+    	         dataType:"json",                  //返回数据类型为文本  
+    	         success:function(data){  
+    				 if(data.returnCode==200){
+    						ds.dialog({
+    							title : '消息提示',
+    							content : data.returnMessage,
+    							onyes : true,
+    							icon : "../images/socceralert.png"
+    						});
+    						$(".judge_block").hide();
+    			    		$("#judgeUserIdentifiedId").val("");
+    			    		$("#judgeUserPhonenum").val("");
+							getJudges();
+    				 }
+    				 else{
+    					 ds.dialog({
+    							title : '消息提示',
+    							content : data.returnMessage,
+    							onyes : true,
+    							icon : "../images/info.png"
+    						});
+    				 }
+    	         }  
+    	     })  
+    	     cancel_loading();
     	})
 	})
 	
@@ -697,7 +734,9 @@
 	<div class="judge_block" style="display: none">
 		<div class="close"></div>
 		<br/>
-		<h1 id="register_judge_title">注册裁判员</h1><button>批量导入</button>
+		<h1 id="register_judge_title">注册裁判员</h1>
+		<div id="batch_div">批量导入：<input id="batch_file" name="batch_file" type="file" accept=".xls"><a id="upload_batchxls" href="javascript:void(0)">上传</a>&nbsp;&nbsp;<a href="${pageContext.request.contextPath}/downloadResource/judgebatch.xls">模板下载</a></div>
+		<br/>
 		<br/>
 			<!--注册裁判-->
 			<div id="caipan_add" class="neirong">
@@ -1080,6 +1119,8 @@
 						$("#judgeGender").val("1");
 						$("#judgeUserName").val("");
 						$("#judgeUserPassword").val("");
+						$("#judgeUserIdentifiedId").val("");
+						$("#judgeUserPhonenum").val("");
 						$("#judgeUserComfirnPassword").val("");
 						$('.caizhu').find('span').addClass("lev4");
 					} else  {

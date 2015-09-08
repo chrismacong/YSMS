@@ -75,6 +75,19 @@
 	z-index: 3;
 }
 
+.choose_judge_block {
+	position: absolute;
+	top: 20%;
+	left: 15%;
+	height: 60%;
+	width: 70%;
+	border-radius: 5px;
+	border: 1px solid #aaa;
+	background: #fff;
+	display: none;
+	z-index: 4;
+}
+
 .close {
 	right: -13px !important;
 	top: -13px !important;
@@ -227,4 +240,20 @@
 	width: 135px !important;
 	height: 30px !important;
 	cursor:pointer;
+}
+
+#judges {
+	border:1px solid #a8a1b7;
+}
+#judges td{
+	border:1px solid #a8a1b7;
+}
+#judges tr:hover{
+	background:#BDFFF8;
+	cursor:pointer;
+}
+#judge_table_container {
+	width:100%;
+	height:300px;
+	overflow:auto;
 }

@@ -48,7 +48,7 @@ public class GamesJudgeDaoImpl extends GenericDaoImpl implements GamesJudgeDao {
 			log.error("save failed", re);
 			throw re;
 		}
-		
+
 	}
 
 	@Override
@@ -98,6 +98,25 @@ public class GamesJudgeDaoImpl extends GenericDaoImpl implements GamesJudgeDao {
 				results.add(gameJudge);
 			}
 			return results;
+		} catch (RuntimeException re) {
+			log.error("find by judgeId failed", re);
+			throw re;
+		}
+	}
+
+	@Override
+	public YsmsGamesJudge getJudgeByGameAndPosition(int gamesId,
+			int positionIndex) {
+		log.debug("finding YsmsGamesJudge instances by gamesId and positionIndex");
+		try {
+			String sql = " from YsmsGamesJudge gj where gj.ysmsGames.gamesId = " + gamesId
+					+ " and gj.judgePosition = " + positionIndex;
+			List<Object> objects= findByHQL(sql);
+			if(objects!=null&&objects.size()>0){
+				YsmsGamesJudge gameJudge = (YsmsGamesJudge)objects.get(0);
+				return gameJudge;
+			}
+			return null;
 		} catch (RuntimeException re) {
 			log.error("find by judgeId failed", re);
 			throw re;

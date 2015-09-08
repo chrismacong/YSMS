@@ -36,6 +36,13 @@ public interface GamesJudgeDao extends GenericDao{
 	 */
 	public YsmsGamesJudge getJudgeRelationByIdAndGameId(int gameId, int judgeId);
 	
+	/**
+	 * 根据比赛和裁判员位置查找
+	 * @param gamesId
+	 * @param positionIndex
+	 * @return
+	 */
+	public YsmsGamesJudge getJudgeByGameAndPosition(int gamesId, int positionIndex);
 	
 	/**
 	 * 根据裁判获取该裁判参加过的场次

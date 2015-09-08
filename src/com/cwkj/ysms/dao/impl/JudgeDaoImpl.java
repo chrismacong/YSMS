@@ -236,4 +236,15 @@ public class JudgeDaoImpl extends GenericDaoImpl implements JudgeDao {
 		 return list;
 	}
 
+	@Override
+	public List<YsmsJudge> findAll() {
+		try {
+			String queryString = "from YsmsJudge as judge where judge.deleteflag = 0 and judge.judgeStatus = 2";
+			Query queryObject = getSession().createQuery(queryString);
+			return queryObject.list();
+		} catch (RuntimeException re) {
+			throw re;
+		}
+	}
+
 }

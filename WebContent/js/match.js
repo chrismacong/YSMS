@@ -1,5 +1,6 @@
 var selectedGameId;
 var recordingGameId;
+var selectedPosition;
 var hostSelectNumHtml = "<option id='host_num_0' value='0'></option>";
 var guestSelectNumHtml = "<option id='guest_num_0' value='0'></option>";
 var hostSelectNameHtml = "<option id='host_name_0' value='0'></option>";
@@ -19,76 +20,81 @@ $(function() {
 		$('#competition_apply').hide();
 		$('#match_list').show();
 	})
+	$(".choose_judge_input").focus(function(){
+		selectedPosition = $(this).attr("id").split("_")[1];
+		$(".choose_judge_block").show();
+		getAllJudges();
+	})
 	$("#host_downloadteammemberlist").click(function(){
-				window.location.href=forwardurl + "/team/exportpdf.html?team_id=" + selectedHostTeamId;
-			});
-			$("#guest_downloadteammemberlist").click(function(){
-				window.location.href=forwardurl + "/team/exportpdf.html?team_id=" + selectedGuestTeamId;
-			});
-			$("#host_suspension").click(function(){
-				loading_juggle_empty();
-				$(".suspension_block").show();
-				$("#suspension_table tbody").empty();
-				$.ajax({
-					type : 'POST',
-					url : forwardurl+"/gamemanagement/suspension.html",
-					data : {
-						game_id : recordingGameId,
-						team_id : selectedHostTeamId
-					},
-					dataType : "json",
-					success : function(data) {
-						if(data.length==0){
-							$("#suspension_table tbody").append("<tr><td colspan='3' style='text-align:center'>无停赛记录</td></tr>");
-						}
-						else{
-							$.each(data,function(i,item) {
-								var html = "<tr>";
-								html += "<td>" + item.playerNum + "</td>";
-								html += "<td>" + item.playerName + "</td>";
-								html += "<td>" + item.suspensionReason + "</td></tr>";
-								$("#suspension_table tbody").append(html);
-							});
-						}
-						cancel_loading();
-					},
-					error : function() {
-						cancel_loading();
-					}
-				});
-			})
-			$("#guest_suspension").click(function(){
-				loading_juggle_empty();
-				$(".suspension_block").show();
-				$("#suspension_table tbody").empty();
-				$.ajax({
-					type : 'POST',
-					url : forwardurl+"/gamemanagement/suspension.html",
-					data : {
-						game_id : recordingGameId,
-						team_id : selectedGuestTeamId
-					},
-					dataType : "json",
-					success : function(data) {
-						if(data.length==0){
-							$("#suspension_table tbody").append("<tr><td colspan='3' style='text-align:center'>无停赛记录</td></tr>");
-						}
-						else{
-							$.each(data,function(i,item) {
-								var html = "<tr>";
-								html += "<td>" + item.playerNum + "</td>";
-								html += "<td>" + item.playerName + "</td>";
-								html += "<td>" + item.suspensionReason + "</td></tr>";
-								$("#suspension_table tbody").append(html);
-							});
-						}
-						cancel_loading();
-					},
-					error : function() {
-						cancel_loading();
-					}
-				});
-			})
+		window.location.href=forwardurl + "/team/exportpdf.html?team_id=" + selectedHostTeamId;
+	});
+	$("#guest_downloadteammemberlist").click(function(){
+		window.location.href=forwardurl + "/team/exportpdf.html?team_id=" + selectedGuestTeamId;
+	});
+	$("#host_suspension").click(function(){
+		loading_juggle_empty();
+		$(".suspension_block").show();
+		$("#suspension_table tbody").empty();
+		$.ajax({
+			type : 'POST',
+			url : forwardurl+"/gamemanagement/suspension.html",
+			data : {
+				game_id : recordingGameId,
+				team_id : selectedHostTeamId
+			},
+			dataType : "json",
+			success : function(data) {
+				if(data.length==0){
+					$("#suspension_table tbody").append("<tr><td colspan='3' style='text-align:center'>无停赛记录</td></tr>");
+				}
+				else{
+					$.each(data,function(i,item) {
+						var html = "<tr>";
+						html += "<td>" + item.playerNum + "</td>";
+						html += "<td>" + item.playerName + "</td>";
+						html += "<td>" + item.suspensionReason + "</td></tr>";
+						$("#suspension_table tbody").append(html);
+					});
+				}
+				cancel_loading();
+			},
+			error : function() {
+				cancel_loading();
+			}
+		});
+	})
+	$("#guest_suspension").click(function(){
+		loading_juggle_empty();
+		$(".suspension_block").show();
+		$("#suspension_table tbody").empty();
+		$.ajax({
+			type : 'POST',
+			url : forwardurl+"/gamemanagement/suspension.html",
+			data : {
+				game_id : recordingGameId,
+				team_id : selectedGuestTeamId
+			},
+			dataType : "json",
+			success : function(data) {
+				if(data.length==0){
+					$("#suspension_table tbody").append("<tr><td colspan='3' style='text-align:center'>无停赛记录</td></tr>");
+				}
+				else{
+					$.each(data,function(i,item) {
+						var html = "<tr>";
+						html += "<td>" + item.playerNum + "</td>";
+						html += "<td>" + item.playerName + "</td>";
+						html += "<td>" + item.suspensionReason + "</td></tr>";
+						$("#suspension_table tbody").append(html);
+					});
+				}
+				cancel_loading();
+			},
+			error : function() {
+				cancel_loading();
+			}
+		});
+	})
 	//填写记录tab切换
 	$('.tab_xijie span').click(
 			function() {
@@ -116,16 +122,57 @@ $(function() {
 				$('.saishi_results').hide();
 				$('.edit_match').hide();
 			})
-			
+
 			$(".outerclose").click(function(){
 				$(".suspension_block").hide();
+				$(".choose_judge_block").hide();
 			})
+
 
 			$('#cancel_record').click(function() {
 				$('.saishi_results').hide();
 				$('.edit_match').hide();
 			})
 
+			$("#cancel_judge_selection").click(function(){
+				$.ajax({
+					type : 'POST',
+					url : forwardurl+"/judgemanagement/cancelbindjudgetogame.html",
+					data : {
+						games_id : selectedGameId,
+						position_index : selectedPosition
+					},
+					dataType : "json",
+					success : function(data) {
+						if(data.success){
+							ds.dialog({
+								title : '消息提示',
+								content : "操作成功！",
+								onyes : true,
+								icon : "../images/socceralert.png"
+							});
+							$(".choose_judge_block").hide();
+							getGameInfoForEdit();
+						}
+						else{
+							ds.dialog({
+								title : '消息提示',
+								content : "操作失败！",
+								onyes : true,
+								icon : "../images/info.png"
+							});
+						}
+					},
+					error : function() {
+						ds.dialog({
+							title : '消息提示',
+							content : "请检查网络连接！",
+							onyes : true,
+							icon : "../images/info.png"
+						});			
+					}
+				});
+			})
 			$("#save_record").click(function() {
 				var reg = new RegExp("^[0-9]{1,2}$");
 				var host_score = $("#record_host_score").val();
@@ -888,7 +935,7 @@ function refresh_competitions() {
 						if(guestOffside == null)
 							guestOffside = "";
 						$("#guest_offside_input").val(guestOffside)
- 
+
 						$("#record_host_score").val(hostScore);
 						$("#record_guest_score").val(guestScore);
 						hostSelectNumHtml = "<option id='host_num_0' value='0'></option>";
@@ -1061,37 +1108,7 @@ function refresh_competitions() {
 			$('.edit').click(function() {
 				var game_id = $(this).parent().parent().attr("id").substr(7);
 				selectedGameId = game_id;
-				$.ajax({
-					type : 'POST',
-					url : forwardurl+"/gamemanagement/getsinglegame.html",
-					data : {
-						game_id : game_id
-					},
-					dataType : "json",
-					success : function(data) {
-						$("#game_league_modify").val(data.game.leagueName);
-						$("#game_zone_modify").val(data.game.zoneName);
-						$("#game_group_modify").val(data.game.orderName);
-						$("#team_modify").val(data.game.hostSchoolName);
-						$("#host_team_modify").val(data.game.hostSchoolName);
-						$("#guest_team_modify").val(data.game.guestSchoolName);
-						$("#time1").val(data.game.gameTime);
-						$("#address_modify").val(data.game.gameLocation);
-						var host_uniform = data.game.hostUniform;
-						var guest_uniform = data.game.guestUniform;
-						$("#host_uniform_modify").val(host_uniform);
-						$("#guest_uniform_modify").val(guest_uniform);
-					},
-					error : function() {
-						ds.dialog({
-							title : '消息提示',
-							content : "请检查网络连接！",
-							onyes : true,
-							icon : "../images/info.png"
-						});
-					}
-				});
-				$('.edit_match').show();
+				getGameInfoForEdit();
 			})
 			$(".delete").click(function() {
 				var game_id = $(this).parent().parent().attr("id").substr(7);
@@ -1380,4 +1397,162 @@ function cancelGameOver(){
 			});			
 		}
 	});
+}
+function getAllJudges(){
+	$(".judges tbody").empty();
+	$.ajax({
+		type : 'POST',
+		url : forwardurl+"/judgemanagement/listalljudges.html",
+		data : {
+		},
+		dataType : "json",
+		success : function(data) {
+			if(data){
+				$.each(data.result,function(i,judge) {
+					var html = "<tr id='judge_" + judge.judgeId + "' onclick='judgetdclick(this)'>";
+					html += "<td style='width:100px;'>" + judge.judgeName + "</td><td style='width:466px;' class='level'>";
+					if(judge.levels[0]!=0){
+						html += "<span id='xlevel1' class='lev1 judgelevel1'>校<div></div></span>";
+					}else{
+						html += "<span id='xlevel1' class='lev1 lev4 judgelevel1'>校<div></div></span>";
+					}
+					if(judge.levels[1]!=0){
+						html += "<span id='xlevel2' class='lev2 judgelevel2'>区<div></div></span>";
+					}else{
+						html += "<span id='xlevel2' class='lev2 lev4 judgelevel2'>区<div></div></span>";
+					}
+					if(judge.levels[2]!=0){
+						html += "<span id='xlevel3' class='lev3 judgelevel3'>主<div></div></span>";
+					}else{
+						html += "<span id='xlevel3' class='lev3 lev4 judgelevel3'>主<div></div></span>";
+					}
+					if(judge.levels[3]!=0){
+						html += "<span id='xlevel4' class='lev3 judgelevel4'>助<div></div></span>";
+					}else{
+						html += "<span id='xlevel4' class='lev3 lev4 judgelevel4'>助<div></div></span>";
+					}
+					if(judge.levels[4]!=0){
+						html += "<span id='xlevel5' class='lev3 judgelevel5'>四<div></div></span>";
+					}else{
+						html += "<span id='xlevel5' class='lev3 lev4 judgelevel5'>四<div></div></span>";
+					}
+					if(judge.levels[5]!=0){
+						html += "<span id='xlevel6' class='lev3 judgelevel6'>裁<div></div></span>";
+					}else{
+						html += "<span id='xlevel6' class='lev3 lev4 judgelevel6'>裁<div></div></span>";
+					}
+					if(judge.levels[6]!=0){
+						html += "<span id='xlevel7' class='lev3 judgelevel7'>赛<div></div></span>";
+					}else{
+						html += "<span id='xlevel7' class='lev3 lev4 judgelevel7'>赛<div></div></span>";
+					}
+					if(judge.levels[7]!=0){
+						html += "<span id='xlevel8' class='lev3 judgelevel8'>统<div></div></span>";
+					}else{
+						html += "<span id='xlevel8' class='lev3 lev4 judgelevel8'>统<div></div></span>";
+					}
+					html += "</td></tr>";
+					$(".judges tbody").append(html);
+				});
+			}
+			else{
+				ds.dialog({
+					title : '消息提示',
+					content : "操作失败！",
+					onyes : true,
+					icon : "../images/info.png"
+				});
+			}
+		},
+		error : function() {
+			ds.dialog({
+				title : '消息提示',
+				content : "请检查网络连接！",
+				onyes : true,
+				icon : "../images/info.png"
+			});			
+		}
+	});
+}
+function judgetdclick(obj){
+	var judgeId = $(obj).attr("id").split("_")[1];
+	$.ajax({
+		type : 'POST',
+		url : forwardurl+"/judgemanagement/bindjudgetogame.html",
+		data : {
+			judge_id : judgeId,
+			games_id : selectedGameId,
+			position_index : selectedPosition
+		},
+		dataType : "json",
+		success : function(data) {
+			if(data.success){
+				ds.dialog({
+					title : '消息提示',
+					content : "操作成功！",
+					onyes : true,
+					icon : "../images/socceralert.png"
+				});
+				$(".choose_judge_block").hide();
+				getGameInfoForEdit();
+			}
+			else{
+				ds.dialog({
+					title : '消息提示',
+					content : "操作失败！",
+					onyes : true,
+					icon : "../images/info.png"
+				});
+			}
+		},
+		error : function() {
+			ds.dialog({
+				title : '消息提示',
+				content : "请检查网络连接！",
+				onyes : true,
+				icon : "../images/info.png"
+			});			
+		}
+	});
+}
+function getGameInfoForEdit(){
+	$.ajax({
+		type : 'POST',
+		url : forwardurl+"/gamemanagement/getsinglegame.html",
+		data : {
+			game_id : selectedGameId
+		},
+		dataType : "json",
+		success : function(data) {
+			$("#game_league_modify").val(data.game.leagueName);
+			$("#game_zone_modify").val(data.game.zoneName);
+			$("#game_group_modify").val(data.game.orderName);
+			$("#team_modify").val(data.game.hostSchoolName);
+			$("#host_team_modify").val(data.game.hostSchoolName);
+			$("#guest_team_modify").val(data.game.guestSchoolName);
+			$("#time1").val(data.game.gameTime);
+			$("#address_modify").val(data.game.gameLocation);
+			var host_uniform = data.game.hostUniform;
+			var guest_uniform = data.game.guestUniform;
+			$("#host_uniform_modify").val(host_uniform);
+			$("#guest_uniform_modify").val(guest_uniform);
+			$("#judgeposition_1").val(data.game.judgePostionNames[0]);
+			$("#judgeposition_2").val(data.game.judgePostionNames[1]);
+			$("#judgeposition_3").val(data.game.judgePostionNames[2]);
+			$("#judgeposition_4").val(data.game.judgePostionNames[3]);
+			$("#judgeposition_5").val(data.game.judgePostionNames[4]);
+			$("#judgeposition_6").val(data.game.judgePostionNames[5]);
+			$("#judgeposition_7").val(data.game.judgePostionNames[6]);
+			$("#judgeposition_8").val(data.game.judgePostionNames[7]);
+		},
+		error : function() {
+			ds.dialog({
+				title : '消息提示',
+				content : "请检查网络连接！",
+				onyes : true,
+				icon : "../images/info.png"
+			});
+		}
+	});
+	$('.edit_match').show();
 }

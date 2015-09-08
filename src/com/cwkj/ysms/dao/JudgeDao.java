@@ -89,5 +89,7 @@ public interface JudgeDao extends GenericDao {
 	public List<Map<String,Object>> gettAtt(int judgeId,int attType);
 	
 	public void isPassed(int judgeId,int judgeStatus);
+	
+	public List<YsmsJudge> findAll();
 
 }

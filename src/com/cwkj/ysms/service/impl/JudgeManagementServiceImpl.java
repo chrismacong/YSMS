@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cwkj.ysms.dao.DistrictDao;
+import com.cwkj.ysms.dao.GamesDao;
+import com.cwkj.ysms.dao.GamesJudgeDao;
 import com.cwkj.ysms.dao.GroupDao;
 import com.cwkj.ysms.dao.JobsDao;
 import com.cwkj.ysms.dao.JudgeAndLevelDao;
@@ -23,6 +25,8 @@ import com.cwkj.ysms.dao.JudgeDao;
 import com.cwkj.ysms.dao.JudgeUserDao;
 import com.cwkj.ysms.dao.UserDao;
 import com.cwkj.ysms.model.YsmsDistrict;
+import com.cwkj.ysms.model.YsmsGames;
+import com.cwkj.ysms.model.YsmsGamesJudge;
 import com.cwkj.ysms.model.YsmsGroup;
 import com.cwkj.ysms.model.YsmsJobs;
 import com.cwkj.ysms.model.YsmsJudge;
@@ -31,6 +35,7 @@ import com.cwkj.ysms.model.YsmsJudgeUser;
 import com.cwkj.ysms.model.YsmsJudgeandlevel;
 import com.cwkj.ysms.model.YsmsJudgelevel;
 import com.cwkj.ysms.model.YsmsUser;
+import com.cwkj.ysms.model.view.JudgeView;
 import com.cwkj.ysms.service.JudgeManagementService;
 import com.cwkj.ysms.service.UserManagementService;
 import com.cwkj.ysms.util.ToolsUtil;
@@ -115,6 +120,28 @@ public class JudgeManagementServiceImpl implements JudgeManagementService {
 
 	public void setGroupDao(GroupDao groupDao) {
 		this.groupDao = groupDao;
+	}
+
+	@Resource
+	private GamesJudgeDao gamesJudgeDao;
+	
+	public GamesJudgeDao getGamesJudgeDao() {
+		return gamesJudgeDao;
+	}
+
+	public void setGamesJudgeDao(GamesJudgeDao gamesJudgeDao) {
+		this.gamesJudgeDao = gamesJudgeDao;
+	}
+	
+	@Resource
+	private GamesDao gamesDao;
+
+	public GamesDao getGamesDao() {
+		return gamesDao;
+	}
+
+	public void setGamesDao(GamesDao gamesDao) {
+		this.gamesDao = gamesDao;
 	}
 
 	@Override
@@ -352,8 +379,11 @@ public class JudgeManagementServiceImpl implements JudgeManagementService {
 		try {
 			 for(String judgeId:judge_id.split(",") ){
 				 judgeDao.delete(judgeId);
+				 List<YsmsJudgeUser> judgeUserList = judgeUserDao.findByJudgeId(Integer.parseInt(judgeId));
+				 for(int m=0;m<judgeUserList.size();m++){
+					 userDao.delete(judgeUserList.get(m).getYsmsUser().getUserId());
+				 }
 			 }
-			 
 			 
 		} catch (Exception exception) {
 			exception.printStackTrace();
@@ -439,5 +469,54 @@ public class JudgeManagementServiceImpl implements JudgeManagementService {
 			 
 		}
 		return list;
+	}
+
+	@Override
+	public List<JudgeView> getAllJudge() {
+		List<JudgeView> result = new ArrayList<JudgeView>();
+		List<YsmsJudge> allJudges = judgeDao.findAll();
+		if(allJudges!=null){
+			for(int i=0;i<allJudges.size();i++){
+				JudgeView judgeView = new JudgeView();
+				YsmsJudge judge = allJudges.get(i);
+				int levelsStatus[] = new int[8];
+				List<YsmsJudgeandlevel> levelList = judgeAndLevelDao.getByJudgeId(judge.getJudgeId());
+				if(levelList!=null){
+					for(YsmsJudgeandlevel level : levelList){
+						levelsStatus[level.getYsmsJudgelevel().getLevelId()-1] = 1;
+					}
+				}
+				judgeView.setLevels(levelsStatus);
+				judgeView.setJudgeId(judge.getJudgeId());
+				judgeView.setJudgeName(judge.getIdentifiedName());
+				result.add(judgeView);
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public boolean bindJudgeToGame(int judgeId, int gamesId, int positionIndex) {
+		YsmsGamesJudge gamesJudge = gamesJudgeDao.getJudgeByGameAndPosition(gamesId, positionIndex);
+		if(gamesJudge!=null){
+			gamesJudgeDao.delete(gamesJudge);
+		}
+		YsmsJudge judge = judgeDao.findById(judgeId);
+		YsmsGames game = gamesDao.findById(gamesId);
+		YsmsGamesJudge newGamesJudge = new YsmsGamesJudge();
+		newGamesJudge.setJudgePosition(positionIndex);
+		newGamesJudge.setYsmsGames(game);
+		newGamesJudge.setYsmsJudge(judge);
+		gamesJudgeDao.save(newGamesJudge);
+		return true;
+	}
+
+	@Override
+	public boolean cancelBindingJudgeToGame(int gamesId, int positionIndex) {
+		YsmsGamesJudge gamesJudge = gamesJudgeDao.getJudgeByGameAndPosition(gamesId, positionIndex);
+		if(gamesJudge!=null){
+			gamesJudgeDao.delete(gamesJudge);
+		}
+		return true;
 	}
 }
