@@ -519,4 +519,12 @@ public class JudgeManagementServiceImpl implements JudgeManagementService {
 		}
 		return true;
 	}
+
+	@Override
+	public YsmsJudge getJudgeByUser(int userId) {
+		List<YsmsJudgeUser> judgeUserList = judgeUserDao.findByUserId(userId);
+		if(judgeUserList==null||judgeUserList.size()==0)
+			return null;
+		return judgeUserList.get(0).getYsmsJudge();
+	}
 }

@@ -156,4 +156,11 @@ public interface JudgeManagementService {
 	 * @return
 	 */
 	public boolean cancelBindingJudgeToGame(int gamesId, int positionIndex);
+	
+	/**
+	 * 根据用户Id获取裁判编号
+	 * @param userId
+	 * @return
+	 */
+	public YsmsJudge getJudgeByUser(int userId);
 }

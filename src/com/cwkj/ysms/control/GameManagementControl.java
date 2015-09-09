@@ -26,6 +26,7 @@ import com.cwkj.ysms.model.view.SuspensionView;
 import com.cwkj.ysms.model.view.TeamView;
 import com.cwkj.ysms.model.view.ZoneView;
 import com.cwkj.ysms.service.GamesManagementService;
+import com.cwkj.ysms.service.JudgeManagementService;
 import com.cwkj.ysms.service.LeagueManagementService;
 import com.cwkj.ysms.service.TeamManagementService;
 import com.cwkj.ysms.util.Page;
@@ -69,6 +70,18 @@ public class GameManagementControl {
 
 	public void setTeamManagementService(TeamManagementService teamManagementService) {
 		this.teamManagementService = teamManagementService;
+	}
+	
+	@Resource
+	private JudgeManagementService judgeManagementService;
+
+	public JudgeManagementService getJudgeManagementService() {
+		return judgeManagementService;
+	}
+
+	public void setJudgeManagementService(
+			JudgeManagementService judgeManagementService) {
+		this.judgeManagementService = judgeManagementService;
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
@@ -179,6 +192,7 @@ public class GameManagementControl {
 			HttpSession session, HttpServletResponse response) throws Exception {
 		String userGroup = session.getAttribute("userGroup").toString();
 		boolean isRecorder = false;
+		boolean isJudge = false;
 		if("3".equals(userGroup)){
 			isRecorder = true;
 		}
@@ -201,8 +215,16 @@ public class GameManagementControl {
 		if(dateStr != null&&!"".equals(dateStr)){
 			date = sdf.parse(dateStr);
 		}
-		int count = gameManagementService.getGamesCount(leagueId,
-				zoneId, date);
+		int count;
+		int userId = Integer.parseInt(session.getAttribute("userId").toString());
+		if("9".equals(userGroup)){
+			count = gameManagementService.getMyGamesCount(leagueId,
+					zoneId, date, judgeManagementService.getJudgeByUser(userId).getJudgeId());
+		}
+		else{
+			count = gameManagementService.getGamesCount(leagueId,
+					zoneId, date);
+		}
 		Page returnPage = new Page();
 		Integer returanCurrentPage = 0;
 		if (Integer.parseInt(currentPage) <= PageUtil.getTotalPage(8,
@@ -219,10 +241,19 @@ public class GameManagementControl {
 		.setHasPrePage(PageUtil.getHasPrePage(returanCurrentPage));
 		returnPage.setTotalPage(PageUtil.getTotalPage(8, count));
 		returnPage.setTotalCount(count);
-		List<GameView> viewList = gameManagementService.getGamesByPage(leagueId, zoneId, date,  returanCurrentPage.toString());
+		List<GameView> viewList;
+		if("9".equals(userGroup)){ 
+			viewList = gameManagementService.getMyGameByPage(leagueId, zoneId, date, 
+					returanCurrentPage.toString(), judgeManagementService.getJudgeByUser(userId).getJudgeId());
+			isJudge = true;
+		}
+		else{
+			viewList = gameManagementService.getGamesByPage(leagueId, zoneId, date,  returanCurrentPage.toString());
+		}
 		model.put("page", returnPage);
 		model.put("games", viewList);
 		model.put("isrecorder", isRecorder);
+		model.put("isJudge", isJudge);
 		return model;
 	}
 

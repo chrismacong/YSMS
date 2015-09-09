@@ -61,7 +61,7 @@ public class JudgeUserDaoImpl extends GenericDaoImpl implements JudgeUserDao {
 	public List<YsmsJudgeUser> findByUserId(int userId) {
 		log.debug("finding YsmsJudgeUser instance by userId");
 		try {
-			String sql = " from YsmsJudgeUser as ju where s.ysmsUser.userId = "+ userId;
+			String sql = " from YsmsJudgeUser as ju where ju.ysmsUser.userId = "+ userId;
 			List<Object> objects= findByHQL(sql);
 			List<YsmsJudgeUser> results = new ArrayList<YsmsJudgeUser>();
 			for(int i=0;i<objects.size();i++){

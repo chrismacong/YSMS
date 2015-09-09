@@ -311,7 +311,6 @@ public class GamesDaoImpl extends GenericDaoImpl implements GamesDao {
 
 	@Override
 	public int getGamesCount(Integer leagueId, Integer zoneId, Date date) {
-		// TODO Auto-generated method stub
 		log.debug("finding  ByFuzzyQueryAndPage instances");
 		try {
 			String queryString = "from YsmsGames as yg where 0=0";
@@ -587,5 +586,62 @@ public class GamesDaoImpl extends GenericDaoImpl implements GamesDao {
 			throw re;
 		}
 		return views;
+	}
+
+	@Override
+	public List<YsmsGames> findByFuzzyQueryAndPageForJudge(Integer leagueId,
+			Integer zoneId, Date date, Page page, int judgeId) {
+		log.debug("finding  ByFuzzyQueryAndPage instances");
+		try {
+			String queryString = "select distinct yg from YsmsGames as yg, YsmsGamesJudge gj where gj.ysmsJudge.judgeId = " 
+					+ judgeId + " and gj.ysmsGames.gamesId = yg.gamesId";
+			if(leagueId != null){
+				queryString += " and yg.ysmsLeagueZone.ysmsLeague.leagueId = " + leagueId;
+			}
+			if (zoneId != null) {
+				queryString += " and yg.ysmsLeagueZone.zoneId = " + zoneId;
+			}
+			if (date != null) {
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				queryString += " and yg.gamesTime like '%" + sdf.format(date)
+						+ "%' ";
+			}
+			queryString += " order by yg.gamesTime asc, yg.gamesId asc";
+			Query queryObject = getSession().createQuery(queryString);
+			if (page != null) {
+				queryObject.setMaxResults(page.getEveryPage());
+				queryObject.setFirstResult(page.getBeginIndex());
+			}
+			return queryObject.list();
+		} catch (RuntimeException re) {
+			log.error("find ByFuzzyQueryAndPage failed", re);
+			throw re;
+		}
+	}
+
+	@Override
+	public int getMyGamesCount(Integer leagueId, Integer zoneId, Date date,
+			int judgeId) {
+		log.debug("finding  ByFuzzyQueryAndPage instances");
+		try {
+			String queryString = "select distinct yg from YsmsGames as yg, YsmsGamesJudge gj where gj.ysmsJudge.judgeId = " 
+					+ judgeId + " and gj.ysmsGames.gamesId = yg.gamesId";
+			if(leagueId != null){
+				queryString += " and yg.ysmsLeagueZone.ysmsLeague.leagueId = " + leagueId;
+			}
+			if (zoneId != null) {
+				queryString += " and yg.ysmsLeagueZone.zoneId = " + zoneId;
+			}
+			if (date != null) {
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				queryString += " and yg.gamesTime like '%" + sdf.format(date)
+						+ "%' ";
+			}
+			queryString += " order by yg.gamesTime ";
+			return this.getHqlRecordCount(queryString);
+		} catch (RuntimeException re) {
+			log.error("find ByFuzzyQueryAndPage failed", re);
+			throw re;
+		}
 	}
 }

@@ -249,6 +249,15 @@
 											"${pageContext.request.contextPath}/authoritymatrix.html");
 							$("#main_content").css("background", "#FFFFFF");
 						});
+		$("#mygame_left_menu")
+				.click(
+						function() {
+							$('.list').hide();
+							$("#main_content")
+									.attr("src",
+											"${pageContext.request.contextPath}/gamemanagement.html");
+							$("#main_content").css("background", "#FFFFFF");
+						});
 	}
 </script>
 </head>
@@ -469,6 +478,19 @@
 					<%
 						}
 					%>
+					<%
+						if (list.contains(14)) {
+					%>
+					<li id="mygame_left_menu">
+						<div class="fous"></div>
+						<div class="icon">
+							<img src="${pageContext.request.contextPath}/images/bisai_m.png">
+						</div>
+						<div class='miaoshu'>我的比赛</div>
+					</li>
+					<%
+						}
+					%>
 				</ul>
 			</div>
 			<div class="nav_left_bottom"></div>
@@ -506,18 +528,20 @@
 						<h1>Welcome to using Nanjing YouthFootball Management
 							Platform</h1>
 						<div>欢迎南京市青少年足球管理平台</div>
-						<h1>VERSION 0.8.4.0</h1>
+						<h1>VERSION 0.8.4.1</h1>
 						<div>版本更新说明</div>
-						<br />
-						<h2>0.8.3.2 (2015-08-13 10:34)</h2>
-						<div>修改微信获取的最新赛况和最近比赛为多场，最多10场</div>
-						<div>修改球衣颜色深浅为任意填写的代表颜色的字符，不多于5个汉字字符</div>
 						<br />
 						<h2>0.8.4.0 (2015-08-26 14:54)</h2>
 						<div>增加了红黄牌停赛信息查看功能</div>
 						<div>可以直接从比赛中下载比赛双方的人员名单</div>
 						<div>开启了裁判管理功能</div>
 						<div>现在可以在登陆界面右下角进入裁判注册绿色通道了</div>
+						<br />
+						<h2>0.8.4.1 (2015-09-09 15:24)</h2>
+						<div>开启了裁判员配置功能</div>
+						<div>完成了裁判员批量导入功能，并提供了模板表格下载，非模板导入会有错误提示</div>
+						<div>裁判员在注册完成后可以登陆系统，并可以在我的比赛中查看即将执法的比赛</div>
+						<div>本版本作为一个完整版本发布</div>
 						<br />
 						<!-- <h1>相关文件下载</h1> -->
 						<!-- <a href="${pageContext.request.contextPath}/YSMSRepo/file/league_regulation.doc">联赛规程（Word）</a> -->

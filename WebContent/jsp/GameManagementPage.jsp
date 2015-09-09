@@ -68,10 +68,11 @@
 					<img src="${pageContext.request.contextPath}/images/a_revise.png" />
 				</div>
 				<p>比赛列表</p></li>
+			<c:if test="${userGroup!='9'}">
 			<li id="add_competition"><div>
 					<img src="${pageContext.request.contextPath}/images/a_add.png" />
 				</div>
-				<p>添加比赛</p></li>
+				<p>添加比赛</p></li></c:if>
 		</ul>
 	</div>
 	<div class="neirong_wk">

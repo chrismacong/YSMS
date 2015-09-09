@@ -769,7 +769,32 @@ function refresh_competitions() {
 							+ "<td><img class='record' src='images/edit_saishi_info.png' alt='记录' onmouseover='mouseover_obj(this)' onmouseout='mouseout_obj(this)'>"
 							+ "<img class='edit' src='images/list_modify_btn.png' alt='修改' onmouseover='mouseover_obj(this)' onmouseout='mouseout_obj(this)'></td>"
 							+ "</tr>");
-				} else {
+				} else if(data.isJudge){
+					$("#inner_table").append(
+							"<tr id='gametr_" + item.gamesId + "'>"
+							+ "<td width='145px'>"
+							+ item.gameTime
+							+ "</td>"
+							+ "<td width='208px'>"
+							+ item.leagueName
+							+ "</td>"
+							+ "<td width='95px'>"
+							+ item.zoneName
+							+ "</td>"
+							+ "<td width='74px'>"
+							+ item.orderName
+							+ "</td>"
+							+ "<td width='190px'>"
+							+ item.hostSchoolName
+							+ "</td>"
+							+ "<td width='190px'>"
+							+ item.guestSchoolName
+							+ "</td>"
+							+ "<td>"
+							+ "<img class='edit' src='images/list_edit_btn.png' alt='管理' onmouseover='mouseover_obj(this)' onmouseout='mouseout_obj(this)'></td>"
+							+ "</tr>");
+				}
+				else {
 					$("#inner_table").append(
 							"<tr id='gametr_" + item.gamesId + "'>"
 							+ "<td width='145px'>"

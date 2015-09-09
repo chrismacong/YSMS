@@ -682,6 +682,14 @@ public class GamesManagementServiceImpl implements GamesManagementService{
 	public int getGamesCount(Integer leagueId, Integer zoneId, Date date) {
 		return gamesDao.getGamesCount(leagueId, zoneId, date);
 	}
+	
+
+
+	@Override
+	public int getMyGamesCount(Integer leagueId, Integer zoneId, Date date,
+			int judgeId) {
+		return gamesDao.getMyGamesCount(leagueId, zoneId, date, judgeId);
+	}
 
 	@Override
 	public boolean deleteGame(int gamesId) {
@@ -1185,5 +1193,33 @@ public class GamesManagementServiceImpl implements GamesManagementService{
 			}
 		}
 		return result;
+	}
+
+	@Override
+	public List<GameView> getMyGameByPage(Integer leagueId, Integer zoneId,
+			Date date, String pageIndex, int judgeId) {
+		List<GameView> viewList = new ArrayList<GameView>();
+		int startIndex = (Integer.parseInt(pageIndex) - 1) * 8;
+		Page page = new Page();
+		page.setEveryPage(8);
+		page.setBeginIndex(startIndex);
+		List<YsmsGames> gameList = gamesDao.findByFuzzyQueryAndPageForJudge(leagueId, zoneId, date, page, judgeId);
+		for(int i=0;i<gameList.size();i++){
+			YsmsGames ysmsGames = gameList.get(i);
+			GameView gameView = new GameView();
+			gameView.setGamesId(ysmsGames.getGamesId());
+			Date ysmsdate = ysmsGames.getGamesTime();
+			if(ysmsdate!=null){
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+				gameView.setGameTime(sdf.format(ysmsdate));
+			}
+			gameView.setGuestSchoolName(ysmsGames.getYsmsTeamByGuestTeamid().getYsmsSchool().getSchoolName());
+			gameView.setHostSchoolName(ysmsGames.getYsmsTeamByHostTeamid().getYsmsSchool().getSchoolName());
+			gameView.setLeagueName(ysmsGames.getYsmsLeagueZone().getYsmsLeague().getLeagueName());
+			gameView.setOrderName(ysmsGames.getGamesOrder()==1?"小组赛":"淘汰赛");
+			gameView.setZoneName(ysmsGames.getYsmsLeagueZone().getZoneName());
+			viewList.add(gameView);
+		}
+		return viewList;
 	}
 }

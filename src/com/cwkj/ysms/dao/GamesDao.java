@@ -149,6 +149,17 @@ public interface GamesDao extends GenericDao  {
 			Date date, Page page);
 	
 	/**
+	 * @param leagueId
+	 * @param zoneId
+	 * @param date
+	 * @param page
+	 * @param judgeId
+	 * @return
+	 */
+	public List<YsmsGames> findByFuzzyQueryAndPageForJudge(Integer leagueId, Integer zoneId, 
+			Date date, Page page, int judgeId);
+	
+	/**
 	 * 获取数量
 	 * @param leagueId
 	 * @param zoneId
@@ -191,4 +202,14 @@ public interface GamesDao extends GenericDao  {
 	 * @return
 	 */
 	List<AssistRankView> getAssistRank(int zoneId, int topHowMany);
+
+	/**
+	 * @param leagueId
+	 * @param zoneId
+	 * @param date
+	 * @param judgeId
+	 * @return
+	 */
+	public int getMyGamesCount(Integer leagueId, Integer zoneId, Date date,
+			int judgeId);
 }

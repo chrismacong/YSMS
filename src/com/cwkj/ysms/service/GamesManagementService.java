@@ -287,6 +287,16 @@ public interface GamesManagementService {
 	public List<GameView> getGamesByPage(Integer leagueId, Integer zoneId, Date date, String pageIndex);
 
 	/**
+	 * 根据分页信息获取裁判员要参与的比赛列表
+	 * @param leagueId
+	 * @param zoneId
+	 * @param date
+	 * @param pageIndex
+	 * @param judgeId
+	 * @return
+	 */
+	public List<GameView> getMyGameByPage(Integer leagueId, Integer zoneId, Date date, String pageIndex, int judgeId);
+	/**
 	 * 获取某联赛组在某一天的比赛总数
 	 * @param leagueId
 	 * @param zoneId
@@ -294,6 +304,16 @@ public interface GamesManagementService {
 	 * @return
 	 */
 	public int getGamesCount(Integer leagueId, Integer zoneId, Date date);
+	
+	/**
+	 * 获取某联赛组在某一天中某裁判的执法场次
+	 * @param leagueId
+	 * @param zoneId
+	 * @param date
+	 * @param judgeId
+	 * @return
+	 */
+	public int getMyGamesCount(Integer leagueId, Integer zoneId, Date date, int judgeId);
 	
 	public boolean deleteGame(int gamesId);
 	
