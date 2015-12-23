@@ -1,0 +1,57 @@
+@CHARSET "UTF-8";
+.course_table{
+	position:absolute;
+	left:3%;
+	width: 94%;
+}
+
+.course_table td{padding:5px;}
+
+.course_content{
+	width:300px;
+	height:300px;
+	border: 1.2px solid black;
+}
+
+.course_image{
+	position:relative;
+	width:290px;
+	left:5px;
+	top:5px;
+	height:200px;
+	cursor:pointer;
+}
+
+.course_title{
+	position:relative;
+	width:100%;
+	margin-top:10px;
+	margin-left:20px;
+	font-size:14px;
+	font-style:solid;
+}
+
+.subcourse_table{
+	font-size:10px;
+}
+
+.addbutton {
+	margin-top:5px;
+	margin-left:3%;
+	width:130px;
+	height:44px;
+	background: url(../images/add_course.png) center center;
+	display: inline-block;
+	position: relative;
+	cursor: pointer
+}
+.addbutton:hover {
+	margin-top:5px;
+	margin-left:3%;
+	width:130px;
+	height:44px;
+	background: url(../images/add_course_hover.png) center center;
+	display: inline-block;
+	position: relative;
+	cursor: pointer
+}

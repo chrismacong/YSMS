@@ -425,8 +425,9 @@
 							<td class="score_score"><input id="record_host_score"
 								type="text" onfocus="if(this.value == '--') this.value = ''"
 								onblur="if(this.value =='') this.value = '--'"></td>
-							<td><img
-								src="${pageContext.request.contextPath}/images/vs_icon2.png"></td>
+							<td><img class="score_icon"
+								src="${pageContext.request.contextPath}/images/
+vs_icon2.png"></td>
 							<td class="score_score"><input id="record_guest_score"
 								type="text" onfocus="if(this.value == '--') this.value = ''"
 								onblur="if(this.value =='') this.value = '--'"></td>
@@ -498,7 +499,7 @@
 											<td width="90px">助攻球员</td>
 											<td width="90px">进球类型</td>
 											<td width="70px">进球时间</td>
-											<td></td>
+											<td style="max-width:45px;"></td>
 										</tr>
 									</thead>
 									<tbody>
@@ -623,7 +624,7 @@
 											<td width="90px">助攻球员</td>
 											<td width="90px">进球类型</td>
 											<td width="70px">进球时间</td>
-											<td></td>
+											<td style="max-width:45px;"></td>
 										</tr>
 									</thead>
 									<tbody>

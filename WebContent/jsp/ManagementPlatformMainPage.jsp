@@ -258,6 +258,16 @@
 											"${pageContext.request.contextPath}/gamemanagement.html");
 							$("#main_content").css("background", "#FFFFFF");
 						});
+		
+		$("#course_left_menu")
+		.click(
+				function() {
+					$('.list').hide();
+					$("#main_content")
+							.attr("src",
+									"${pageContext.request.contextPath}/course.html");
+					$("#main_content").css("background", "#FFFFFF");
+				});
 	}
 </script>
 </head>
@@ -405,7 +415,7 @@
 					<li id="signup_left_menu">
 						<div class="fous"></div>
 						<div class="icon">
-							<img src="${pageContext.request.contextPath}/images/signup_m.png">
+							<img src="${pageContext.request.contextPath}/images/liansai_m.png">
 						</div>
 						<div class='miaoshu'>联赛报名</div>
 					</li>
@@ -487,6 +497,19 @@
 							<img src="${pageContext.request.contextPath}/images/bisai_m.png">
 						</div>
 						<div class='miaoshu'>我的比赛</div>
+					</li>
+					<%
+						}
+					%>
+						<%
+						if (list.contains(15)) {
+					%>
+					<li id="course_left_menu">
+						<div class="fous"></div>
+						<div class="icon">
+							<img src="${pageContext.request.contextPath}/images/signup_m.png">
+						</div>
+						<div class='miaoshu'>课程教案</div>
 					</li>
 					<%
 						}

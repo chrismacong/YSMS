@@ -31,7 +31,7 @@ html { height: 100%; }
 body {
 	width: 1080px;
     font-family: 'Lato', Calibri, Arial, sans-serif;
-    background: #f9f9f9 url(../images/main_center_bg.jpg);
+    background: #f9f9f9 url(../images/main_bg.png);
     background-size:100% 100%;
     font-weight: 300;
     font-size: 15px;

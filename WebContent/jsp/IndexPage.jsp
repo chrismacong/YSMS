@@ -265,7 +265,8 @@ function clearCookie() {
 			</div>
 			<div class="foot">
 				<div>
-					<img src="${pageContext.request.contextPath}/images/foot_imess.png" />
+					<img src="${pageContext.request.contextPath}/images/zilogo.png" />
+					<!-- <img src="${pageContext.request.contextPath}/images/foot_imess.png" /> -->
 				</div>
 				<div class="foot_right">
 					<a id="rapid_judge_register" href="${pageContext.request.contextPath}/judgemanagement/register.html"></a>

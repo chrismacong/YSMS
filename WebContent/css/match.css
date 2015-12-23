@@ -125,7 +125,7 @@
 	width: 50px;
 	height: 50px;
 	text-align: center;
-	font-size: 30px;
+	font-size: 50px;
 	font-weight: bold;
 	color: #33049f;
 	border: none;
@@ -193,26 +193,33 @@
 }
 
 .tab_xijie {
-	height: 40px;
-	width: 400px;
+	height: 38px;
+	width: 370px;
 	margin: 20px auto 0 auto;
-	line-height: 40px;
+	line-height: 38px;
+	background-color: transparent;
+    background-image:url(../images/nav.jpg);
+    background-repeat: repeat-x;
+    background-attachment: scroll;
+    background-position: 0% 0%;
+    background-clip: border-box;
+    background-origin: padding-box;
+    background-size: auto auto;
+    cursor:pointer;   
+    z-index:10
 }
+
+.tab_xijie span:not(.span_tab):hover{color:#2e2442;}
 
 .tab_xijie span {
-	border-radius: 5px 5px 0 0;
-	border: 1px solid #ccc;
-	border-bottom: none;
-	padding: 8px 30px;
-	cursor: pointer;
+	padding-left:32px; padding-right:32px;
 }
 
+.tab_xijie *{ font-family:"Microsoft YaHei" !important; font-size:16px; color:#FFFFFF}
+
 .span_tab {
-	padding: 10px 30px !important;
-	background: #160b2d;
-	color: #fff;
-	font-weight: bold;
-	box-shadow: 0 0 10px #777;
+	padding: 8px 30px !important;
+	background-image:url(../images/hover.jpg);
 }
 
 .honghuangpai, .otherrecord {
